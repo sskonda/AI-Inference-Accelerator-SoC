@@ -14,7 +14,16 @@ require_file "rtl/files.f" "complete the RTL source-list milestone"
 action="${1:-}"
 case "${action}" in
   lint)
-    verilator --lint-only --timing -Wall -f rtl/files.f
+    if [[ -f "rtl/soc/soc_top.sv" ]]; then
+      verilator --lint-only --timing --assert -Wall --top-module soc_top -f rtl/files.f
+    else
+      require_file "sim/common/protocol_compile_top.sv" \
+        "complete the protocol compile top used before SoC integration"
+      verilator --lint-only --timing --assert -Wall \
+        --top-module protocol_compile_top \
+        -f rtl/files.f \
+        sim/common/protocol_compile_top.sv
+    fi
     ;;
   build)
     require_file "sim/verilator/sim_main.cpp" \

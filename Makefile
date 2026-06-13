@@ -72,6 +72,7 @@ coverage:
 
 docs:
 	@python3 scripts/docs/check_docs.py
+	@python3 scripts/docs/check_register_map.py
 
 clean:
 	@bash scripts/clean.sh

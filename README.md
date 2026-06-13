@@ -120,9 +120,10 @@ the `docs/` directory and evolve with each implementation milestone.
 
 ## Current Status
 
-The architecture and command surface are defined. RTL and verification are introduced
-in gated milestones listed in [docs/project_plan.md](docs/project_plan.md). Passing
-claims are made only for checks that have been executed with available tools.
+The architecture, command surface, shared packages, register constants, packed command
+types, and protocol interfaces are implemented. Functional RTL and verification are
+introduced in gated milestones listed in [docs/project_plan.md](docs/project_plan.md).
+Passing claims are made only for checks that have been executed with available tools.
 
 ## License
 

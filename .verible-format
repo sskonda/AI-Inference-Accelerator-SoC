@@ -1,4 +1,5 @@
 --column_limit=100
+--failsafe_success=false
 --indentation_spaces=2
 --module_net_variable_alignment=align
 --named_parameter_alignment=align

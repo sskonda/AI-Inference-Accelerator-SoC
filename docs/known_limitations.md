@@ -1,9 +1,11 @@
 # Known Limitations
 
-- The repository currently contains architecture and build contracts; implementation and
-  verification are added in the milestone order recorded in `project_plan.md`.
-- The local environment does not currently provide Verible, Verilator, a UVM-capable
-  simulator, or Yosys. Targets report those absences and do not claim a pass.
+- The implemented RTL currently covers shared architectural definitions and protocol
+  interfaces. Functional blocks and their tests follow the milestone order recorded in
+  `project_plan.md`.
+- The local environment provides user-local Verible and Verilator installations. It does
+  not currently provide a UVM-capable simulator or Yosys. Targets report those absences
+  and do not claim a pass.
 - The platform is simulation-only and does not include board support, implementation
   constraints, timing closure, or physical area results.
 - Firmware is a C++ control-core model. No instruction-set processor is present.
