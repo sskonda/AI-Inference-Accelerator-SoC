@@ -1,0 +1,12 @@
+/build/
+/logs/
+/coverage/
+/work/
+__pycache__/
+*.pyc
+*.vcd
+*.fst
+*.wlf
+modelsim.ini
+transcript
+.DS_Store
