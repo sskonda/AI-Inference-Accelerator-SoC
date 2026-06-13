@@ -1,1 +1,1 @@
-# AI-Inference-Accelerator-SoC
+# Inference Accelerator SoC
