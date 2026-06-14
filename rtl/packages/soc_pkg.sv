@@ -13,6 +13,8 @@ package soc_pkg;
   localparam int unsigned ERROR_WIDTH = 4;
   localparam int unsigned PERF_COUNTER_ID_WIDTH = 4;
   localparam int unsigned DEFAULT_STREAM_USER_WIDTH = 1;
+  localparam int unsigned DEFAULT_FIFO_DEPTH = 8;
+  localparam int unsigned DEFAULT_RAM_ADDR_WIDTH = 10;
 
   localparam int unsigned MMIO_SIZE_KIB = 4;
   localparam int unsigned SPM_SIZE_KIB = 64;
@@ -36,6 +38,14 @@ package soc_pkg;
   typedef logic [DATA_WIDTH-1:0] data_t;
   typedef logic [STRB_WIDTH-1:0] strb_t;
   typedef logic [BYTE_COUNT_WIDTH-1:0] byte_count_t;
+
+  function automatic int unsigned width_for_count(input int unsigned maximum_value);
+    return (maximum_value < 2) ? 1 : $clog2(maximum_value + 1);
+  endfunction
+
+  function automatic int unsigned width_for_index(input int unsigned item_count);
+    return (item_count < 2) ? 1 : $clog2(item_count);
+  endfunction
 
   typedef enum logic [AXIL_RESP_WIDTH-1:0] {
     AXIL_RESP_OKAY   = 2'b00,

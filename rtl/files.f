@@ -6,3 +6,7 @@ rtl/interfaces/mem_if.sv
 rtl/interfaces/stream_if.sv
 rtl/interfaces/irq_if.sv
 rtl/interfaces/cmd_if.sv
+rtl/common/skid_buffer.sv
+rtl/fifo/sync_fifo.sv
+rtl/memory/simple_dual_port_ram.sv
+rtl/memory/scratchpad_ram.sv

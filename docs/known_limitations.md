@@ -1,8 +1,8 @@
 # Known Limitations
 
-- The implemented RTL currently covers shared architectural definitions and protocol
-  interfaces. Functional blocks and their tests follow the milestone order recorded in
-  `project_plan.md`.
+- The implemented RTL currently covers shared definitions, interfaces, flow-control
+  primitives, RAM, and scratchpad storage. SoC services and accelerators follow the
+  milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.

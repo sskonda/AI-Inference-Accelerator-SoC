@@ -16,6 +16,12 @@ case "${action}" in
   lint)
     if [[ -f "rtl/soc/soc_top.sv" ]]; then
       verilator --lint-only --timing --assert -Wall --top-module soc_top -f rtl/files.f
+    elif [[ -f "sim/verilator/primitive_test_top.sv" ]]; then
+      verilator --lint-only --timing --assert -Wall \
+        --top-module primitive_test_top \
+        -f rtl/files.f \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/primitive_test_top.sv
     else
       require_file "sim/common/protocol_compile_top.sv" \
         "complete the protocol compile top used before SoC integration"
@@ -26,13 +32,29 @@ case "${action}" in
     fi
     ;;
   build)
-    require_file "sim/verilator/sim_main.cpp" \
-      "complete the Verilator harness milestone before building"
-    verilator --cc --exe --build --timing --trace-fst -Wall \
-      --top-module soc_top \
-      -Mdir build/verilator \
-      -f rtl/files.f \
-      sim/verilator/sim_main.cpp
+    mkdir -p build/verilator
+    if [[ -f "rtl/soc/soc_top.sv" ]]; then
+      require_file "sim/verilator/sim_main.cpp" \
+        "complete the SoC Verilator harness before building"
+      verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+        --top-module soc_top \
+        -Mdir build/verilator \
+        -f rtl/files.f \
+        "${root}/sim/verilator/sim_main.cpp"
+    else
+      require_file "sim/verilator/primitive_test_top.sv" \
+        "complete the primitive simulation top before building"
+      require_file "sim/verilator/primitive_main.cpp" \
+        "complete the primitive C++ test program before building"
+      verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+        --top-module primitive_test_top \
+        -Mdir build/verilator \
+        -CFLAGS "-std=c++17" \
+        -f rtl/files.f \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/primitive_test_top.sv \
+        "${root}/sim/verilator/primitive_main.cpp"
+    fi
     ;;
   *)
     printf 'usage: %s {lint|build}\n' "$0" >&2

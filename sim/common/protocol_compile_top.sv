@@ -50,6 +50,8 @@ module protocol_compile_top (
     definition_checksum = definition_checksum ^ soc_pkg::IRQ_DMA_DONE_BIT ^
         soc_pkg::IRQ_CMD_DONE_BIT ^ soc_pkg::IRQ_ACCEL_DONE_BIT ^ soc_pkg::IRQ_ERROR_BIT ^
         soc_pkg::IRQ_TIMER_BIT;
+    definition_checksum = definition_checksum ^ soc_pkg::DEFAULT_FIFO_DEPTH ^
+        soc_pkg::DEFAULT_RAM_ADDR_WIDTH;
 
     axil_bus.awvalid = 1'b0;
     axil_bus.awaddr = '0;
