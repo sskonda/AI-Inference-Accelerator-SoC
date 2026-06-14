@@ -12,3 +12,6 @@ rtl/memory/simple_dual_port_ram.sv
 rtl/memory/scratchpad_ram.sv
 rtl/regs/soc_register_block.sv
 rtl/dma/dma_engine.sv
+rtl/timer/soc_timer.sv
+rtl/irq/irq_controller.sv
+rtl/perf/performance_counters.sv

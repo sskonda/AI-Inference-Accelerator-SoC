@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 COVERAGE_DATABASE = ROOT / "coverage" / "coverage.dat"
 SIMULATOR_CANDIDATES = (
     ROOT / "build" / "verilator" / "Vsoc_top",
+    ROOT / "build" / "verilator" / "Vservices_test_top",
     ROOT / "build" / "verilator" / "Vdma_test_top",
     ROOT / "build" / "verilator" / "Vregister_test_top",
     ROOT / "build" / "verilator" / "Vprimitive_test_top",

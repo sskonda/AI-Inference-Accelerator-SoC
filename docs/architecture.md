@@ -73,13 +73,16 @@ scratchpad-resident signed matrices and iterate over simulation-friendly tiles.
 DMA completion, command completion, accelerator error, timer tick, and global error are
 sticky pending sources. A source remains pending until firmware writes its bit to
 `IRQ_STATUS`. The external interrupt is the reduction OR of pending and enabled bits.
-Clearing one source does not affect another.
+Clearing one source does not affect another, and a source event wins over a simultaneous
+clear. The controller records service latency from external assertion to clearing an
+enabled pending source.
 
 ## Performance Flow
 
 Events from DMA, queue, scheduler, accelerators, memory stalls, and interrupt handling
 feed 64-bit saturating counters. Firmware selects a counter through `PERF_SELECT` and
-reads a coherent low/high snapshot. Counter clear is an explicit control pulse.
+reads a coherent low/high snapshot. Count metrics accumulate, queue occupancy and
+interrupt latency retain maxima, and counter clear is an explicit control pulse.
 
 ## Reset Strategy
 

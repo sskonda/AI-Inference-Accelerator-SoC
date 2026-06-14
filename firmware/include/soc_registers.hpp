@@ -66,6 +66,13 @@ inline constexpr unsigned QUEUE_HIGH_WATER_LSB = 8U;
 inline constexpr unsigned QUEUE_FULL_BIT = 16U;
 inline constexpr unsigned QUEUE_EMPTY_BIT = 17U;
 
+inline constexpr unsigned IRQ_SOURCE_COUNT = 5U;
+inline constexpr unsigned IRQ_DMA_DONE_BIT = 0U;
+inline constexpr unsigned IRQ_CMD_DONE_BIT = 1U;
+inline constexpr unsigned IRQ_ACCEL_DONE_BIT = 2U;
+inline constexpr unsigned IRQ_ERROR_BIT = 3U;
+inline constexpr unsigned IRQ_TIMER_BIT = 4U;
+
 inline constexpr std::uint32_t AXIL_RESP_OKAY = 0U;
 inline constexpr std::uint32_t AXIL_RESP_SLVERR = 2U;
 
@@ -91,6 +98,19 @@ inline constexpr std::uint32_t CMD_OP_VECTOR_CLAMP = 6U;
 inline constexpr std::uint32_t CMD_OP_REDUCE_SUM = 7U;
 inline constexpr std::uint32_t CMD_OP_REDUCE_MAX = 8U;
 inline constexpr std::uint32_t CMD_OP_GEMM = 9U;
+
+inline constexpr std::uint32_t PERF_TOTAL_CYCLES = 0U;
+inline constexpr std::uint32_t PERF_DMA_ACTIVE_CYCLES = 1U;
+inline constexpr std::uint32_t PERF_DMA_STALLED_CYCLES = 2U;
+inline constexpr std::uint32_t PERF_ACCEL_ACTIVE_CYCLES = 3U;
+inline constexpr std::uint32_t PERF_ACCEL_STALLED_CYCLES = 4U;
+inline constexpr std::uint32_t PERF_QUEUE_HIGH_WATER = 5U;
+inline constexpr std::uint32_t PERF_COMMANDS_COMPLETED = 6U;
+inline constexpr std::uint32_t PERF_BYTES_READ = 7U;
+inline constexpr std::uint32_t PERF_BYTES_WRITTEN = 8U;
+inline constexpr std::uint32_t PERF_IRQ_LATENCY = 9U;
+inline constexpr std::uint32_t PERF_SCHEDULER_STALLS = 10U;
+inline constexpr std::uint32_t PERF_COUNTER_INVALID = 15U;
 
 }  // namespace soc
 

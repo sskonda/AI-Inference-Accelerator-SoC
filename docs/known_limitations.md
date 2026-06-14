@@ -1,8 +1,9 @@
 # Known Limitations
 
 - The implemented RTL currently covers shared definitions, interfaces, flow-control
-  primitives, RAM, scratchpad storage, the AXI-Lite register block, and DMA. Remaining
-  SoC services and accelerators follow the milestone order recorded in `project_plan.md`.
+  primitives, RAM, scratchpad storage, the AXI-Lite register block, DMA, timer,
+  interrupts, and performance counters. The command scheduler and accelerators follow
+  the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.

@@ -63,6 +63,10 @@ Access codes:
 cycle. Bit 2 selects priority-first scheduling when set and round-robin scheduling when
 clear.
 
+`TIMER_CTRL` bit 0 enables the timer, bit 1 selects periodic mode, and bits 8 through 31
+hold the interval. Zero interval produces no tick. Configuration changes restart the
+count. A one-shot timer disarms after expiration.
+
 `DMA_CTRL` bit 0 starts a transfer. Bit 1 enables the DMA completion interrupt source.
 A start write while busy is rejected and records `DMA_BUSY`.
 
@@ -91,3 +95,5 @@ new errors win over a simultaneous clear.
 Reading `PERF_VALUE` captures the selected 64-bit counter into a snapshot register and
 returns its low word. A following read of `PERF_VALUE_HI` returns the corresponding high
 word even if the live counter increments between reads.
+
+Counter IDs and update semantics are listed in [services.md](services.md).

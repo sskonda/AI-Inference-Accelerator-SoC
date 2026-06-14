@@ -30,6 +30,16 @@ SV_OPCODE = re.compile(r"CMD_OP_([A-Z0-9_]+)\s*=\s*4'h([0-9a-fA-F])")
 CPP_OPCODE = re.compile(
     r"inline constexpr std::uint32_t CMD_OP_([A-Z0-9_]+) = ([0-9]+)U;"
 )
+SV_PERF_COUNTER = re.compile(r"PERF_([A-Z0-9_]+)\s*=\s*4'h([0-9a-fA-F])")
+CPP_PERF_COUNTER = re.compile(
+    r"inline constexpr std::uint32_t PERF_([A-Z0-9_]+) = ([0-9]+)U;"
+)
+SV_IRQ_BIT = re.compile(
+    r"localparam\s+int\s+unsigned\s+IRQ_([A-Z0-9_]+)_BIT\s*=\s*([0-9]+);"
+)
+CPP_IRQ_BIT = re.compile(
+    r"inline constexpr unsigned IRQ_([A-Z0-9_]+)_BIT = ([0-9]+)U;"
+)
 
 
 def package_map() -> dict[str, int]:
@@ -77,6 +87,10 @@ def main() -> int:
     cpp_errors = enum_map(CPP_HEADER_PATH, CPP_ERROR, 10)
     rtl_opcodes = enum_map(ACCEL_PACKAGE_PATH, SV_OPCODE, 16)
     cpp_opcodes = enum_map(CPP_HEADER_PATH, CPP_OPCODE, 10)
+    rtl_perf_counters = enum_map(SOC_PACKAGE_PATH, SV_PERF_COUNTER, 16)
+    cpp_perf_counters = enum_map(CPP_HEADER_PATH, CPP_PERF_COUNTER, 10)
+    rtl_irq_bits = enum_map(SOC_PACKAGE_PATH, SV_IRQ_BIT, 10)
+    cpp_irq_bits = enum_map(CPP_HEADER_PATH, CPP_IRQ_BIT, 10)
     failures: list[str] = []
 
     if not rtl_registers:
@@ -98,6 +112,10 @@ def main() -> int:
     failures.extend(compare_maps("register", rtl_registers, cpp_registers))
     failures.extend(compare_maps("error code", rtl_errors, cpp_errors))
     failures.extend(compare_maps("command opcode", rtl_opcodes, cpp_opcodes))
+    failures.extend(
+        compare_maps("performance counter", rtl_perf_counters, cpp_perf_counters)
+    )
+    failures.extend(compare_maps("interrupt bit", rtl_irq_bits, cpp_irq_bits))
 
     if failures:
         for failure in failures:
@@ -107,7 +125,8 @@ def main() -> int:
     print(
         "Register/protocol definition check: PASS "
         f"({len(rtl_registers)} registers, {len(rtl_errors)} errors, "
-        f"{len(rtl_opcodes)} opcodes)"
+        f"{len(rtl_opcodes)} opcodes, {len(rtl_perf_counters)} counters, "
+        f"{len(rtl_irq_bits)} interrupt bits)"
     )
     return 0
 
