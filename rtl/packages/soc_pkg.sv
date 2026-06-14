@@ -18,6 +18,7 @@ package soc_pkg;
   localparam int unsigned DEFAULT_STREAM_USER_WIDTH = 1;
   localparam int unsigned DEFAULT_FIFO_DEPTH = 8;
   localparam int unsigned DEFAULT_RAM_ADDR_WIDTH = 10;
+  localparam int unsigned DEFAULT_DMA_BURST_BEATS = 4;
 
   localparam int unsigned MMIO_SIZE_KIB = 4;
   localparam int unsigned SPM_SIZE_KIB = 64;
@@ -111,6 +112,32 @@ package soc_pkg;
 
   function automatic logic is_data_address(input addr_t address);
     return is_spm_address(address) || is_dram_address(address);
+  endfunction
+
+  function automatic logic data_range_is_legal(input addr_t address,
+                                               input byte_count_t length_bytes);
+    logic  [ADDR_WIDTH:0] end_address;
+    addr_t                final_address;
+
+    if (length_bytes == '0) begin
+      return 1'b1;
+    end
+
+    end_address = {1'b0, address} + (ADDR_WIDTH + 1)'(length_bytes) - 1'b1;
+    if (end_address[ADDR_WIDTH]) begin
+      return 1'b0;
+    end
+
+    final_address = addr_t'(end_address);
+    return (is_spm_address(
+        address
+    ) && is_spm_address(
+        final_address
+    )) || (is_dram_address(
+        address
+    ) && is_dram_address(
+        final_address
+    ));
   endfunction
 
 endpackage

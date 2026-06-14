@@ -11,3 +11,4 @@ rtl/fifo/sync_fifo.sv
 rtl/memory/simple_dual_port_ram.sv
 rtl/memory/scratchpad_ram.sv
 rtl/regs/soc_register_block.sv
+rtl/dma/dma_engine.sv

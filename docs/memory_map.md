@@ -1,8 +1,9 @@
 # Memory Map
 
 All architectural addresses are 32-bit byte addresses. Data words are little-endian.
-DMA accepts arbitrary byte lengths and implements partial final words with byte enables.
-Accelerator element addresses must satisfy the element-width alignment rule.
+DMA endpoints must be word aligned, but DMA length can be any byte count and partial
+final words use byte enables. Accelerator element addresses must satisfy the
+element-width alignment rule.
 
 | Region | Base | End | Size | Owner |
 | --- | ---: | ---: | ---: | --- |
@@ -39,7 +40,7 @@ backpressure. Illegal accesses return an error response and do not modify memory
 
 The baseline memory interface permits one request in flight. Later performance
 experiments may increase outstanding depth without changing the architectural address
-map.
+map. Each request carries `req_last` to identify the end of a logical DMA burst.
 
 ## Data Formats
 

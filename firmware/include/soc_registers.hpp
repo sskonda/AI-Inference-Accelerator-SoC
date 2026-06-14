@@ -69,15 +69,28 @@ inline constexpr unsigned QUEUE_EMPTY_BIT = 17U;
 inline constexpr std::uint32_t AXIL_RESP_OKAY = 0U;
 inline constexpr std::uint32_t AXIL_RESP_SLVERR = 2U;
 
+inline constexpr std::uint32_t ERR_NONE = 0U;
 inline constexpr std::uint32_t ERR_ILLEGAL_MMIO = 1U;
 inline constexpr std::uint32_t ERR_READ_ONLY = 2U;
 inline constexpr std::uint32_t ERR_DMA_BUSY = 3U;
+inline constexpr std::uint32_t ERR_DMA_LENGTH = 4U;
+inline constexpr std::uint32_t ERR_ADDRESS = 5U;
 inline constexpr std::uint32_t ERR_QUEUE_FULL = 6U;
 inline constexpr std::uint32_t ERR_OPCODE = 7U;
+inline constexpr std::uint32_t ERR_DIMENSION = 8U;
+inline constexpr std::uint32_t ERR_SPM_BOUNDS = 9U;
 inline constexpr std::uint32_t ERR_INTERNAL = 15U;
 
 inline constexpr std::uint32_t CMD_OP_INVALID = 0U;
+inline constexpr std::uint32_t CMD_OP_DMA_COPY = 1U;
 inline constexpr std::uint32_t CMD_OP_VECTOR_ADD = 2U;
+inline constexpr std::uint32_t CMD_OP_VECTOR_MULTIPLY = 3U;
+inline constexpr std::uint32_t CMD_OP_VECTOR_SCALE = 4U;
+inline constexpr std::uint32_t CMD_OP_VECTOR_RELU = 5U;
+inline constexpr std::uint32_t CMD_OP_VECTOR_CLAMP = 6U;
+inline constexpr std::uint32_t CMD_OP_REDUCE_SUM = 7U;
+inline constexpr std::uint32_t CMD_OP_REDUCE_MAX = 8U;
+inline constexpr std::uint32_t CMD_OP_GEMM = 9U;
 
 }  // namespace soc
 

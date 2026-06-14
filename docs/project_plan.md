@@ -19,8 +19,8 @@ single tracked README. The worktree was clean before this plan was added.
 | GNU Make | 4.3 |
 | Python | 3.12.3 |
 | C++ compiler | GNU C++ 13.3.0 |
-| Verilator | Not installed |
-| Verible formatter and linter | Not installed |
+| Verilator | 5.020, user-local installation |
+| Verible formatter and linter | v0.0-4071-g8d9f2c97, user-local installation |
 | UVM-capable simulator | Not installed |
 | Yosys | Not installed |
 

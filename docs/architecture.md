@@ -57,9 +57,12 @@ errors, and raises the command-complete interrupt source.
 
 ## Data Flow
 
-DMA moves exact byte counts between external memory and scratchpad. Accelerator commands
-name scratchpad byte addresses. The scratchpad wrapper arbitrates DMA and accelerator
-accesses, checks bounds, and preserves documented read-first collision behavior.
+DMA moves exact byte counts among legal external-memory and scratchpad regions. It uses
+independent source-read and destination-write ports, buffers one word, supports request
+backpressure and response latency, and marks parameterized logical burst boundaries.
+Accelerator commands name scratchpad byte addresses. The scratchpad wrapper arbitrates
+DMA and accelerator accesses, checks bounds, and preserves documented read-first
+collision behavior.
 
 Vector commands process one signed element per accepted beat after pipeline fill.
 Reduction commands consume a bounded vector and produce one result. Matrix commands use

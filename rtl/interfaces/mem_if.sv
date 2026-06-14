@@ -14,6 +14,7 @@ interface mem_if #(
   logic [ADDR_WIDTH-1:0] req_addr;
   logic [DATA_WIDTH-1:0] req_wdata;
   logic [STRB_WIDTH-1:0] req_wstrb;
+  logic                  req_last;
 
   logic                  rsp_valid;
   logic                  rsp_ready;
@@ -31,7 +32,7 @@ interface mem_if #(
 
   property p_request_stable_while_stalled;
     @(posedge clk) disable iff (!rst_n) req_valid && !req_ready |=> req_valid && $stable(
-        {req_write, req_addr, req_wdata, req_wstrb}
+        {req_write, req_addr, req_wdata, req_wstrb, req_last}
     );
   endproperty
 
@@ -43,7 +44,7 @@ interface mem_if #(
 
   property p_known_control;
     @(posedge clk) disable iff (!rst_n) !$isunknown(
-        {req_valid, req_ready, req_write, rsp_valid, rsp_ready, rsp_error}
+        {req_valid, req_ready, req_write, req_last, rsp_valid, rsp_ready, rsp_error}
     );
   endproperty
 
@@ -62,17 +63,17 @@ interface mem_if #(
 
   modport initiator(
       input req_ready, rsp_valid, rsp_rdata, rsp_error,
-      output req_valid, req_write, req_addr, req_wdata, req_wstrb, rsp_ready
+      output req_valid, req_write, req_addr, req_wdata, req_wstrb, req_last, rsp_ready
   );
 
   modport target(
-      input req_valid, req_write, req_addr, req_wdata, req_wstrb, rsp_ready,
+      input req_valid, req_write, req_addr, req_wdata, req_wstrb, req_last, rsp_ready,
       output req_ready, rsp_valid, rsp_rdata, rsp_error
   );
 
   modport monitor(
-      input clk, rst_n, req_valid, req_ready, req_write, req_addr, req_wdata, req_wstrb, rsp_valid,
-          rsp_ready, rsp_rdata, rsp_error
+      input clk, rst_n, req_valid, req_ready, req_write, req_addr, req_wdata, req_wstrb, req_last,
+          rsp_valid, rsp_ready, rsp_rdata, rsp_error
   );
 
 endinterface

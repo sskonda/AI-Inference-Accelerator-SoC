@@ -51,7 +51,7 @@ module protocol_compile_top (
         soc_pkg::IRQ_CMD_DONE_BIT ^ soc_pkg::IRQ_ACCEL_DONE_BIT ^ soc_pkg::IRQ_ERROR_BIT ^
         soc_pkg::IRQ_TIMER_BIT;
     definition_checksum = definition_checksum ^ soc_pkg::DEFAULT_FIFO_DEPTH ^
-        soc_pkg::DEFAULT_RAM_ADDR_WIDTH;
+        soc_pkg::DEFAULT_RAM_ADDR_WIDTH ^ soc_pkg::DEFAULT_DMA_BURST_BEATS;
     definition_checksum = definition_checksum ^ soc_pkg::PERF_COUNTER_WIDTH ^
         soc_pkg::ERROR_STATUS_WIDTH ^ soc_pkg::WORD_ADDRESS_LSB ^ reg_pkg::CMD_STATUS_PENDING_BIT ^
         reg_pkg::QUEUE_OCCUPANCY_LSB ^ reg_pkg::QUEUE_OCCUPANCY_WIDTH ^
@@ -82,6 +82,7 @@ module protocol_compile_top (
     memory_bus.req_addr = '0;
     memory_bus.req_wdata = '0;
     memory_bus.req_wstrb = '0;
+    memory_bus.req_last = 1'b1;
     memory_bus.rsp_valid = 1'b0;
     memory_bus.rsp_ready = 1'b0;
     memory_bus.rsp_rdata = '0;

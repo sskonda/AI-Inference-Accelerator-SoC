@@ -29,6 +29,15 @@ case "${action}" in
           sim/common/protocol_compile_top.sv \
           sim/verilator/register_test_top.sv
       fi
+      if [[ -f "sim/verilator/dma_test_top.sv" ]]; then
+        verilator --lint-only --timing --assert -Wall \
+          --top-module dma_test_top \
+          -GDATA_WIDTH=64 \
+          -GMAX_BURST_BEATS=3 \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/dma_test_top.sv
+      fi
     fi
     ;;
   build)
@@ -65,6 +74,18 @@ case "${action}" in
           sim/common/protocol_compile_top.sv \
           sim/verilator/register_test_top.sv \
           "${root}/sim/verilator/register_main.cpp"
+      fi
+      if [[ -f "sim/verilator/dma_test_top.sv" ]]; then
+        require_file "sim/verilator/dma_main.cpp" \
+          "complete the DMA C++ test program before building"
+        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+          --top-module dma_test_top \
+          -Mdir build/verilator \
+          -CFLAGS "-std=c++17 -I${root}/firmware/include" \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/dma_test_top.sv \
+          "${root}/sim/verilator/dma_main.cpp"
       fi
     fi
     ;;

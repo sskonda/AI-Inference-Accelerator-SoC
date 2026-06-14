@@ -1,8 +1,8 @@
 # Known Limitations
 
 - The implemented RTL currently covers shared definitions, interfaces, flow-control
-  primitives, RAM, scratchpad storage, and the AXI-Lite register block. DMA, SoC services,
-  and accelerators follow the milestone order recorded in `project_plan.md`.
+  primitives, RAM, scratchpad storage, the AXI-Lite register block, and DMA. Remaining
+  SoC services and accelerators follow the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
@@ -14,6 +14,8 @@
   coverage, and simulator compilation are added with the complete UVM environment.
 - The baseline external memory model permits one request in flight and is not a detailed
   DRAM timing model.
+- DMA uses one buffered word and ordered responses. Its logical bursts do not create
+  multiple outstanding memory requests, and overlapping copies are not guaranteed.
 - Default scratchpad and external-memory capacities are intentionally bounded for
   regression speed.
 - Accelerator arithmetic is fixed width. Overflow and output conversion are architectural

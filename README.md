@@ -122,12 +122,14 @@ the `docs/` directory and evolve with each implementation milestone.
 
 The architecture, command surface, shared packages, protocol interfaces, FIFO, skid
 buffer, read-first RAM, scratchpad wrapper, AXI-Lite register block, and directed C++
-regressions are implemented. The register block supports independent write-address and
-write-data handshakes, partial writes, held responses, sticky status, coherent counter
-reads, and atomic command submission. Primitive timing is specified in
-[docs/primitives.md](docs/primitives.md). Additional RTL and verification are introduced
-in gated milestones listed in [docs/project_plan.md](docs/project_plan.md). Passing claims
-are made only for checks that have been executed with available tools.
+regressions are implemented. The DMA engine adds exact byte-count copies, logical bursts,
+full-range validation, error termination, and independent source/destination stalls. The
+register block supports independent write-address and write-data handshakes, partial
+writes, held responses, sticky status, coherent counter reads, and atomic command
+submission. Primitive timing is specified in [docs/primitives.md](docs/primitives.md),
+and DMA behavior in [docs/dma.md](docs/dma.md). Additional RTL and verification are
+introduced in gated milestones listed in [docs/project_plan.md](docs/project_plan.md).
+Passing claims are made only for checks that have been executed with available tools.
 
 ## License
 
