@@ -5,6 +5,15 @@ accesses must be word aligned. Unsupported addresses return a slave error on rea
 writes and set `ERROR_STATUS.ILLEGAL_MMIO`. Writes to read-only registers also return a
 slave error.
 
+## AXI-Lite Subset
+
+The register block implements the five independent AXI-Lite channels for single-beat
+transactions. Write address and write data can arrive in either order. The block accepts
+one write and one read transaction at a time, has no transaction IDs, and does not
+support bursts. Once asserted, response valid and payload remain stable until the manager
+asserts ready. Byte strobes update only selected bytes. Software must issue word-aligned
+addresses; unaligned offsets are unsupported and return a slave error.
+
 | Offset | Name | Access | Reset | Description |
 | ---: | --- | --- | ---: | --- |
 | `0x000` | `SOC_ID` | RO | `0x534F4301` | Implementation identity |
@@ -57,8 +66,15 @@ clear.
 `DMA_CTRL` bit 0 starts a transfer. Bit 1 enables the DMA completion interrupt source.
 A start write while busy is rejected and records `DMA_BUSY`.
 
-`CMD_SUBMIT` bit 0 commits the staged descriptor. Submission while the queue is full is
+`CMD_SUBMIT` bit 0 commits the staged descriptor. Submission while either queue-full
+indication is asserted, or while an earlier staged command is pending acceptance, is
 rejected without changing queue contents.
+
+`DMA_STATUS` bits 1 and 2 and `CMD_STATUS` bits 0 and 1 are sticky. Writing one clears
+the corresponding status bit. New hardware status wins over a simultaneous clear.
+
+`ERROR_STATUS` uses error-code values as bit indexes. Writing one clears an error bit;
+new errors win over a simultaneous clear.
 
 ## Interrupt Bits
 

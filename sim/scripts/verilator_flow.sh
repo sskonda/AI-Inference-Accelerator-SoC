@@ -16,19 +16,19 @@ case "${action}" in
   lint)
     if [[ -f "rtl/soc/soc_top.sv" ]]; then
       verilator --lint-only --timing --assert -Wall --top-module soc_top -f rtl/files.f
-    elif [[ -f "sim/verilator/primitive_test_top.sv" ]]; then
+    else
       verilator --lint-only --timing --assert -Wall \
         --top-module primitive_test_top \
         -f rtl/files.f \
         sim/common/protocol_compile_top.sv \
         sim/verilator/primitive_test_top.sv
-    else
-      require_file "sim/common/protocol_compile_top.sv" \
-        "complete the protocol compile top used before SoC integration"
-      verilator --lint-only --timing --assert -Wall \
-        --top-module protocol_compile_top \
-        -f rtl/files.f \
-        sim/common/protocol_compile_top.sv
+      if [[ -f "sim/verilator/register_test_top.sv" ]]; then
+        verilator --lint-only --timing --assert -Wall \
+          --top-module register_test_top \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/register_test_top.sv
+      fi
     fi
     ;;
   build)
@@ -54,6 +54,18 @@ case "${action}" in
         sim/common/protocol_compile_top.sv \
         sim/verilator/primitive_test_top.sv \
         "${root}/sim/verilator/primitive_main.cpp"
+      if [[ -f "sim/verilator/register_test_top.sv" ]]; then
+        require_file "sim/verilator/register_main.cpp" \
+          "complete the register-block C++ test program before building"
+        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+          --top-module register_test_top \
+          -Mdir build/verilator \
+          -CFLAGS "-std=c++17 -I${root}/firmware/include" \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/register_test_top.sv \
+          "${root}/sim/verilator/register_main.cpp"
+      fi
     fi
     ;;
   *)

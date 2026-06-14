@@ -1,8 +1,8 @@
 # Known Limitations
 
 - The implemented RTL currently covers shared definitions, interfaces, flow-control
-  primitives, RAM, and scratchpad storage. SoC services and accelerators follow the
-  milestone order recorded in `project_plan.md`.
+  primitives, RAM, scratchpad storage, and the AXI-Lite register block. DMA, SoC services,
+  and accelerators follow the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
@@ -10,6 +10,8 @@
   constraints, timing closure, or physical area results.
 - Firmware is a C++ control-core model. No instruction-set processor is present.
 - The AXI-Lite interface is a documented single-beat subset and does not support bursts.
+- The current AXI-Lite agent is a reusable component skeleton. Full sequences, scoreboards,
+  coverage, and simulator compilation are added with the complete UVM environment.
 - The baseline external memory model permits one request in flight and is not a detailed
   DRAM timing model.
 - Default scratchpad and external-memory capacities are intentionally bounded for

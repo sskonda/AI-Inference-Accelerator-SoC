@@ -64,10 +64,18 @@ package reg_pkg;
   localparam int unsigned CMD_STATUS_ERROR_BIT = 1;
   localparam int unsigned CMD_STATUS_FULL_BIT = 2;
   localparam int unsigned CMD_STATUS_EMPTY_BIT = 3;
+  localparam int unsigned CMD_STATUS_PENDING_BIT = 4;
 
   localparam int unsigned SCHED_POLICY_BIT = 0;
   localparam int unsigned SCHED_STARVATION_LSB = 8;
   localparam int unsigned SCHED_STARVATION_WIDTH = 8;
+
+  localparam int unsigned QUEUE_OCCUPANCY_LSB = 0;
+  localparam int unsigned QUEUE_OCCUPANCY_WIDTH = 8;
+  localparam int unsigned QUEUE_HIGH_WATER_LSB = 8;
+  localparam int unsigned QUEUE_HIGH_WATER_WIDTH = 8;
+  localparam int unsigned QUEUE_FULL_BIT = 16;
+  localparam int unsigned QUEUE_EMPTY_BIT = 17;
 
   function automatic logic is_legal_offset(input reg_offset_t offset);
     case (offset)

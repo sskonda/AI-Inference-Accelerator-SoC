@@ -88,6 +88,20 @@ interface axil_if #(
   a_known_control :
   assert property (p_known_control);
 
+`ifndef VERILATOR
+  clocking manager_cb @(posedge clk);
+    default input #1step output #0;
+    input awready, wready, bvalid, bresp, arready, rvalid, rdata, rresp;
+    output awvalid, awaddr, wvalid, wdata, wstrb, bready, arvalid, araddr, rready;
+  endclocking
+
+  clocking monitor_cb @(posedge clk);
+    default input #1step;
+    input awvalid, awready, awaddr, wvalid, wready, wdata, wstrb, bvalid, bready, bresp, arvalid,
+        arready, araddr, rvalid, rready, rdata, rresp;
+  endclocking
+`endif
+
   modport manager(
       input awready, wready, bvalid, bresp, arready, rvalid, rdata, rresp,
       output awvalid, awaddr, wvalid, wdata, wstrb, bready, arvalid, araddr, rready

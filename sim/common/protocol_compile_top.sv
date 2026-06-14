@@ -52,6 +52,11 @@ module protocol_compile_top (
         soc_pkg::IRQ_TIMER_BIT;
     definition_checksum = definition_checksum ^ soc_pkg::DEFAULT_FIFO_DEPTH ^
         soc_pkg::DEFAULT_RAM_ADDR_WIDTH;
+    definition_checksum = definition_checksum ^ soc_pkg::PERF_COUNTER_WIDTH ^
+        soc_pkg::ERROR_STATUS_WIDTH ^ soc_pkg::WORD_ADDRESS_LSB ^ reg_pkg::CMD_STATUS_PENDING_BIT ^
+        reg_pkg::QUEUE_OCCUPANCY_LSB ^ reg_pkg::QUEUE_OCCUPANCY_WIDTH ^
+        reg_pkg::QUEUE_HIGH_WATER_LSB ^ reg_pkg::QUEUE_HIGH_WATER_WIDTH ^ reg_pkg::QUEUE_FULL_BIT ^
+        reg_pkg::QUEUE_EMPTY_BIT;
 
     axil_bus.awvalid = 1'b0;
     axil_bus.awaddr = '0;

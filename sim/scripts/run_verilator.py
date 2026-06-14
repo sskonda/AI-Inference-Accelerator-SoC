@@ -13,23 +13,27 @@ ROOT = Path(__file__).resolve().parents[2]
 COVERAGE_DATABASE = ROOT / "coverage" / "coverage.dat"
 SIMULATOR_CANDIDATES = (
     ROOT / "build" / "verilator" / "Vsoc_top",
+    ROOT / "build" / "verilator" / "Vregister_test_top",
     ROOT / "build" / "verilator" / "Vprimitive_test_top",
 )
 
 
-def simulator_path() -> Path:
-    for candidate in SIMULATOR_CANDIDATES:
-        if candidate.is_file():
-            return candidate
+def simulator_paths() -> tuple[Path, ...]:
+    soc_simulator = SIMULATOR_CANDIDATES[0]
+    if soc_simulator.is_file():
+        return (soc_simulator,)
+    available = tuple(candidate for candidate in SIMULATOR_CANDIDATES[1:] if candidate.is_file())
+    if available:
+        return available
     raise RuntimeError("simulator executable is missing; run make verilator-build")
 
 
 def run_case(case_name: str, seed: int, coverage: bool = False) -> None:
-    simulator = simulator_path()
-    command = [str(simulator), "--test", case_name, "--seed", str(seed)]
-    if coverage:
-        command.append("--coverage")
-    subprocess.run(command, cwd=ROOT, check=True)
+    for simulator in simulator_paths():
+        command = [str(simulator), "--test", case_name, "--seed", str(seed)]
+        if coverage:
+            command.append("--coverage")
+        subprocess.run(command, cwd=ROOT, check=True)
 
 
 def parse_seeds(raw_seeds: str) -> list[int]:

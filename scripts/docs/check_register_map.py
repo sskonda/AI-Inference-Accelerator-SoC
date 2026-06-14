@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_PATH = ROOT / "rtl" / "packages" / "reg_pkg.sv"
 DOCUMENT_PATH = ROOT / "docs" / "register_map.md"
+CPP_HEADER_PATH = ROOT / "firmware" / "include" / "soc_registers.hpp"
 
 PACKAGE_REGISTER = re.compile(
     r"localparam\s+reg_offset_t\s+REG_([A-Z0-9_]+)\s*=\s*12'h([0-9a-fA-F]+);"
@@ -17,6 +18,9 @@ PACKAGE_REGISTER = re.compile(
 DOCUMENT_REGISTER = re.compile(
     r"^\|\s*`0x([0-9a-fA-F]+)`\s*\|\s*`([A-Z0-9_]+)`\s*\|",
     re.MULTILINE,
+)
+CPP_REGISTER = re.compile(
+    r"inline constexpr std::uint32_t REG_([A-Z0-9_]+) = 0x([0-9a-fA-F]+)U;"
 )
 
 
@@ -30,9 +34,15 @@ def document_map() -> dict[str, int]:
     return {name: int(offset, 16) for offset, name in DOCUMENT_REGISTER.findall(text)}
 
 
+def cpp_map() -> dict[str, int]:
+    text = CPP_HEADER_PATH.read_text(encoding="utf-8")
+    return {name: int(offset, 16) for name, offset in CPP_REGISTER.findall(text)}
+
+
 def main() -> int:
     rtl_registers = package_map()
     documented_registers = document_map()
+    cpp_registers = cpp_map()
     failures: list[str] = []
 
     if not rtl_registers:
@@ -49,6 +59,17 @@ def main() -> int:
             failures.append(
                 f"offset mismatch for {name}: "
                 f"RTL=0x{rtl_registers[name]:03x}, docs=0x{documented_registers[name]:03x}"
+            )
+
+    for name in sorted(rtl_registers.keys() - cpp_registers.keys()):
+        failures.append(f"register missing from C++ header: {name}")
+    for name in sorted(cpp_registers.keys() - rtl_registers.keys()):
+        failures.append(f"C++ register missing from RTL package: {name}")
+    for name in sorted(rtl_registers.keys() & cpp_registers.keys()):
+        if rtl_registers[name] != cpp_registers[name]:
+            failures.append(
+                f"C++ offset mismatch for {name}: "
+                f"RTL=0x{rtl_registers[name]:03x}, C++=0x{cpp_registers[name]:03x}"
             )
 
     if failures:
