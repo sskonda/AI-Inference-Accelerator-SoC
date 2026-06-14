@@ -2,8 +2,8 @@
 
 - The implemented RTL currently covers shared definitions, interfaces, flow-control
   primitives, RAM, scratchpad storage, the AXI-Lite register block, DMA, timer,
-  interrupts, and performance counters. The command scheduler and accelerators follow
-  the milestone order recorded in `project_plan.md`.
+  interrupts, performance counters, the command queue, and the command processor. The
+  accelerators follow the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
@@ -17,6 +17,8 @@
   DRAM timing model.
 - DMA uses one buffered word and ordered responses. Its logical bursts do not create
   multiple outstanding memory requests, and overlapping copies are not guaranteed.
+- The baseline command processor permits one accelerator command in flight. This gives
+  deterministic completion ordering but does not yet overlap independent accelerators.
 - Default scratchpad and external-memory capacities are intentionally bounded for
   regression speed.
 - Accelerator arithmetic is fixed width. Overflow and output conversion are architectural

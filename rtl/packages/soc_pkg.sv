@@ -17,6 +17,7 @@ package soc_pkg;
   localparam int unsigned ERROR_STATUS_WIDTH = DATA_WIDTH;
   localparam int unsigned DEFAULT_STREAM_USER_WIDTH = 1;
   localparam int unsigned DEFAULT_FIFO_DEPTH = 8;
+  localparam int unsigned DEFAULT_COMMAND_QUEUE_DEPTH = 8;
   localparam int unsigned DEFAULT_RAM_ADDR_WIDTH = 10;
   localparam int unsigned DEFAULT_DMA_BURST_BEATS = 4;
 

@@ -55,6 +55,13 @@ configured scheduling policy, and holds the descriptor stable until accepted. Co
 contains command ID and status. The processor increments completion counters, records
 errors, and raises the command-complete interrupt source.
 
+The shared-slot command queue supports round-robin slot selection and priority-first
+selection. Priority ties use wait age. A programmable starvation threshold overrides
+priority for an old descriptor, while a zero threshold disables the override. The
+baseline processor permits one command in flight and holds completion until firmware
+accepts it. Detailed behavior is specified in
+[command_scheduler.md](command_scheduler.md).
+
 ## Data Flow
 
 DMA moves exact byte counts among legal external-memory and scratchpad regions. It uses

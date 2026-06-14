@@ -11,6 +11,9 @@ package accel_pkg;
   localparam int unsigned PRIORITY_WIDTH = 3;
   localparam int unsigned COMMAND_ID_WIDTH = 16;
   localparam int unsigned SCHEDULER_POLICY_WIDTH = 2;
+  localparam int unsigned EXECUTOR_TARGET_WIDTH = 3;
+  localparam int unsigned STARVATION_COUNTER_WIDTH = 8;
+  localparam int unsigned DEFAULT_STARVATION_THRESHOLD = 16;
 
   localparam int unsigned FLAG_SIGNED_BIT = 0;
   localparam int unsigned FLAG_SATURATE_BIT = 1;
@@ -33,6 +36,14 @@ package accel_pkg;
     SCHED_ROUND_ROBIN = 2'b00,
     SCHED_PRIORITY_FIRST = 2'b01
   } scheduler_policy_e;
+
+  typedef enum logic [EXECUTOR_TARGET_WIDTH-1:0] {
+    EXEC_TARGET_INVALID = 3'd0,
+    EXEC_TARGET_DMA = 3'd1,
+    EXEC_TARGET_VECTOR = 3'd2,
+    EXEC_TARGET_REDUCTION = 3'd3,
+    EXEC_TARGET_GEMM = 3'd4
+  } executor_target_e;
 
   typedef struct packed {
     command_opcode_e opcode;
@@ -77,6 +88,22 @@ package accel_pkg;
 
   function automatic logic is_reduction_opcode(input command_opcode_e opcode);
     return (opcode == CMD_OP_REDUCE_SUM) || (opcode == CMD_OP_REDUCE_MAX);
+  endfunction
+
+  function automatic executor_target_e executor_for_opcode(input command_opcode_e opcode);
+    if (opcode == CMD_OP_DMA_COPY) begin
+      return EXEC_TARGET_DMA;
+    end
+    if (is_vector_opcode(opcode)) begin
+      return EXEC_TARGET_VECTOR;
+    end
+    if (is_reduction_opcode(opcode)) begin
+      return EXEC_TARGET_REDUCTION;
+    end
+    if (opcode == CMD_OP_GEMM) begin
+      return EXEC_TARGET_GEMM;
+    end
+    return EXEC_TARGET_INVALID;
   endfunction
 
 endpackage

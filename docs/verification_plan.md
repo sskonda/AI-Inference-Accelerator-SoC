@@ -54,6 +54,13 @@ interrupts, and arithmetic mismatches.
 | `error_injection_test` | Illegal addresses, opcodes, dimensions, and accesses |
 | `performance_counter_test` | Event-to-counter correspondence and coherent reads |
 
+The current non-UVM command suite implements the command-queue portion of
+`command_queue_random_test`. It exercises every legal opcode, both policies, every
+occupancy level, full and empty transitions, starvation override, executor stalls,
+invalid opcode handling, reset with queued work, response backpressure, and seeded random
+tag/error propagation. The class-based test remains part of the full environment
+milestone.
+
 ## Assertions
 
 Assertions cover stable payload while stalled, no unknown control after reset, legal FSM

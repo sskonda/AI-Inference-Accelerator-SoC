@@ -16,6 +16,7 @@ constexpr std::uint32_t kIllegalReadOffset = 0x080U;
 constexpr std::uint32_t kIllegalWriteOffset = 0x084U;
 constexpr unsigned kMaximumWaitCycles = 32U;
 constexpr unsigned kRandomRegisterCycles = 250U;
+constexpr std::uint32_t kSchedulerStarvationThreshold = 11U;
 
 enum class WriteOrder {
   kTogether,
@@ -381,9 +382,22 @@ void test_control_and_interrupts(Fixture& fixture) {
             bit(soc::CTRL_ENABLE_BIT) | bit(soc::CTRL_PRIORITY_POLICY_BIT),
             "CTRL pulse bit remained stored");
 
+  const std::uint32_t scheduler_control =
+      bit(soc::SCHED_POLICY_BIT) |
+      (kSchedulerStarvationThreshold << soc::SCHED_STARVATION_LSB);
+  expect(fixture.write(soc::REG_SCHED_CTRL, scheduler_control) ==
+             soc::AXIL_RESP_OKAY,
+         "Scheduler configuration write failed");
+  expect(fixture.dut().scheduler_priority_mode &&
+             fixture.dut().scheduler_starvation_threshold ==
+                 kSchedulerStarvationThreshold,
+         "Scheduler configuration outputs are incorrect");
+
   expect(fixture.write(soc::REG_SCHED_CTRL, 0U) == soc::AXIL_RESP_OKAY,
          "Scheduler control write failed");
-  expect(!fixture.dut().scheduler_priority_mode, "Scheduler policy did not clear");
+  expect(!fixture.dut().scheduler_priority_mode &&
+             fixture.dut().scheduler_starvation_threshold == 0U,
+         "Scheduler configuration did not clear");
   expect((fixture.read(soc::REG_CTRL).data & bit(soc::CTRL_PRIORITY_POLICY_BIT)) == 0U,
          "CTRL scheduler mirror did not clear");
 

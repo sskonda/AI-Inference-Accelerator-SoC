@@ -15,3 +15,5 @@ rtl/dma/dma_engine.sv
 rtl/timer/soc_timer.sv
 rtl/irq/irq_controller.sv
 rtl/perf/performance_counters.sv
+rtl/command_queue/command_queue.sv
+rtl/command_queue/command_processor.sv

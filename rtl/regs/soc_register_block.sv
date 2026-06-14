@@ -4,10 +4,11 @@ module soc_register_block (
         axil_if.subordinate axil,
         cmd_if.producer     command_port,
 
-  input  logic soc_busy,
-  output logic global_enable,
-  output logic perf_clear,
-  output logic scheduler_priority_mode,
+  input  logic                                           soc_busy,
+  output logic                                           global_enable,
+  output logic                                           perf_clear,
+  output logic                                           scheduler_priority_mode,
+  output logic [accel_pkg::STARVATION_COUNTER_WIDTH-1:0] scheduler_starvation_threshold,
 
   input  logic [soc_pkg::IRQ_SOURCE_COUNT-1:0] irq_pending,
   output logic [soc_pkg::IRQ_SOURCE_COUNT-1:0] irq_enable,
@@ -253,6 +254,8 @@ module soc_register_block (
 
     global_enable = ctrl_reg[CTRL_ENABLE_BIT];
     scheduler_priority_mode = scheduler_ctrl_reg[SCHED_POLICY_BIT];
+    scheduler_starvation_threshold =
+        scheduler_ctrl_reg[SCHED_STARVATION_LSB+:SCHED_STARVATION_WIDTH];
     irq_enable = irq_enable_reg[IRQ_SOURCE_COUNT-1:0];
     timer_enable = timer_ctrl_reg[TIMER_ENABLE_BIT];
     timer_periodic = timer_ctrl_reg[TIMER_PERIODIC_BIT];

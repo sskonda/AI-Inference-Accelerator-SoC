@@ -40,6 +40,14 @@ SV_IRQ_BIT = re.compile(
 CPP_IRQ_BIT = re.compile(
     r"inline constexpr unsigned IRQ_([A-Z0-9_]+)_BIT = ([0-9]+)U;"
 )
+SV_SCHEDULER_POLICY = re.compile(r"SCHED_([A-Z0-9_]+)\s*=\s*2'b([01]+)")
+CPP_SCHEDULER_POLICY = re.compile(
+    r"inline constexpr std::uint32_t SCHED_([A-Z0-9_]+) = ([0-9]+)U;"
+)
+SV_EXECUTOR_TARGET = re.compile(r"EXEC_TARGET_([A-Z0-9_]+)\s*=\s*3'd([0-9]+)")
+CPP_EXECUTOR_TARGET = re.compile(
+    r"inline constexpr std::uint32_t EXEC_TARGET_([A-Z0-9_]+) = ([0-9]+)U;"
+)
 
 
 def package_map() -> dict[str, int]:
@@ -91,6 +99,10 @@ def main() -> int:
     cpp_perf_counters = enum_map(CPP_HEADER_PATH, CPP_PERF_COUNTER, 10)
     rtl_irq_bits = enum_map(SOC_PACKAGE_PATH, SV_IRQ_BIT, 10)
     cpp_irq_bits = enum_map(CPP_HEADER_PATH, CPP_IRQ_BIT, 10)
+    rtl_scheduler_policies = enum_map(ACCEL_PACKAGE_PATH, SV_SCHEDULER_POLICY, 2)
+    cpp_scheduler_policies = enum_map(CPP_HEADER_PATH, CPP_SCHEDULER_POLICY, 10)
+    rtl_executor_targets = enum_map(ACCEL_PACKAGE_PATH, SV_EXECUTOR_TARGET, 10)
+    cpp_executor_targets = enum_map(CPP_HEADER_PATH, CPP_EXECUTOR_TARGET, 10)
     failures: list[str] = []
 
     if not rtl_registers:
@@ -116,6 +128,14 @@ def main() -> int:
         compare_maps("performance counter", rtl_perf_counters, cpp_perf_counters)
     )
     failures.extend(compare_maps("interrupt bit", rtl_irq_bits, cpp_irq_bits))
+    failures.extend(
+        compare_maps(
+            "scheduler policy", rtl_scheduler_policies, cpp_scheduler_policies
+        )
+    )
+    failures.extend(
+        compare_maps("executor target", rtl_executor_targets, cpp_executor_targets)
+    )
 
     if failures:
         for failure in failures:
@@ -126,7 +146,9 @@ def main() -> int:
         "Register/protocol definition check: PASS "
         f"({len(rtl_registers)} registers, {len(rtl_errors)} errors, "
         f"{len(rtl_opcodes)} opcodes, {len(rtl_perf_counters)} counters, "
-        f"{len(rtl_irq_bits)} interrupt bits)"
+        f"{len(rtl_irq_bits)} interrupt bits, "
+        f"{len(rtl_scheduler_policies)} scheduler policies, "
+        f"{len(rtl_executor_targets)} executor targets)"
     )
     return 0
 

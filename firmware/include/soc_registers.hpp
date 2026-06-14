@@ -61,6 +61,9 @@ inline constexpr unsigned CMD_STATUS_ERROR_BIT = 1U;
 inline constexpr unsigned CMD_STATUS_FULL_BIT = 2U;
 inline constexpr unsigned CMD_STATUS_EMPTY_BIT = 3U;
 inline constexpr unsigned CMD_STATUS_PENDING_BIT = 4U;
+inline constexpr unsigned SCHED_POLICY_BIT = 0U;
+inline constexpr unsigned SCHED_STARVATION_LSB = 8U;
+inline constexpr unsigned SCHED_STARVATION_WIDTH = 8U;
 inline constexpr unsigned QUEUE_OCCUPANCY_LSB = 0U;
 inline constexpr unsigned QUEUE_HIGH_WATER_LSB = 8U;
 inline constexpr unsigned QUEUE_FULL_BIT = 16U;
@@ -98,6 +101,15 @@ inline constexpr std::uint32_t CMD_OP_VECTOR_CLAMP = 6U;
 inline constexpr std::uint32_t CMD_OP_REDUCE_SUM = 7U;
 inline constexpr std::uint32_t CMD_OP_REDUCE_MAX = 8U;
 inline constexpr std::uint32_t CMD_OP_GEMM = 9U;
+
+inline constexpr std::uint32_t SCHED_ROUND_ROBIN = 0U;
+inline constexpr std::uint32_t SCHED_PRIORITY_FIRST = 1U;
+
+inline constexpr std::uint32_t EXEC_TARGET_INVALID = 0U;
+inline constexpr std::uint32_t EXEC_TARGET_DMA = 1U;
+inline constexpr std::uint32_t EXEC_TARGET_VECTOR = 2U;
+inline constexpr std::uint32_t EXEC_TARGET_REDUCTION = 3U;
+inline constexpr std::uint32_t EXEC_TARGET_GEMM = 4U;
 
 inline constexpr std::uint32_t PERF_TOTAL_CYCLES = 0U;
 inline constexpr std::uint32_t PERF_DMA_ACTIVE_CYCLES = 1U;

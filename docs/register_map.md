@@ -74,6 +74,10 @@ A start write while busy is rejected and records `DMA_BUSY`.
 indication is asserted, or while an earlier staged command is pending acceptance, is
 rejected without changing queue contents.
 
+`SCHED_CTRL` bit 0 selects priority-first mode when set and round-robin mode when clear.
+Bits 8 through 15 hold the starvation threshold in cycles. A zero threshold disables
+starvation override. `CTRL` bit 2 mirrors the policy bit for compact control sequences.
+
 `DMA_STATUS` bits 1 and 2 and `CMD_STATUS` bits 0 and 1 are sticky. Writing one clears
 the corresponding status bit. New hardware status wins over a simultaneous clear.
 

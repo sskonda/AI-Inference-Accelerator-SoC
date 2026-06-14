@@ -48,6 +48,15 @@ case "${action}" in
           sim/common/protocol_compile_top.sv \
           sim/verilator/services_test_top.sv
       fi
+      if [[ -f "sim/verilator/command_test_top.sv" ]]; then
+        verilator --lint-only --timing --assert -Wall \
+          --top-module command_test_top \
+          -GQUEUE_DEPTH=5 \
+          -GAGE_WIDTH=6 \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/command_test_top.sv
+      fi
     fi
     ;;
   build)
@@ -108,6 +117,18 @@ case "${action}" in
           sim/common/protocol_compile_top.sv \
           sim/verilator/services_test_top.sv \
           "${root}/sim/verilator/services_main.cpp"
+      fi
+      if [[ -f "sim/verilator/command_test_top.sv" ]]; then
+        require_file "sim/verilator/command_main.cpp" \
+          "complete the command-scheduler C++ test program before building"
+        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+          --top-module command_test_top \
+          -Mdir build/verilator \
+          -CFLAGS "-std=c++17 -I${root}/firmware/include" \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/command_test_top.sv \
+          "${root}/sim/verilator/command_main.cpp"
       fi
     fi
     ;;

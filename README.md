@@ -125,13 +125,17 @@ buffer, read-first RAM, scratchpad wrapper, AXI-Lite register block, and directe
 regressions are implemented. The DMA engine adds exact byte-count copies, logical bursts,
 full-range validation, error termination, and independent source/destination stalls.
 Timer, sticky interrupt, interrupt-latency, and saturating performance-counter services
-are also implemented. The register block supports independent write-address and
-write-data handshakes, partial writes, held responses, sticky status, coherent counter
-reads, and atomic command submission. Primitive timing is specified in
+are also implemented. The shared-slot command queue adds round-robin and priority-first
+selection, programmable starvation protection, occupancy tracking, and a tagged
+single-inflight command processor. The register block supports independent write-address
+and write-data handshakes, partial writes, held responses, sticky status, coherent
+counter reads, and atomic command submission. Primitive timing is specified in
 [docs/primitives.md](docs/primitives.md), DMA behavior in [docs/dma.md](docs/dma.md), and
-system services in [docs/services.md](docs/services.md). Additional RTL and verification
-are introduced in gated milestones listed in [docs/project_plan.md](docs/project_plan.md).
-Passing claims are made only for checks that have been executed with available tools.
+system services in [docs/services.md](docs/services.md). Queue and scheduler behavior is
+specified in [docs/command_scheduler.md](docs/command_scheduler.md). Additional RTL and
+verification are introduced in gated milestones listed in
+[docs/project_plan.md](docs/project_plan.md). Passing claims are made only for checks
+that have been executed with available tools.
 
 ## License
 
