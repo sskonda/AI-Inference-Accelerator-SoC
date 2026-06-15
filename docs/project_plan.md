@@ -197,6 +197,7 @@ The final public interface is:
 make help
 make fmt
 make lint
+make firmware-test
 make verilator-lint
 make verilator-build
 make verilator-smoke

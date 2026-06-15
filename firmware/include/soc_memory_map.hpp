@@ -12,6 +12,12 @@ inline constexpr std::size_t SPM_SIZE_BYTES = 65536U;
 inline constexpr std::uint32_t DRAM_BASE_ADDR = 0x80000000U;
 inline constexpr std::size_t DRAM_SIZE_BYTES = 1048576U;
 inline constexpr unsigned DEFAULT_DMA_BURST_BEATS = 4U;
+inline constexpr std::uint32_t FIRMWARE_TASK_SLOT_BYTES = 4096U;
+inline constexpr std::uint32_t FIRMWARE_SOURCE0_OFFSET = 0U;
+inline constexpr std::uint32_t FIRMWARE_SOURCE1_OFFSET = 1024U;
+inline constexpr std::uint32_t FIRMWARE_DESTINATION_OFFSET = 2048U;
+inline constexpr std::size_t FIRMWARE_TASK_SLOT_COUNT =
+    SPM_SIZE_BYTES / FIRMWARE_TASK_SLOT_BYTES;
 
 }  // namespace soc
 

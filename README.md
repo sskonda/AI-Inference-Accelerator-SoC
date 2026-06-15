@@ -67,6 +67,7 @@ Run the open-source checks after Verible and Verilator are installed:
 ```sh
 make fmt
 make lint
+make firmware-test
 make verilator-lint
 make verilator-build
 make verilator-smoke
@@ -138,6 +139,11 @@ responses, sticky status, coherent counter reads, and atomic command submission.
 The integrated SoC adds rotating single-outstanding arbitration across DMA and all
 accelerators, internal scratchpad routing, external-memory routing, queued DMA command
 adaptation, interrupt aggregation, and performance-event aggregation.
+The C++ firmware layer provides typed DMA, accelerator, interrupt, timer, and performance
+drivers; private per-task scratchpad slots; six workload-submission APIs; and a
+priority-aware cooperative scheduler. Tasks block on DMA or accelerator completion and
+resume through the interrupt dispatcher. The SoC regression runs a mixed seven-task
+firmware workload and checks every result against the reference models.
 Primitive timing is specified in
 [docs/primitives.md](docs/primitives.md), DMA behavior in [docs/dma.md](docs/dma.md), and
 system services in [docs/services.md](docs/services.md). Queue and scheduler behavior is
@@ -145,10 +151,10 @@ specified in [docs/command_scheduler.md](docs/command_scheduler.md), and vector 
 in [docs/vector_accelerator.md](docs/vector_accelerator.md). Reduction behavior is
 specified in [docs/reduction_accelerator.md](docs/reduction_accelerator.md), and matrix
 behavior in [docs/gemm_accelerator.md](docs/gemm_accelerator.md). Additional RTL and
-integration behavior in [docs/soc_integration.md](docs/soc_integration.md). Additional
-firmware and verification are introduced in gated milestones listed in
-[docs/project_plan.md](docs/project_plan.md). Passing claims are made only for checks
-that have been executed with available tools.
+integration behavior in [docs/soc_integration.md](docs/soc_integration.md), and the
+software architecture in [docs/firmware.md](docs/firmware.md). Additional verification
+is introduced in gated milestones listed in [docs/project_plan.md](docs/project_plan.md).
+Passing claims are made only for checks that have been executed with available tools.
 
 ## License
 

@@ -1,17 +1,18 @@
 # Known Limitations
 
-- The implemented RTL currently covers shared definitions, interfaces, flow-control
-  primitives, RAM, scratchpad storage, the AXI-Lite register block, DMA, timer,
-  interrupts, performance counters, the command queue, and the command processor. The
-  vector, reduction, and tiled matrix accelerators are integrated with a shared
-  scratchpad and external-memory fabric. Firmware and the full class-based environment
-  follow the milestone order recorded in `project_plan.md`.
+- The implemented RTL covers shared definitions, interfaces, flow-control primitives,
+  RAM, scratchpad storage, the AXI-Lite register block, DMA, timer, interrupts,
+  performance counters, command scheduling, three accelerators, and the integrated SoC.
+  The firmware driver and cooperative scheduler layer is implemented. The full
+  class-based environment follows the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
 - The platform is simulation-only and does not include board support, implementation
   constraints, timing closure, or physical area results.
 - Firmware is a C++ control-core model. No instruction-set processor is present.
+- The firmware scheduler uses fixed 4 KiB scratchpad slots and supports at most 16
+  resident task records with the default 64 KiB scratchpad.
 - The AXI-Lite interface is a documented single-beat subset and does not support bursts.
 - The current AXI-Lite agent is a reusable component skeleton. Full sequences, scoreboards,
   coverage, and simulator compilation are added with the complete UVM environment.

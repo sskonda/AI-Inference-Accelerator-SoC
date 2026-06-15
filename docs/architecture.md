@@ -86,6 +86,21 @@ MMIO starts and produces tagged command responses. The integrated command path,
 top-level interfaces, and completion routing are specified in
 [soc_integration.md](soc_integration.md).
 
+## Firmware Flow
+
+The C++ firmware uses the same MMIO and interrupt boundary expected of a future control
+core. Typed drivers program DMA transfers and accelerator descriptors. The cooperative
+scheduler owns task records with explicit ready, running, blocked, done, and error
+states.
+
+Accelerator tasks load external-memory inputs into private scratchpad slots, submit the
+accelerator command, and copy the result back to external memory. Each submitted stage
+blocks its task. The interrupt dispatcher acknowledges the source, checks sticky status,
+and advances the owning task to its next stage. DMA and accelerator ownership are
+independent, allowing one task to execute while another stages data. Ready tasks are
+selected by priority with submission order as the tie breaker. Detailed software
+behavior is specified in [firmware.md](firmware.md).
+
 ## Data Flow
 
 DMA moves exact byte counts among legal external-memory and scratchpad regions. It uses

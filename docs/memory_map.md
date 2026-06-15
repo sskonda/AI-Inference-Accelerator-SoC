@@ -17,20 +17,19 @@ the DMA and accelerators cannot use the MMIO region as a data endpoint.
 ## Scratchpad Layout
 
 The scratchpad is a shared byte-addressed region. Hardware does not impose a static
-partition. Firmware allocates non-overlapping aligned buffers for task inputs, outputs,
-and matrix tiles.
+partition. The cooperative scheduler allocates one private 4 KiB slot per task.
 
-The default software allocator reserves:
+Within each task slot, the default software layout is:
 
-| Offset range | Purpose |
-| --- | --- |
-| `0x0000` to `0x3FFF` | Input buffers |
-| `0x4000` to `0x7FFF` | Secondary inputs and matrix tiles |
-| `0x8000` to `0xBFFF` | Output buffers |
-| `0xC000` to `0xFFFF` | Firmware-managed transient workspace |
+| Slot-relative offset range | Size | Purpose |
+| --- | ---: | --- |
+| `0x000` to `0x3FF` | 1 KiB | Source 0 |
+| `0x400` to `0x7FF` | 1 KiB | Source 1 |
+| `0x800` to `0xFFF` | 2 KiB | Destination |
 
-These partitions are a software convention, not separate hardware banks in the baseline
-implementation. Banking is evaluated only during the optimization phase.
+The 64 KiB baseline scratchpad therefore supports 16 task slots. These partitions are a
+software convention, not separate hardware banks. The bounded accelerator dimensions fit
+within each subregion. Banking is evaluated only during the optimization phase.
 
 ## External Memory Model
 

@@ -11,3 +11,7 @@ The firmware layer is portable C++17 organized as embedded software:
 
 Firmware accesses hardware only through the MMIO abstraction. The Verilator harness
 provides the concrete implementation and advances simulation time.
+
+The public architecture and task lifecycle are documented in
+[`docs/firmware.md`](../docs/firmware.md). Run `make firmware-test` for host-side driver
+and scheduler tests.

@@ -8,7 +8,9 @@
 #include <vector>
 
 #include "Vsoc_top.h"
+#include "cooperative_scheduler.hpp"
 #include "gemm_model.hpp"
+#include "mmio.hpp"
 #include "reduction_model.hpp"
 #include "soc_memory_map.hpp"
 #include "soc_registers.hpp"
@@ -23,6 +25,39 @@ constexpr std::uint32_t kDramOutput = soc::DRAM_BASE_ADDR + 0x3000U;
 constexpr std::uint32_t kSpmSource0 = soc::SPM_BASE_ADDR;
 constexpr std::uint32_t kSpmSource1 = soc::SPM_BASE_ADDR + 0x1000U;
 constexpr std::uint32_t kSpmDestination = soc::SPM_BASE_ADDR + 0x2000U;
+constexpr std::uint32_t kFirmwareDmaSource = soc::DRAM_BASE_ADDR + 0x10000U;
+constexpr std::uint32_t kFirmwareDmaDestination =
+    soc::DRAM_BASE_ADDR + 0x11000U;
+constexpr std::uint32_t kFirmwareVectorSource0 =
+    soc::DRAM_BASE_ADDR + 0x12000U;
+constexpr std::uint32_t kFirmwareVectorSource1 =
+    soc::DRAM_BASE_ADDR + 0x13000U;
+constexpr std::uint32_t kFirmwareVectorDestination =
+    soc::DRAM_BASE_ADDR + 0x14000U;
+constexpr std::uint32_t kFirmwareReluSource =
+    soc::DRAM_BASE_ADDR + 0x15000U;
+constexpr std::uint32_t kFirmwareReluDestination =
+    soc::DRAM_BASE_ADDR + 0x16000U;
+constexpr std::uint32_t kFirmwareClampSource0 =
+    soc::DRAM_BASE_ADDR + 0x17000U;
+constexpr std::uint32_t kFirmwareClampSource1 =
+    soc::DRAM_BASE_ADDR + 0x18000U;
+constexpr std::uint32_t kFirmwareClampDestination =
+    soc::DRAM_BASE_ADDR + 0x19000U;
+constexpr std::uint32_t kFirmwareSumSource =
+    soc::DRAM_BASE_ADDR + 0x1A000U;
+constexpr std::uint32_t kFirmwareSumDestination =
+    soc::DRAM_BASE_ADDR + 0x1B000U;
+constexpr std::uint32_t kFirmwareMaxSource =
+    soc::DRAM_BASE_ADDR + 0x1C000U;
+constexpr std::uint32_t kFirmwareMaxDestination =
+    soc::DRAM_BASE_ADDR + 0x1D000U;
+constexpr std::uint32_t kFirmwareGemmSource0 =
+    soc::DRAM_BASE_ADDR + 0x1E000U;
+constexpr std::uint32_t kFirmwareGemmSource1 =
+    soc::DRAM_BASE_ADDR + 0x1F000U;
+constexpr std::uint32_t kFirmwareGemmDestination =
+    soc::DRAM_BASE_ADDR + 0x20000U;
 constexpr std::uint32_t kIllegalRegisterOffset = 0x0FCU;
 constexpr std::uint32_t kDmaCommandId = 0x110U;
 constexpr std::uint32_t kVectorCommandId = 0x120U;
@@ -516,6 +551,31 @@ class Fixture {
   bool irq_seen_ = false;
 };
 
+class FixtureMmio final : public firmware::Mmio {
+ public:
+  explicit FixtureMmio(Fixture& fixture) : fixture_(fixture) {}
+
+  std::uint32_t read(std::uint32_t offset) override {
+    std::uint32_t response = 0U;
+    const auto value = fixture_.mmio_read(offset, &response);
+    if (response != soc::AXIL_RESP_OKAY) {
+      throw std::runtime_error("firmware MMIO read failed");
+    }
+    return value;
+  }
+
+  void write(std::uint32_t offset, std::uint32_t value) override {
+    if (fixture_.mmio_write(offset, value) != soc::AXIL_RESP_OKAY) {
+      throw std::runtime_error("firmware MMIO write failed");
+    }
+  }
+
+  bool irq_asserted() const override { return fixture_.dut().irq; }
+
+ private:
+  Fixture& fixture_;
+};
+
 void enable_soc_and_interrupts(Fixture& fixture) {
   expect(fixture.mmio_write(soc::REG_CTRL, bit(soc::CTRL_ENABLE_BIT)) ==
              soc::AXIL_RESP_OKAY,
@@ -693,6 +753,149 @@ void test_gemm(Fixture& fixture) {
          "SoC GEMM result mismatch");
 }
 
+void test_firmware_scheduler(Fixture& fixture) {
+  const std::vector<std::uint8_t> dma_source = {
+      0x11U, 0x22U, 0x33U, 0x44U, 0x55U, 0x66U, 0x77U,
+      0x88U, 0x99U, 0xAAU, 0xBBU, 0xCCU, 0xDDU};
+  const std::vector<std::uint16_t> vector_source0 = {
+      1U, 4U, 9U, 16U, 100U, 40000U};
+  const std::vector<std::uint16_t> vector_source1 = {
+      2U, 3U, 5U, 7U, 500U, 30000U};
+  const std::vector<std::uint16_t> relu_source = {
+      static_cast<std::uint16_t>(-8), 0U, 7U,
+      static_cast<std::uint16_t>(-1), 12U};
+  const std::vector<std::uint16_t> clamp_source0 = {
+      1U, 9U, 4U, 20U, 6U};
+  const std::vector<std::uint16_t> clamp_source1 = {
+      3U, 5U, 8U, 10U, 6U};
+  const std::vector<std::uint16_t> sum_source = {
+      static_cast<std::uint16_t>(-3), 7U, 11U,
+      static_cast<std::uint16_t>(-2), 4U};
+  const std::vector<std::uint16_t> max_source = {
+      3U, 99U, 12U, 44U, 8U, 71U};
+  constexpr std::uint32_t kGemmRows = 2U;
+  constexpr std::uint32_t kGemmColumns = 2U;
+  constexpr std::uint32_t kGemmInner = 3U;
+  const std::vector<std::uint16_t> gemm_source0 = {
+      1U, 2U, 3U, 4U, 5U, 6U};
+  const std::vector<std::uint16_t> gemm_source1 = {
+      7U, 8U, 9U, 10U, 11U, 12U};
+
+  fixture.dram().write_bytes(kFirmwareDmaSource, dma_source);
+  fixture.dram().write_elements(kFirmwareVectorSource0, vector_source0);
+  fixture.dram().write_elements(kFirmwareVectorSource1, vector_source1);
+  fixture.dram().write_elements(kFirmwareReluSource, relu_source);
+  fixture.dram().write_elements(kFirmwareClampSource0, clamp_source0);
+  fixture.dram().write_elements(kFirmwareClampSource1, clamp_source1);
+  fixture.dram().write_elements(kFirmwareSumSource, sum_source);
+  fixture.dram().write_elements(kFirmwareMaxSource, max_source);
+  fixture.dram().write_elements(kFirmwareGemmSource0, gemm_source0);
+  fixture.dram().write_elements(kFirmwareGemmSource1, gemm_source1);
+
+  FixtureMmio mmio(fixture);
+  firmware::CooperativeScheduler scheduler(mmio);
+  scheduler.boot();
+  const auto dma_task = scheduler.submit_dma_copy(
+      kFirmwareDmaSource, kFirmwareDmaDestination,
+      static_cast<std::uint32_t>(dma_source.size()), 1U);
+  const auto vector_task = scheduler.submit_vector_add(
+      kFirmwareVectorSource0, kFirmwareVectorSource1,
+      kFirmwareVectorDestination,
+      static_cast<std::uint32_t>(vector_source0.size()), 6U, false, true);
+  const auto relu_task = scheduler.submit_vector_relu_or_clamp(
+      kFirmwareReluSource, 0U, kFirmwareReluDestination,
+      static_cast<std::uint32_t>(relu_source.size()), false, 3U, true);
+  const auto clamp_task = scheduler.submit_vector_relu_or_clamp(
+      kFirmwareClampSource0, kFirmwareClampSource1,
+      kFirmwareClampDestination,
+      static_cast<std::uint32_t>(clamp_source0.size()), true, 4U, false);
+  const auto sum_task = scheduler.submit_reduce_sum(
+      kFirmwareSumSource, kFirmwareSumDestination,
+      static_cast<std::uint32_t>(sum_source.size()), 5U, true, true);
+  const auto max_task = scheduler.submit_reduce_max(
+      kFirmwareMaxSource, kFirmwareMaxDestination,
+      static_cast<std::uint32_t>(max_source.size()), 2U);
+  const auto gemm_task = scheduler.submit_gemm(
+      kFirmwareGemmSource0, kFirmwareGemmSource1,
+      kFirmwareGemmDestination, kGemmRows, kGemmColumns, kGemmInner, 7U);
+
+  for (unsigned iteration = 0;
+       iteration < kOperationTimeout && !scheduler.all_tasks_terminal();
+       ++iteration) {
+    scheduler.run_once();
+    fixture.tick();
+  }
+
+  expect(scheduler.all_tasks_terminal(),
+         "firmware scheduler did not complete the mixed workload");
+  for (const auto& task : scheduler.tasks()) {
+    expect(task.state == firmware::TaskState::DONE,
+           "firmware task completed in an error state");
+  }
+  expect(!scheduler.dispatch_order().empty() &&
+             scheduler.dispatch_order().front() == gemm_task,
+         "firmware scheduler did not dispatch the highest-priority task first");
+  expect(scheduler.completion_order().size() == scheduler.tasks().size(),
+         "firmware scheduler lost a task completion");
+
+  expect(fixture.dram().read_bytes(kFirmwareDmaDestination,
+                                   dma_source.size()) == dma_source,
+         "firmware DMA workload mismatch");
+  const auto vector_expected = model::vector_operation(
+      soc::CMD_OP_VECTOR_ADD, vector_source0, vector_source1, 0U, false,
+      true);
+  expect(fixture.dram().read_elements(kFirmwareVectorDestination,
+                                      vector_expected.size()) ==
+             vector_expected,
+         "firmware vector add mismatch");
+  const auto relu_expected = model::vector_operation(
+      soc::CMD_OP_VECTOR_RELU, relu_source, {}, 0U, true, false);
+  expect(fixture.dram().read_elements(kFirmwareReluDestination,
+                                      relu_expected.size()) == relu_expected,
+         "firmware ReLU mismatch");
+  const auto clamp_expected = model::vector_operation(
+      soc::CMD_OP_VECTOR_CLAMP, clamp_source0, clamp_source1, 0U, false,
+      false);
+  expect(fixture.dram().read_elements(kFirmwareClampDestination,
+                                      clamp_expected.size()) ==
+             clamp_expected,
+         "firmware clamp mismatch");
+  const auto sum_expected = model::reduction_operation(
+      soc::CMD_OP_REDUCE_SUM, sum_source, true, true);
+  expect(fixture.dram().read_elements(kFirmwareSumDestination, 1U).front() ==
+             sum_expected,
+         "firmware reduction sum mismatch");
+  const auto max_expected = model::reduction_operation(
+      soc::CMD_OP_REDUCE_MAX, max_source, false, false);
+  expect(fixture.dram().read_elements(kFirmwareMaxDestination, 1U).front() ==
+             max_expected,
+         "firmware reduction max mismatch");
+  const auto gemm_expected = model::gemm_operation(
+      gemm_source0, gemm_source1, kGemmRows, kGemmColumns, kGemmInner,
+      false, false);
+  expect(fixture.dram().read_elements(kFirmwareGemmDestination,
+                                      gemm_expected.size()) ==
+             gemm_expected,
+         "firmware GEMM mismatch");
+
+  const auto performance = scheduler.performance_snapshot();
+  expect(performance.total_cycles != 0U &&
+             performance.commands_completed >= 6U &&
+             performance.bytes_read != 0U &&
+             performance.bytes_written != 0U &&
+             performance.queue_high_water != 0U,
+         "firmware performance log is incomplete");
+  expect(scheduler.software_scheduler_stalls() != 0U,
+         "firmware scheduler did not record blocked intervals");
+  expect(scheduler.tasks().at(dma_task).completed_at != 0U &&
+             scheduler.tasks().at(vector_task).completed_at != 0U &&
+             scheduler.tasks().at(relu_task).completed_at != 0U &&
+             scheduler.tasks().at(clamp_task).completed_at != 0U &&
+             scheduler.tasks().at(sum_task).completed_at != 0U &&
+             scheduler.tasks().at(max_task).completed_at != 0U,
+         "firmware task timing log is incomplete");
+}
+
 void test_timer_and_performance(Fixture& fixture) {
   constexpr std::uint32_t kTimerInterval = 6U;
   const auto timer_control =
@@ -753,6 +956,7 @@ int main(int argc, char** argv) {
     test_vector(fixture);
     test_reduction(fixture);
     test_gemm(fixture);
+    test_firmware_scheduler(fixture);
     test_timer_and_performance(fixture);
     std::cout << "PASS test=soc seed=" << seed << '\n';
     return 0;

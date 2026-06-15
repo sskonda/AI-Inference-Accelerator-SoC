@@ -89,6 +89,14 @@ scratchpad and results back out through DMA. External-memory request stalls and 
 latency vary across the standard four seeds. The regression runner retains every
 block-level suite in addition to the SoC suite.
 
+The host firmware suite uses a deterministic MMIO model to check driver register
+programming, task priority, blocked states, interrupt wakeups, completion order, and all
+public workload-submission APIs. The SoC suite links those same firmware sources and runs
+DMA, vector add, ReLU, clamp, sum, maximum, and matrix tasks together. It verifies private
+scratch-slot behavior, highest-priority initial dispatch, complete task retirement,
+software scheduling-stall accounting, architectural performance readback, and every
+external-memory result against a golden model.
+
 ## Assertions
 
 Assertions cover stable payload while stalled, no unknown control after reset, legal FSM

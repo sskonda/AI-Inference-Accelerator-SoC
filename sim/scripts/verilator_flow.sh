@@ -96,7 +96,10 @@ case "${action}" in
 
     if [[ -f "rtl/soc/soc_top.sv" ]]; then
       build_top soc_top sim/verilator/sim_main.cpp \
-        "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp"
+        "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
+        "${root}/firmware/drivers/hardware_drivers.cpp" \
+        "${root}/firmware/rtos/cooperative_scheduler.cpp" \
+        "${root}/firmware/workloads/workload_api.cpp"
     fi
 
     build_top primitive_test_top sim/verilator/primitive_main.cpp \

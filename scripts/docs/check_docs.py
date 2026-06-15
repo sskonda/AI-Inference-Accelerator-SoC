@@ -13,6 +13,7 @@ REQUIRED_FILES = (
     ROOT / "LICENSE",
     ROOT / "docs" / "project_plan.md",
     ROOT / "docs" / "architecture.md",
+    ROOT / "docs" / "firmware.md",
     ROOT / "docs" / "verification_plan.md",
     ROOT / "docs" / "register_map.md",
     ROOT / "docs" / "memory_map.md",

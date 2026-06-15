@@ -50,6 +50,7 @@ inline constexpr unsigned STATUS_ERROR_BIT = 2U;
 inline constexpr unsigned TIMER_ENABLE_BIT = 0U;
 inline constexpr unsigned TIMER_PERIODIC_BIT = 1U;
 inline constexpr unsigned TIMER_INTERVAL_LSB = 8U;
+inline constexpr unsigned TIMER_INTERVAL_WIDTH = 24U;
 inline constexpr unsigned DMA_CTRL_START_BIT = 0U;
 inline constexpr unsigned DMA_CTRL_IRQ_ENABLE_BIT = 1U;
 inline constexpr unsigned DMA_STATUS_BUSY_BIT = 0U;
