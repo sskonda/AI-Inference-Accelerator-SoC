@@ -42,11 +42,11 @@ Milestone 15 local results:
 | Metric | Value |
 | --- | ---: |
 | Coverage databases | 44 |
-| Database bytes | 29,595,285 |
-| Unique coverage points | 31,280 |
-| Covered coverage points | 20,856 |
-| Uncovered coverage points | 10,424 |
-| Point coverage | 66.68% |
+| Database bytes | 29,358,762 |
+| Unique coverage points | 31,096 |
+| Covered coverage points | 20,662 |
+| Uncovered coverage points | 10,434 |
+| Point coverage | 66.45% |
 
 The installed `verilator_coverage` wrapper cannot locate its reporter binary in this
 environment, so `make coverage` records that condition and emits a deterministic local
