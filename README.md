@@ -40,6 +40,13 @@ The implementation is simulation-only. It does not include a physical-board flow
 processor core. The firmware model is deliberately separated from RTL so a control core
 can be attached at the MMIO and interrupt boundaries in a future revision.
 
+## Purpose
+
+This project exists to show a realistic simulation-centered SoC design workflow: RTL
+architecture, embedded-style control software, reusable verification, deterministic
+golden models, and measured performance closure. The baseline prioritizes correctness,
+observability, and reproducibility before optimization.
+
 ## Features
 
 - Parameterized SystemVerilog RTL with shared packages and explicit interfaces.
@@ -52,7 +59,7 @@ can be attached at the MMIO and interrupt boundaries in a future revision.
 - C++ drivers, task descriptors, cooperative scheduling, and ISR-style completion.
 - Fast non-UVM simulation with a cycle-accurate C++ harness.
 - UVM agents, constrained-random sequences, scoreboards, assertions, and coverage.
-- Deterministic golden models and repeatable performance reports.
+- Deterministic golden models and repeatable performance-counter readback.
 
 ## Quick Start
 
@@ -73,6 +80,7 @@ make verilator-lint
 make verilator-build
 make verilator-smoke
 make verilator-regress
+make coverage
 make docs
 make ci
 ```
@@ -83,7 +91,6 @@ Run the class-based verification flow with a supported UVM simulator:
 make uvm-compile
 make uvm-smoke UVM_TEST=smoke_test UVM_SEED=1
 make uvm-regress UVM_SEEDS="1 7 19 41"
-make coverage
 ```
 
 Targets never report success when a required tool or source artifact is absent. They
@@ -105,6 +112,37 @@ The current environment audit is recorded in [docs/project_plan.md](docs/project
 Architecture, verification scope, register behavior, and address regions are defined in
 the `docs/` directory and evolve with each implementation milestone.
 
+## Running The Flows
+
+Verible:
+
+```sh
+make fmt
+make lint
+```
+
+Verilator:
+
+```sh
+make verilator-lint
+make verilator-build
+make verilator-smoke SEED=1 INIT_MODE=random
+make verilator-regress SEEDS="1 7 19 41" INIT_MODES="zero ones random"
+make coverage
+```
+
+UVM:
+
+```sh
+make uvm-check
+make uvm-compile
+make uvm-smoke UVM_TEST=smoke_test UVM_SEED=1
+make uvm-regress UVM_SEEDS="1 7 19 41"
+```
+
+`make uvm-check` is simulator independent. The compile and run targets require a
+compatible simulator and a UVM library.
+
 ## Repository Layout
 
 | Path | Purpose |
@@ -118,7 +156,24 @@ the `docs/` directory and evolve with each implementation milestone.
 | `tests/` | Directed cases, random configurations, and regression manifests |
 | `scripts/` | Formatting, lint, coverage, documentation, and performance tools |
 | `docs/` | Architecture, interfaces, verification, and analysis |
-| `perf/` | Reproducible configurations and committed result tables |
+| `perf/` | Reproducible configurations and result tables as they are captured |
+
+## Verified Scope
+
+Available local checks cover formatting, lint, firmware unit tests, static UVM
+structure, Verilator RTL lint, normal Verilator build, smoke tests, four-seed
+regression with zero, ones, and randomized SoC initialization, coverage database
+creation, register documentation consistency, and memory-map documentation consistency.
+
+The UVM environment is implemented, but UVM compile and execution are not claimed in the
+current environment because a compatible simulator is not installed.
+
+## Performance Summary
+
+Performance counters are implemented and read through firmware and SoC tests. Milestone
+16 documents the measurement method in
+[docs/performance_analysis.md](docs/performance_analysis.md). The repeatable baseline
+CSV or JSON result tables are captured in milestone 17, before optimization.
 
 ## Current Status
 
@@ -163,6 +218,15 @@ integration behavior is in [docs/soc_integration.md](docs/soc_integration.md), t
 software architecture is in [docs/firmware.md](docs/firmware.md), and the class-based
 environment is in [uvm/README.md](uvm/README.md). Passing claims are made only for checks
 that have been executed with available tools.
+
+## Future Work
+
+- Attach a real control core at the documented MMIO and interrupt boundary.
+- Increase memory-fabric outstanding depth.
+- Add scratchpad banking and compare contention against area and verification cost.
+- Explore DMA buffering and logical burst settings.
+- Tune matrix tile shape and vector pipeline depth.
+- Run the full UVM regression and functional coverage on a compatible simulator.
 
 ## License
 
