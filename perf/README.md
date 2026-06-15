@@ -18,3 +18,14 @@ The committed baseline tables are:
 
 - `perf/results/baseline_metrics.csv`
 - `perf/results/baseline_metrics.json`
+
+The milestone 18 optimized tables are:
+
+- `perf/results/optimized_metrics.csv`
+- `perf/results/optimized_metrics.json`
+
+They are captured with:
+
+```sh
+python3 scripts/perf/run_baseline.py --seed 1 --name optimized_metrics --config gemm_tile_4x4
+```

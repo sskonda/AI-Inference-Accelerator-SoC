@@ -22,7 +22,7 @@ baseline performance run is reproducible. Each optimization must:
 | Vector maximum length | 256 | Large enough for randomized coverage and small enough for fast simulation |
 | Reduction maximum length | 256 | Matches vector bounds and accumulator validation |
 | Matrix maximum M/N/K | 8 | Supports directed and randomized small matrices |
-| Matrix tile M/N | 2 | Provides source reuse without obscuring the control path |
+| Matrix tile M/N | 4 | Improves source reuse for simulation-friendly matrices |
 | Scratchpad size | 64 KiB | Supports 16 firmware task slots |
 
 ## Attempts
@@ -32,6 +32,18 @@ baseline performance run is reproducible. Each optimization must:
 | `baseline-rtl` | Correctness-first architecture | Kept | Establishes deterministic command, memory, and interrupt behavior |
 | `baseline-metrics` | Measurement | Kept | Captures seed 1 CSV and JSON tables under `perf/results/` |
 | `coverage-plumbing` | Verification quality | Kept | Adds instrumented Verilator coverage databases and summary reporting |
+| `gemm-tile-4x4` | Matrix tile shape | Kept | Reduces 4x4 matrix cycles from 176 to 100 and backpressured 4x4 cycles from 361 to 217 |
+
+## Explored Configurations
+
+| Configuration | Result | Decision |
+| --- | --- | --- |
+| 2-by-2 matrix tile | Baseline: 4x4 matrix uses 176 cycles and 64 source reads | Replaced by 4-by-4 default |
+| 4-by-4 matrix tile | 4x4 matrix uses 100 cycles and 32 source reads | Kept as default |
+
+The 4-by-4 default increases tile accumulator storage, but the configured matrix limits
+remain small and all available regressions pass. The improvement is concentrated on
+matrix workloads; DMA, vector, and reduction results remain unchanged.
 
 ## Candidate List
 

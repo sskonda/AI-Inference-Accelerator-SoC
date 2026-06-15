@@ -4,7 +4,7 @@
 
 The GEMM accelerator computes a row-major matrix product `C = A * B` from scratchpad.
 The default configuration supports dimensions from one through eight and produces a
-2-by-2 output tile at a time. Matrix element width, accumulator width, dimension limits,
+4-by-4 output tile at a time. Matrix element width, accumulator width, dimension limits,
 and tile shape are parameters.
 
 For each output tile and inner-dimension index, the controller:

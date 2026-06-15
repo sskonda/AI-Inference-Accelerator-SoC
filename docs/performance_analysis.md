@@ -77,20 +77,40 @@ completions, 28 DMA completion events, 9 accelerator completion events, 347 byte
 
 ## Optimized Metrics
 
-No optimized metric is claimed before the optimization phase. Milestone 18 will compare
-accepted and rejected configurations against the milestone 17 baseline using the same
-workloads, seeds, and counter definitions.
+Milestone 18 keeps the same workload set and seed, then changes the matrix tile from
+2-by-2 to 4-by-4. Optimized tables are committed as:
+
+- `perf/results/optimized_metrics.csv`
+- `perf/results/optimized_metrics.json`
+
+The accepted change reduces matrix source rereads by computing a larger output tile
+before moving to the next tile. The tradeoff is a larger accumulator array: 16 tile
+accumulators instead of 4, plus 8 staged source elements instead of 4. The default keeps
+the maximum dimensions small, so this is an acceptable simulation-platform tradeoff.
+
+| Workload | Baseline cycles | Optimized cycles | Cycle change | Baseline reads | Optimized reads |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Matrix multiply 2x2x2 | 26 | 26 | 0.00% | 8 | 8 |
+| Matrix multiply 4x4x4 | 176 | 100 | -43.18% | 64 | 32 |
+| Matrix multiply 4x4x4 with backpressure | 361 | 217 | -39.89% | 64 | 32 |
+| Mixed firmware workload | 2,239 | 2,179 | -2.68% | 347 bytes read | 347 bytes read |
+
+Non-matrix DMA, vector, and reduction rows are unchanged in the optimized tables, as
+expected. The 4x4 matrix baseline rate improves from 0.0909 outputs/cycle to 0.1600
+outputs/cycle. The backpressured 4x4 matrix rate improves from 0.0443 outputs/cycle to
+0.0737 outputs/cycle.
 
 ## Known Performance Bottlenecks
 
-The expected baseline bottlenecks are visible from the RTL structure:
+Remaining bottlenecks are visible from the RTL structure:
 
 - The memory fabric allows one outstanding request.
 - The DMA engine buffers one word and waits for each write response before the next read.
 - The command processor allows one queued accelerator command in flight.
 - The vector accelerator serializes source reads and destination writes.
 - The reduction accelerator folds memory words through one cross-word accumulator.
-- The matrix accelerator has tile-level reuse but one scratchpad initiator.
+- The matrix accelerator has improved tile-level reuse but still uses one scratchpad
+  initiator.
 
 These choices are intentional for the first correct baseline and are tracked in
 [optimization_log.md](optimization_log.md).

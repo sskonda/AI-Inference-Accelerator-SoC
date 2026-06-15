@@ -13,9 +13,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 BUILD_DIRECTORY = ROOT / "build" / "verilator"
 RESULT_DIRECTORY = ROOT / "perf" / "results"
-CSV_PATH = RESULT_DIRECTORY / "baseline_metrics.csv"
-JSON_PATH = RESULT_DIRECTORY / "baseline_metrics.json"
-CONFIG_NAME = "baseline"
+DEFAULT_RESULT_NAME = "baseline_metrics"
+DEFAULT_CONFIG_NAME = "baseline"
 
 SIMULATORS = (
     ("soc", BUILD_DIRECTORY / "Vsoc_top"),
@@ -182,14 +181,21 @@ def run_simulator(name: str, path: Path, seed: int) -> list[dict[str, str]]:
     return records
 
 
-def write_results(records: list[dict[str, str]]) -> None:
+def result_paths(result_name: str) -> tuple[Path, Path]:
+    return (
+        RESULT_DIRECTORY / f"{result_name}.csv",
+        RESULT_DIRECTORY / f"{result_name}.json",
+    )
+
+
+def write_results(records: list[dict[str, str]], csv_path: Path, json_path: Path) -> None:
     RESULT_DIRECTORY.mkdir(parents=True, exist_ok=True)
-    with CSV_PATH.open("w", newline="", encoding="utf-8") as csv_file:
+    with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=CSV_FIELDS)
         writer.writeheader()
         for record in records:
             writer.writerow({field: record.get(field, "") for field in CSV_FIELDS})
-    JSON_PATH.write_text(
+    json_path.write_text(
         json.dumps(records, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
@@ -200,9 +206,12 @@ def main() -> int:
         description="Capture deterministic baseline performance metrics"
     )
     parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument("--name", default=DEFAULT_RESULT_NAME)
+    parser.add_argument("--config", default=DEFAULT_CONFIG_NAME)
     args = parser.parse_args()
 
     try:
+        csv_path, json_path = result_paths(args.name)
         require_simulators()
         revision = git_output("rev-parse", "--short", "HEAD")
         dirty = "true" if git_dirty() else "false"
@@ -211,15 +220,15 @@ def main() -> int:
             for record in run_simulator(name, path, args.seed):
                 record["source_revision"] = revision
                 record["source_dirty"] = dirty
-                record["config"] = CONFIG_NAME
+                record["config"] = args.config
                 records.append(record)
-        write_results(records)
+        write_results(records, csv_path, json_path)
     except (RuntimeError, subprocess.CalledProcessError, ValueError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
 
-    print(f"Performance baseline written to {CSV_PATH.relative_to(ROOT)}")
-    print(f"Performance baseline written to {JSON_PATH.relative_to(ROOT)}")
+    print(f"Performance metrics written to {csv_path.relative_to(ROOT)}")
+    print(f"Performance metrics written to {json_path.relative_to(ROOT)}")
     return 0
 
 

@@ -75,7 +75,7 @@ after all inputs are consumed; maximum returns an existing element. One byte-ena
 result is written to scratchpad. Detailed precision and tree behavior is specified in
 [reduction_accelerator.md](reduction_accelerator.md).
 
-The matrix accelerator traverses compact row-major matrices in 2-by-2 output tiles. For
+The matrix accelerator traverses compact row-major matrices in 4-by-4 output tiles. For
 each inner-dimension step, it loads the valid A rows and B columns once and updates every
 tile accumulator in parallel. Edge tiles suppress inactive outputs. Accumulators remain
 wide until final signed or unsigned truncating or saturating conversion. Detailed layout

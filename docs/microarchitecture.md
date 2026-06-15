@@ -84,7 +84,7 @@ wider memory words.
 
 ## Matrix Accelerator
 
-The matrix accelerator computes compact row-major integer GEMM in 2-by-2 tiles. For each
+The matrix accelerator computes compact row-major integer GEMM in 4-by-4 tiles. For each
 inner-dimension step, valid A-row elements and B-column elements are loaded once and
 reused across all active outputs in the tile. Accumulators stay wide until final
 truncating or saturating conversion.
