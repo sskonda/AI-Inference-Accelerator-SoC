@@ -71,6 +71,13 @@ case "${action}" in
           sim/common/protocol_compile_top.sv \
           sim/verilator/reduction_test_top.sv
       fi
+      if [[ -f "sim/verilator/gemm_test_top.sv" ]]; then
+        verilator --lint-only --timing --assert -Wall \
+          --top-module gemm_test_top \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/gemm_test_top.sv
+      fi
     fi
     ;;
   build)
@@ -167,6 +174,18 @@ case "${action}" in
           sim/common/protocol_compile_top.sv \
           sim/verilator/reduction_test_top.sv \
           "${root}/sim/verilator/reduction_main.cpp"
+      fi
+      if [[ -f "sim/verilator/gemm_test_top.sv" ]]; then
+        require_file "sim/verilator/gemm_main.cpp" \
+          "complete the GEMM-accelerator C++ test program before building"
+        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+          --top-module gemm_test_top \
+          -Mdir build/verilator \
+          -CFLAGS "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
+          -f rtl/files.f \
+          sim/common/protocol_compile_top.sv \
+          sim/verilator/gemm_test_top.sv \
+          "${root}/sim/verilator/gemm_main.cpp"
       fi
     fi
     ;;

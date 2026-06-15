@@ -75,6 +75,12 @@ after all inputs are consumed; maximum returns an existing element. One byte-ena
 result is written to scratchpad. Detailed precision and tree behavior is specified in
 [reduction_accelerator.md](reduction_accelerator.md).
 
+The matrix accelerator traverses compact row-major matrices in 2-by-2 output tiles. For
+each inner-dimension step, it loads the valid A rows and B columns once and updates every
+tile accumulator in parallel. Edge tiles suppress inactive outputs. Accumulators remain
+wide until final signed or unsigned truncating or saturating conversion. Detailed layout
+and precision behavior is specified in [gemm_accelerator.md](gemm_accelerator.md).
+
 ## Data Flow
 
 DMA moves exact byte counts among legal external-memory and scratchpad regions. It uses
@@ -84,9 +90,9 @@ Accelerator commands name scratchpad byte addresses. The scratchpad wrapper arbi
 DMA and accelerator accesses, checks bounds, and preserves documented read-first
 collision behavior.
 
-Vector commands process one signed element per accepted beat after pipeline fill.
-Reduction commands consume a bounded vector and produce one result. Matrix commands use
-scratchpad-resident signed matrices and iterate over simulation-friendly tiles.
+Vector commands process packed elements. Reduction commands consume a bounded vector and
+produce one result. Matrix commands use scratchpad-resident signed or unsigned matrices
+and reuse source elements across parameterized output tiles.
 
 ## Interrupt Flow
 

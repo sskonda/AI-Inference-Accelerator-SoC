@@ -3,8 +3,8 @@
 - The implemented RTL currently covers shared definitions, interfaces, flow-control
   primitives, RAM, scratchpad storage, the AXI-Lite register block, DMA, timer,
   interrupts, performance counters, the command queue, and the command processor. The
-  vector and reduction accelerators are also implemented. Matrix and full SoC
-  integration follow the milestone order recorded in `project_plan.md`.
+  vector, reduction, and tiled matrix accelerators are also implemented. Full SoC
+  integration follows the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
@@ -25,6 +25,9 @@
   operations do not overlap in the baseline.
 - The reduction accelerator parallelizes lanes within one memory word but processes
   memory words sequentially through one accumulator and one memory port.
+- The matrix accelerator computes one output tile at a time and serializes scratchpad
+  requests through one memory port. Tile multiply-accumulates are parallel, but source
+  reads and output writes do not overlap.
 - Default scratchpad and external-memory capacities are intentionally bounded for
   regression speed.
 - Accelerator arithmetic is fixed width. Overflow and output conversion are architectural

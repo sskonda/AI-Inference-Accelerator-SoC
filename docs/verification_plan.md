@@ -73,6 +73,14 @@ unsigned values, truncating and saturating sums, partial result writes, request 
 response stalls, response backpressure, read and write errors, illegal descriptors,
 reset during operation, and seeded random data and lengths.
 
+The non-UVM GEMM suite compares every output element against an independent C++ model.
+It covers 1-by-1, square, rectangular, inner-dimension-one, zero, identity-like, partial
+tile, and maximum-dimension matrices; signed and unsigned arithmetic; truncation and
+saturation; memory and response stalls; address and dimension errors; output overlap;
+read and write errors; reset during operation; and seeded random matrices. It also
+checks exact tiled source-read counts, output writes, byte strobes, final-write marking,
+and preservation of rounded-storage padding.
+
 ## Assertions
 
 Assertions cover stable payload while stalled, no unknown control after reset, legal FSM

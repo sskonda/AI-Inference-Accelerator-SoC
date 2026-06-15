@@ -16,6 +16,11 @@ package accel_pkg;
   localparam int unsigned DEFAULT_STARVATION_THRESHOLD = 16;
   localparam int unsigned DEFAULT_MAX_VECTOR_LENGTH = 256;
   localparam int unsigned DEFAULT_MAX_REDUCTION_LENGTH = 256;
+  localparam int unsigned DEFAULT_MAX_GEMM_M = 8;
+  localparam int unsigned DEFAULT_MAX_GEMM_N = 8;
+  localparam int unsigned DEFAULT_MAX_GEMM_K = 8;
+  localparam int unsigned DEFAULT_GEMM_TILE_M = 2;
+  localparam int unsigned DEFAULT_GEMM_TILE_N = 2;
 
   localparam int unsigned FLAG_SIGNED_BIT = 0;
   localparam int unsigned FLAG_SATURATE_BIT = 1;

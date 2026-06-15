@@ -48,14 +48,18 @@ SV_EXECUTOR_TARGET = re.compile(r"EXEC_TARGET_([A-Z0-9_]+)\s*=\s*3'd([0-9]+)")
 CPP_EXECUTOR_TARGET = re.compile(
     r"inline constexpr std::uint32_t EXEC_TARGET_([A-Z0-9_]+) = ([0-9]+)U;"
 )
-SV_VECTOR_CONSTANT = re.compile(
+SV_ACCELERATOR_CONSTANT = re.compile(
     r"localparam\s+int\s+unsigned\s+"
-    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH|DEFAULT_MAX_REDUCTION_LENGTH)"
+    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH|DEFAULT_MAX_REDUCTION_LENGTH|"
+    r"DEFAULT_MAX_GEMM_M|DEFAULT_MAX_GEMM_N|DEFAULT_MAX_GEMM_K|"
+    r"DEFAULT_GEMM_TILE_M|DEFAULT_GEMM_TILE_N)"
     r"\s*=\s*([0-9]+);"
 )
-CPP_VECTOR_CONSTANT = re.compile(
+CPP_ACCELERATOR_CONSTANT = re.compile(
     r"inline constexpr unsigned "
-    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH|DEFAULT_MAX_REDUCTION_LENGTH)"
+    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH|DEFAULT_MAX_REDUCTION_LENGTH|"
+    r"DEFAULT_MAX_GEMM_M|DEFAULT_MAX_GEMM_N|DEFAULT_MAX_GEMM_K|"
+    r"DEFAULT_GEMM_TILE_M|DEFAULT_GEMM_TILE_N)"
     r" = ([0-9]+)U;"
 )
 SV_FLAG_BIT = re.compile(
@@ -119,8 +123,12 @@ def main() -> int:
     cpp_scheduler_policies = enum_map(CPP_HEADER_PATH, CPP_SCHEDULER_POLICY, 10)
     rtl_executor_targets = enum_map(ACCEL_PACKAGE_PATH, SV_EXECUTOR_TARGET, 10)
     cpp_executor_targets = enum_map(CPP_HEADER_PATH, CPP_EXECUTOR_TARGET, 10)
-    rtl_vector_constants = enum_map(ACCEL_PACKAGE_PATH, SV_VECTOR_CONSTANT, 10)
-    cpp_vector_constants = enum_map(CPP_HEADER_PATH, CPP_VECTOR_CONSTANT, 10)
+    rtl_accelerator_constants = enum_map(
+        ACCEL_PACKAGE_PATH, SV_ACCELERATOR_CONSTANT, 10
+    )
+    cpp_accelerator_constants = enum_map(
+        CPP_HEADER_PATH, CPP_ACCELERATOR_CONSTANT, 10
+    )
     rtl_flag_bits = enum_map(ACCEL_PACKAGE_PATH, SV_FLAG_BIT, 10)
     cpp_flag_bits = enum_map(CPP_HEADER_PATH, CPP_FLAG_BIT, 10)
     failures: list[str] = []
@@ -157,7 +165,11 @@ def main() -> int:
         compare_maps("executor target", rtl_executor_targets, cpp_executor_targets)
     )
     failures.extend(
-        compare_maps("vector constant", rtl_vector_constants, cpp_vector_constants)
+        compare_maps(
+            "accelerator constant",
+            rtl_accelerator_constants,
+            cpp_accelerator_constants,
+        )
     )
     failures.extend(compare_maps("descriptor flag bit", rtl_flag_bits, cpp_flag_bits))
 
@@ -173,7 +185,7 @@ def main() -> int:
         f"{len(rtl_irq_bits)} interrupt bits, "
         f"{len(rtl_scheduler_policies)} scheduler policies, "
         f"{len(rtl_executor_targets)} executor targets, "
-        f"{len(rtl_vector_constants)} vector constants, "
+        f"{len(rtl_accelerator_constants)} accelerator constants, "
         f"{len(rtl_flag_bits)} descriptor flag bits)"
     )
     return 0

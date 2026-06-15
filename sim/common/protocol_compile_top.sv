@@ -56,6 +56,9 @@ module protocol_compile_top (
     definition_checksum = definition_checksum ^ accel_pkg::EXECUTOR_TARGET_WIDTH ^
         accel_pkg::STARVATION_COUNTER_WIDTH ^ accel_pkg::DEFAULT_STARVATION_THRESHOLD ^
         accel_pkg::DEFAULT_MAX_VECTOR_LENGTH ^ accel_pkg::DEFAULT_MAX_REDUCTION_LENGTH;
+    definition_checksum = definition_checksum ^ accel_pkg::DEFAULT_MAX_GEMM_M ^
+        accel_pkg::DEFAULT_MAX_GEMM_N ^ accel_pkg::DEFAULT_MAX_GEMM_K ^
+        accel_pkg::DEFAULT_GEMM_TILE_M ^ accel_pkg::DEFAULT_GEMM_TILE_N;
     definition_checksum = definition_checksum ^ soc_pkg::PERF_COUNTER_WIDTH ^
         soc_pkg::ERROR_STATUS_WIDTH ^ soc_pkg::WORD_ADDRESS_LSB ^ reg_pkg::CMD_STATUS_PENDING_BIT ^
         reg_pkg::QUEUE_OCCUPANCY_LSB ^ reg_pkg::QUEUE_OCCUPANCY_WIDTH ^
