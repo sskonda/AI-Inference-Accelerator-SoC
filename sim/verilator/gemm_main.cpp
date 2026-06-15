@@ -741,6 +741,77 @@ void test_random_operations(Fixture& fixture, std::mt19937& random) {
   }
 }
 
+std::vector<std::uint16_t> make_perf_matrix(std::size_t elements,
+                                            std::uint32_t salt) {
+  std::vector<std::uint16_t> values(elements);
+  constexpr std::uint32_t kMultiplier = 11U;
+  constexpr std::uint32_t kMask = 0x00FFU;
+  for (std::size_t index = 0; index < values.size(); ++index) {
+    values[index] = static_cast<std::uint16_t>(
+        (static_cast<std::uint32_t>(index) * kMultiplier + salt) & kMask);
+  }
+  return values;
+}
+
+void print_gemm_performance(const std::string& workload,
+                            std::uint32_t seed,
+                            const Command& command,
+                            const CommandResult& result) {
+  std::cout << "PERF suite=gemm"
+            << " workload=" << workload
+            << " seed=" << seed
+            << " rows=" << command.rows
+            << " columns=" << command.columns
+            << " inner=" << command.inner
+            << " outputs=" << result.completed_outputs
+            << " cycles=" << result.cycles
+            << " active_cycles=" << result.active_cycles
+            << " stalled_cycles=" << result.stalled_cycles
+            << " reads=" << result.reads
+            << " writes=" << result.writes
+            << " final_writes=" << result.last_writes
+            << '\n';
+}
+
+void run_performance_operation(Fixture& fixture,
+                               const std::string& workload,
+                               std::uint32_t seed,
+                               const Command& command,
+                               const PortConfig& port_config,
+                               std::uint32_t salt) {
+  fixture.reset();
+  fixture.configure_port(port_config);
+  const auto matrix_a = make_perf_matrix(command.rows * command.inner, salt);
+  const auto matrix_b =
+      make_perf_matrix(command.inner * command.columns, salt + 1U);
+  const auto result =
+      verify_operation(fixture, command, matrix_a, matrix_b);
+  print_gemm_performance(workload, seed, command, result);
+}
+
+void run_performance(Fixture& fixture, std::uint32_t seed) {
+  constexpr std::uint32_t kPerfCommandBase = 0xE000U;
+  constexpr std::uint32_t kSmallSalt = 0x401U;
+  constexpr std::uint32_t kTiledSalt = 0x501U;
+  constexpr std::uint32_t kBackpressureSalt = 0x601U;
+
+  run_performance_operation(
+      fixture, "gemm_2x2x2", seed,
+      Command{soc::CMD_OP_GEMM, kMatrixABase, kMatrixBBase, kMatrixCBase,
+              2U, 2U, 2U, 0U, kPerfCommandBase},
+      PortConfig{}, kSmallSalt);
+  run_performance_operation(
+      fixture, "gemm_4x4x4", seed,
+      Command{soc::CMD_OP_GEMM, kMatrixABase, kMatrixBBase, kMatrixCBase,
+              4U, 4U, 4U, 0U, kPerfCommandBase + 1U},
+      PortConfig{}, kTiledSalt);
+  run_performance_operation(
+      fixture, "gemm_4x4x4_backpressure", seed,
+      Command{soc::CMD_OP_GEMM, kMatrixABase, kMatrixBBase, kMatrixCBase,
+              4U, 4U, 4U, 0U, kPerfCommandBase + 2U},
+      PortConfig{3U, 1U, 2U}, kBackpressureSalt);
+}
+
 std::uint32_t parse_seed(int argc, char** argv) {
   std::uint32_t seed = 1U;
   for (int index = 1; index + 1 < argc; ++index) {
@@ -751,21 +822,38 @@ std::uint32_t parse_seed(int argc, char** argv) {
   return seed;
 }
 
+std::string parse_test_name(int argc, char** argv) {
+  std::string test_name = "smoke";
+  for (int index = 1; index + 1 < argc; ++index) {
+    if (std::string(argv[index]) == "--test") {
+      test_name = argv[index + 1];
+    }
+  }
+  return test_name;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
   const auto seed = parse_seed(argc, argv);
+  const auto test_name = parse_test_name(argc, argv);
   Verilated::commandArgs(argc, argv);
 
   try {
     Fixture fixture;
     std::mt19937 random(seed);
-    test_directed_operations(fixture);
-    test_maximum_dimensions(fixture);
-    test_tiling_and_backpressure(fixture);
-    test_error_paths(fixture);
-    test_reset_during_operation(fixture);
-    test_random_operations(fixture, random);
+    if (test_name == "perf") {
+      run_performance(fixture, seed);
+    } else if (test_name == "smoke" || test_name == "regress") {
+      test_directed_operations(fixture);
+      test_maximum_dimensions(fixture);
+      test_tiling_and_backpressure(fixture);
+      test_error_paths(fixture);
+      test_reset_during_operation(fixture);
+      test_random_operations(fixture, random);
+    } else {
+      throw std::runtime_error("unsupported test name: " + test_name);
+    }
     sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=gemm seed=" << seed << '\n';
     return 0;

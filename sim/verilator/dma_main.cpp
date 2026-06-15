@@ -824,6 +824,89 @@ void test_random_transfers(Fixture& fixture, std::mt19937& random) {
   fixture.clear_port_config();
 }
 
+void print_dma_performance(const std::string& workload,
+                           std::uint32_t seed,
+                           std::uint32_t length,
+                           const TransferResult& result) {
+  std::cout << "PERF suite=dma"
+            << " workload=" << workload
+            << " seed=" << seed
+            << " length_bytes=" << length
+            << " cycles=" << result.active_cycles
+            << " active_cycles=" << result.active_cycles
+            << " stalled_cycles=" << result.stalled_cycles
+            << " bytes_read=" << result.bytes_read
+            << " bytes_written=" << result.bytes_written
+            << " source_requests=" << result.source_requests
+            << " destination_requests=" << result.destination_requests
+            << '\n';
+}
+
+void run_performance_transfer(Fixture& fixture,
+                              const std::string& workload,
+                              std::uint32_t seed,
+                              std::uint32_t source,
+                              std::uint32_t destination,
+                              std::size_t length,
+                              const PortConfig& source_config,
+                              const PortConfig& destination_config,
+                              std::uint32_t salt) {
+  fixture.clear_port_config();
+  fixture.set_source_config(source_config);
+  fixture.set_destination_config(destination_config);
+  const auto pattern = make_pattern(length, salt);
+  fixture.memory().write_bytes(source, pattern);
+  fixture.memory().fill(destination, length + soc::DATA_BYTES,
+                        kDestinationSentinel);
+  const auto result =
+      fixture.transfer(source, destination, static_cast<std::uint32_t>(length));
+  expect_success(result, length, workload);
+  expect(fixture.memory().read_bytes(destination, length) == pattern,
+         workload + ": data mismatch");
+  print_dma_performance(workload, seed, static_cast<std::uint32_t>(length),
+                        result);
+  fixture.clear_port_config();
+}
+
+void run_performance(Fixture& fixture, std::uint32_t seed) {
+  constexpr std::uint32_t kPerfSourceBase = soc::DRAM_BASE_ADDR + 0x7000U;
+  constexpr std::uint32_t kPerfDestinationBase =
+      soc::SPM_BASE_ADDR + 0x7400U;
+  constexpr std::uint32_t kPerfMemoryCopySource =
+      soc::DRAM_BASE_ADDR + 0x7800U;
+  constexpr std::uint32_t kPerfMemoryCopyDestination =
+      soc::DRAM_BASE_ADDR + 0x7C00U;
+  constexpr std::size_t kPerfSmallBytes = soc::DATA_BYTES;
+  constexpr std::size_t kPerfMediumBytes = 16U;
+  constexpr std::size_t kPerfLargeBytes = 64U;
+  constexpr std::uint32_t kPerfSmallSalt = 0xC1U;
+  constexpr std::uint32_t kPerfMediumSalt = 0xC2U;
+  constexpr std::uint32_t kPerfLargeSalt = 0xC3U;
+  constexpr std::uint32_t kPerfStallSalt = 0xC4U;
+  constexpr std::uint32_t kPerfMemoryCopySalt = 0xC5U;
+
+  run_performance_transfer(
+      fixture, "dma_copy_4B", seed, kPerfSourceBase, kPerfDestinationBase,
+      kPerfSmallBytes, PortConfig{}, PortConfig{}, kPerfSmallSalt);
+  run_performance_transfer(
+      fixture, "dma_copy_16B", seed, kPerfSourceBase + 0x100U,
+      kPerfDestinationBase + 0x100U, kPerfMediumBytes, PortConfig{},
+      PortConfig{}, kPerfMediumSalt);
+  run_performance_transfer(
+      fixture, "dma_copy_64B", seed, kPerfSourceBase + 0x200U,
+      kPerfDestinationBase + 0x200U, kPerfLargeBytes, PortConfig{},
+      PortConfig{}, kPerfLargeSalt);
+  run_performance_transfer(
+      fixture, "dma_copy_backpressure", seed, kPerfSourceBase + 0x300U,
+      kPerfDestinationBase + 0x300U, kPerfLargeBytes,
+      PortConfig{0U, 3U, 0U, 2U}, PortConfig{0U, 4U, 1U, 3U},
+      kPerfStallSalt);
+  run_performance_transfer(
+      fixture, "dma_memory_to_memory", seed, kPerfMemoryCopySource,
+      kPerfMemoryCopyDestination, kPerfMediumBytes, PortConfig{},
+      PortConfig{}, kPerfMemoryCopySalt);
+}
+
 void run_directed(Fixture& fixture) {
   test_one_word(fixture);
   test_partial_and_bursts(fixture);
@@ -857,11 +940,15 @@ int main(int argc, char** argv) {
 
   try {
     Fixture fixture;
-    run_directed(fixture);
-    if (test_name == "regress") {
+    if (test_name == "perf") {
+      run_performance(fixture, seed);
+    } else if (test_name == "regress") {
+      run_directed(fixture);
       std::mt19937 random(seed);
       test_random_transfers(fixture, random);
-    } else if (test_name != "smoke") {
+    } else if (test_name == "smoke") {
+      run_directed(fixture);
+    } else {
       throw std::runtime_error("unsupported test name: " + test_name);
     }
     sim::write_coverage_if_requested(argc, argv);

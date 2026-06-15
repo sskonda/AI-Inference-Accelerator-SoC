@@ -963,6 +963,7 @@ void test_timer_and_performance(Fixture& fixture) {
 
 struct Options {
   std::uint32_t seed = 1U;
+  std::string test_name = "smoke";
   std::optional<std::string> trace_path;
 };
 
@@ -972,6 +973,8 @@ Options parse_options(int argc, char** argv) {
     const std::string argument = argv[index];
     if ((argument == "--seed") && (index + 1 < argc)) {
       options.seed = static_cast<std::uint32_t>(std::stoul(argv[++index]));
+    } else if ((argument == "--test") && (index + 1 < argc)) {
+      options.test_name = argv[++index];
     } else if ((argument == "--trace") && (index + 1 < argc)) {
       options.trace_path = argv[++index];
     } else if (argument == sim::kCoverageFileOption && (index + 1 < argc)) {
@@ -979,6 +982,49 @@ Options parse_options(int argc, char** argv) {
     }
   }
   return options;
+}
+
+void print_mixed_performance(Fixture& fixture, std::uint32_t seed) {
+  const auto total_cycles =
+      fixture.read_performance_counter(soc::PERF_TOTAL_CYCLES);
+  const auto dma_active =
+      fixture.read_performance_counter(soc::PERF_DMA_ACTIVE_CYCLES);
+  const auto dma_stalled =
+      fixture.read_performance_counter(soc::PERF_DMA_STALLED_CYCLES);
+  const auto accelerator_active =
+      fixture.read_performance_counter(soc::PERF_ACCEL_ACTIVE_CYCLES);
+  const auto accelerator_stalled =
+      fixture.read_performance_counter(soc::PERF_ACCEL_STALLED_CYCLES);
+  const auto queue_high_water =
+      fixture.read_performance_counter(soc::PERF_QUEUE_HIGH_WATER);
+  const auto commands_completed =
+      fixture.read_performance_counter(soc::PERF_COMMANDS_COMPLETED);
+  const auto bytes_read =
+      fixture.read_performance_counter(soc::PERF_BYTES_READ);
+  const auto bytes_written =
+      fixture.read_performance_counter(soc::PERF_BYTES_WRITTEN);
+  const auto interrupt_latency =
+      fixture.read_performance_counter(soc::PERF_IRQ_LATENCY);
+  const auto scheduler_stalls =
+      fixture.read_performance_counter(soc::PERF_SCHEDULER_STALLS);
+
+  std::cout << "PERF suite=soc workload=mixed_firmware"
+            << " seed=" << seed
+            << " total_cycles=" << total_cycles
+            << " dma_active_cycles=" << dma_active
+            << " dma_stalled_cycles=" << dma_stalled
+            << " accelerator_active_cycles=" << accelerator_active
+            << " accelerator_stalled_cycles=" << accelerator_stalled
+            << " queue_high_water=" << queue_high_water
+            << " commands_completed=" << commands_completed
+            << " bytes_read=" << bytes_read
+            << " bytes_written=" << bytes_written
+            << " interrupt_latency=" << interrupt_latency
+            << " scheduler_stalls=" << scheduler_stalls
+            << " dma_done_events=" << fixture.dma_done_count()
+            << " command_done_events=" << fixture.command_done_count()
+            << " accelerator_done_events=" << fixture.accelerator_done_count()
+            << " irq_seen=" << (fixture.irq_seen() ? 1U : 0U) << '\n';
 }
 
 }  // namespace
@@ -991,6 +1037,10 @@ int main(int argc, char** argv) {
   }
 
   try {
+    if (options.test_name != "smoke" && options.test_name != "regress" &&
+        options.test_name != "perf") {
+      throw std::runtime_error("unsupported test name: " + options.test_name);
+    }
     Fixture fixture(options.seed, options.trace_path);
     test_reset_and_mmio(fixture);
     test_mmio_dma(fixture);
@@ -1000,6 +1050,9 @@ int main(int argc, char** argv) {
     test_gemm(fixture);
     test_firmware_scheduler(fixture);
     test_timer_and_performance(fixture);
+    if (options.test_name == "perf") {
+      print_mixed_performance(fixture, options.seed);
+    }
     sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=soc seed=" << options.seed << '\n';
     return 0;

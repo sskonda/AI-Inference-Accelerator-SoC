@@ -14,6 +14,7 @@ UVM_SEEDS ?= 1 7 19 41
 .PHONY: help fmt fmt-check lint firmware-test uvm-check verilator-lint verilator-build
 .PHONY: verilator-smoke
 .PHONY: verilator-regress uvm-compile uvm-smoke uvm-regress coverage docs clean ci
+.PHONY: perf-baseline
 
 help:
 	@printf '%s\n' \
@@ -28,6 +29,7 @@ help:
 	  '  make verilator-build     Build the cycle-accurate C++ simulator' \
 	  '  make verilator-smoke     Run the deterministic smoke suite' \
 	  '  make verilator-regress   Run the non-UVM regression' \
+	  '  make perf-baseline       Capture baseline performance CSV and JSON' \
 	  '  make uvm-compile         Compile the class-based testbench' \
 	  '  make uvm-smoke           Run one UVM smoke test' \
 	  '  make uvm-regress         Run the UVM regression list' \
@@ -74,6 +76,9 @@ verilator-smoke:
 verilator-regress:
 	@python3 sim/scripts/run_verilator.py regress --seeds "$(SEEDS)" \
 	  --init-modes "$(INIT_MODES)" $(if $(filter 1 yes true,$(TRACE)),--trace,)
+
+perf-baseline: verilator-build
+	@python3 scripts/perf/run_baseline.py --seed "$(SEED)"
 
 uvm-compile:
 	@bash sim/scripts/uvm_flow.sh compile

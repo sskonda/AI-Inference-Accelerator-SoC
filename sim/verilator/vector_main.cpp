@@ -693,6 +693,94 @@ void test_random_operations(Fixture& fixture, std::mt19937& random) {
   }
 }
 
+std::vector<std::uint16_t> make_perf_vector(std::size_t length,
+                                            std::uint32_t salt) {
+  std::vector<std::uint16_t> values(length);
+  constexpr std::uint32_t kMultiplier = 29U;
+  constexpr std::uint32_t kMask = 0xFFFFU;
+  for (std::size_t index = 0; index < values.size(); ++index) {
+    values[index] = static_cast<std::uint16_t>(
+        (static_cast<std::uint32_t>(index) * kMultiplier + salt) & kMask);
+  }
+  return values;
+}
+
+void print_vector_performance(const std::string& workload,
+                              std::uint32_t seed,
+                              const Command& command,
+                              const CommandResult& result) {
+  std::cout << "PERF suite=vector"
+            << " workload=" << workload
+            << " seed=" << seed
+            << " elements=" << command.length
+            << " cycles=" << result.cycles
+            << " active_cycles=" << result.active_cycles
+            << " stalled_cycles=" << result.stalled_cycles
+            << " completed_elements=" << result.completed_elements
+            << " reads=" << result.reads
+            << " writes=" << result.writes
+            << '\n';
+}
+
+void run_performance_operation(Fixture& fixture,
+                               const std::string& workload,
+                               std::uint32_t seed,
+                               const Command& command,
+                               const std::vector<std::uint16_t>& source0,
+                               const std::vector<std::uint16_t>& source1,
+                               std::uint16_t scalar,
+                               const PortConfig& port_config) {
+  fixture.reset();
+  fixture.configure_port(port_config);
+  const auto result =
+      verify_operation(fixture, command, source0, source1, scalar);
+  print_vector_performance(workload, seed, command, result);
+}
+
+void run_performance(Fixture& fixture, std::uint32_t seed) {
+  constexpr std::uint32_t kPerfElements = 16U;
+  constexpr std::uint32_t kPerfCommandBase = 0xC000U;
+  constexpr std::uint32_t kPerfScalar = 3U;
+  constexpr std::uint32_t kSource0Salt = 0x101U;
+  constexpr std::uint32_t kSource1Salt = 0x211U;
+  const auto source0 = make_perf_vector(kPerfElements, kSource0Salt);
+  const auto source1 = make_perf_vector(kPerfElements, kSource1Salt);
+
+  run_performance_operation(
+      fixture, "vector_add", seed,
+      Command{soc::CMD_OP_VECTOR_ADD, kSource0Base, kSource1Base,
+              kDestinationBase, kPerfElements, 0U, kPerfCommandBase},
+      source0, source1, 0U, PortConfig{});
+  run_performance_operation(
+      fixture, "vector_multiply", seed,
+      Command{soc::CMD_OP_VECTOR_MULTIPLY, kSource0Base, kSource1Base,
+              kDestinationBase, kPerfElements, flag(soc::FLAG_SATURATE_BIT),
+              kPerfCommandBase + 1U},
+      source0, source1, 0U, PortConfig{});
+  run_performance_operation(
+      fixture, "vector_relu", seed,
+      Command{soc::CMD_OP_VECTOR_RELU, kSource0Base, kSource1Base,
+              kDestinationBase, kPerfElements, flag(soc::FLAG_SIGNED_BIT),
+              kPerfCommandBase + 2U},
+      source0, {}, 0U, PortConfig{});
+  run_performance_operation(
+      fixture, "vector_clamp", seed,
+      Command{soc::CMD_OP_VECTOR_CLAMP, kSource0Base, kSource1Base,
+              kDestinationBase, kPerfElements, 0U, kPerfCommandBase + 3U},
+      source0, source1, 0U, PortConfig{});
+  run_performance_operation(
+      fixture, "vector_add_backpressure", seed,
+      Command{soc::CMD_OP_VECTOR_ADD, kSource0Base, kSource1Base,
+              kDestinationBase, kPerfElements, 0U, kPerfCommandBase + 4U},
+      source0, source1, 0U, PortConfig{3U, 1U, 2U});
+  run_performance_operation(
+      fixture, "vector_scale", seed,
+      Command{soc::CMD_OP_VECTOR_SCALE, kSource0Base, kScalarAddress,
+              kDestinationBase, kPerfElements, flag(soc::FLAG_SATURATE_BIT),
+              kPerfCommandBase + 5U},
+      source0, {}, static_cast<std::uint16_t>(kPerfScalar), PortConfig{});
+}
+
 std::uint32_t parse_seed(int argc, char** argv) {
   std::uint32_t seed = 1U;
   for (int index = 1; index + 1 < argc; ++index) {
@@ -703,21 +791,38 @@ std::uint32_t parse_seed(int argc, char** argv) {
   return seed;
 }
 
+std::string parse_test_name(int argc, char** argv) {
+  std::string test_name = "smoke";
+  for (int index = 1; index + 1 < argc; ++index) {
+    if (std::string(argv[index]) == "--test") {
+      test_name = argv[index + 1];
+    }
+  }
+  return test_name;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
   const auto seed = parse_seed(argc, argv);
+  const auto test_name = parse_test_name(argc, argv);
   Verilated::commandArgs(argc, argv);
 
   try {
     Fixture fixture;
     std::mt19937 random(seed);
-    test_directed_operations(fixture);
-    test_length_boundaries(fixture);
-    test_memory_backpressure(fixture);
-    test_error_paths(fixture);
-    test_reset_during_operation(fixture);
-    test_random_operations(fixture, random);
+    if (test_name == "perf") {
+      run_performance(fixture, seed);
+    } else if (test_name == "smoke" || test_name == "regress") {
+      test_directed_operations(fixture);
+      test_length_boundaries(fixture);
+      test_memory_backpressure(fixture);
+      test_error_paths(fixture);
+      test_reset_during_operation(fixture);
+      test_random_operations(fixture, random);
+    } else {
+      throw std::runtime_error("unsupported test name: " + test_name);
+    }
     sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=vector seed=" << seed << '\n';
     return 0;

@@ -636,6 +636,70 @@ void test_random_operations(Fixture& fixture, std::mt19937& random) {
   }
 }
 
+std::vector<std::uint16_t> make_perf_vector(std::size_t length,
+                                            std::uint32_t salt) {
+  std::vector<std::uint16_t> values(length);
+  constexpr std::uint32_t kMultiplier = 17U;
+  constexpr std::uint32_t kMask = 0xFFFFU;
+  for (std::size_t index = 0; index < values.size(); ++index) {
+    values[index] = static_cast<std::uint16_t>(
+        (static_cast<std::uint32_t>(index) * kMultiplier + salt) & kMask);
+  }
+  return values;
+}
+
+void print_reduction_performance(const std::string& workload,
+                                 std::uint32_t seed,
+                                 const Command& command,
+                                 const CommandResult& result) {
+  std::cout << "PERF suite=reduction"
+            << " workload=" << workload
+            << " seed=" << seed
+            << " elements=" << command.length
+            << " cycles=" << result.cycles
+            << " active_cycles=" << result.active_cycles
+            << " stalled_cycles=" << result.stalled_cycles
+            << " completed_elements=" << result.completed_elements
+            << " reads=" << result.reads
+            << " writes=" << result.writes
+            << '\n';
+}
+
+void run_performance_operation(Fixture& fixture,
+                               const std::string& workload,
+                               std::uint32_t seed,
+                               const Command& command,
+                               const std::vector<std::uint16_t>& source,
+                               const PortConfig& port_config) {
+  fixture.reset();
+  fixture.configure_port(port_config);
+  const auto result = verify_operation(fixture, command, source);
+  print_reduction_performance(workload, seed, command, result);
+}
+
+void run_performance(Fixture& fixture, std::uint32_t seed) {
+  constexpr std::uint32_t kPerfElements = 16U;
+  constexpr std::uint32_t kPerfCommandBase = 0xD000U;
+  constexpr std::uint32_t kSourceSalt = 0x301U;
+  const auto source = make_perf_vector(kPerfElements, kSourceSalt);
+
+  run_performance_operation(
+      fixture, "reduction_sum", seed,
+      Command{soc::CMD_OP_REDUCE_SUM, kSourceBase, kDestinationBase,
+              kPerfElements, 0U, kPerfCommandBase},
+      source, PortConfig{});
+  run_performance_operation(
+      fixture, "reduction_max", seed,
+      Command{soc::CMD_OP_REDUCE_MAX, kSourceBase, kDestinationBase,
+              kPerfElements, 0U, kPerfCommandBase + 1U},
+      source, PortConfig{});
+  run_performance_operation(
+      fixture, "reduction_sum_backpressure", seed,
+      Command{soc::CMD_OP_REDUCE_SUM, kSourceBase, kDestinationBase,
+              kPerfElements, 0U, kPerfCommandBase + 2U},
+      source, PortConfig{3U, 1U, 2U});
+}
+
 std::uint32_t parse_seed(int argc, char** argv) {
   std::uint32_t seed = 1U;
   for (int index = 1; index + 1 < argc; ++index) {
@@ -646,21 +710,38 @@ std::uint32_t parse_seed(int argc, char** argv) {
   return seed;
 }
 
+std::string parse_test_name(int argc, char** argv) {
+  std::string test_name = "smoke";
+  for (int index = 1; index + 1 < argc; ++index) {
+    if (std::string(argv[index]) == "--test") {
+      test_name = argv[index + 1];
+    }
+  }
+  return test_name;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
   const auto seed = parse_seed(argc, argv);
+  const auto test_name = parse_test_name(argc, argv);
   Verilated::commandArgs(argc, argv);
 
   try {
     Fixture fixture;
     std::mt19937 random(seed);
-    test_directed_operations(fixture);
-    test_maximum_length(fixture);
-    test_memory_backpressure(fixture);
-    test_error_paths(fixture);
-    test_reset_during_operation(fixture);
-    test_random_operations(fixture, random);
+    if (test_name == "perf") {
+      run_performance(fixture, seed);
+    } else if (test_name == "smoke" || test_name == "regress") {
+      test_directed_operations(fixture);
+      test_maximum_length(fixture);
+      test_memory_backpressure(fixture);
+      test_error_paths(fixture);
+      test_reset_during_operation(fixture);
+      test_random_operations(fixture, random);
+    } else {
+      throw std::runtime_error("unsupported test name: " + test_name);
+    }
     sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=reduction seed=" << seed << '\n';
     return 0;

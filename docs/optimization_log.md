@@ -30,6 +30,7 @@ baseline performance run is reproducible. Each optimization must:
 | ID | Area | Status | Result |
 | --- | --- | --- | --- |
 | `baseline-rtl` | Correctness-first architecture | Kept | Establishes deterministic command, memory, and interrupt behavior |
+| `baseline-metrics` | Measurement | Kept | Captures seed 1 CSV and JSON tables under `perf/results/` |
 | `coverage-plumbing` | Verification quality | Kept | Adds instrumented Verilator coverage databases and summary reporting |
 
 ## Candidate List
