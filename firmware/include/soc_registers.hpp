@@ -111,6 +111,12 @@ inline constexpr std::uint32_t EXEC_TARGET_VECTOR = 2U;
 inline constexpr std::uint32_t EXEC_TARGET_REDUCTION = 3U;
 inline constexpr std::uint32_t EXEC_TARGET_GEMM = 4U;
 
+inline constexpr unsigned ELEMENT_WIDTH = 16U;
+inline constexpr unsigned DEFAULT_MAX_VECTOR_LENGTH = 256U;
+inline constexpr unsigned FLAG_SIGNED_BIT = 0U;
+inline constexpr unsigned FLAG_SATURATE_BIT = 1U;
+inline constexpr unsigned FLAG_IRQ_ON_DONE_BIT = 2U;
+
 inline constexpr std::uint32_t PERF_TOTAL_CYCLES = 0U;
 inline constexpr std::uint32_t PERF_DMA_ACTIVE_CYCLES = 1U;
 inline constexpr std::uint32_t PERF_DMA_STALLED_CYCLES = 2U;

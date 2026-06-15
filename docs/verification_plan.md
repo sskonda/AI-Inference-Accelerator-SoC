@@ -61,6 +61,12 @@ invalid opcode handling, reset with queued work, response backpressure, and seed
 tag/error propagation. The class-based test remains part of the full environment
 milestone.
 
+The non-UVM vector suite implements the directed and randomized vector test intent. It
+checks all five vector opcodes against the independent C++ arithmetic model, including
+signed and unsigned modes, truncation, saturation, scalar loading, negative values,
+odd and maximum lengths, partial write strobes, memory latency, request backpressure,
+response backpressure, illegal descriptors, memory errors, and reset during execution.
+
 ## Assertions
 
 Assertions cover stable payload while stalled, no unknown control after reset, legal FSM

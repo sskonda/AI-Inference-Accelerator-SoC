@@ -3,7 +3,8 @@
 - The implemented RTL currently covers shared definitions, interfaces, flow-control
   primitives, RAM, scratchpad storage, the AXI-Lite register block, DMA, timer,
   interrupts, performance counters, the command queue, and the command processor. The
-  accelerators follow the milestone order recorded in `project_plan.md`.
+  vector accelerator is also implemented. Reduction, matrix, and full SoC integration
+  follow the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
@@ -19,6 +20,9 @@
   multiple outstanding memory requests, and overlapping copies are not guaranteed.
 - The baseline command processor permits one accelerator command in flight. This gives
   deterministic completion ordering but does not yet overlap independent accelerators.
+- The vector accelerator uses one memory port and serializes source reads and destination
+  writes. Packed lanes provide word-level parallelism, but source and destination memory
+  operations do not overlap in the baseline.
 - Default scratchpad and external-memory capacities are intentionally bounded for
   regression speed.
 - Accelerator arithmetic is fixed width. Overflow and output conversion are architectural

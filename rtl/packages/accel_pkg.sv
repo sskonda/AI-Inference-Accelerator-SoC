@@ -14,6 +14,7 @@ package accel_pkg;
   localparam int unsigned EXECUTOR_TARGET_WIDTH = 3;
   localparam int unsigned STARVATION_COUNTER_WIDTH = 8;
   localparam int unsigned DEFAULT_STARVATION_THRESHOLD = 16;
+  localparam int unsigned DEFAULT_MAX_VECTOR_LENGTH = 256;
 
   localparam int unsigned FLAG_SIGNED_BIT = 0;
   localparam int unsigned FLAG_SATURATE_BIT = 1;
@@ -88,6 +89,11 @@ package accel_pkg;
 
   function automatic logic is_reduction_opcode(input command_opcode_e opcode);
     return (opcode == CMD_OP_REDUCE_SUM) || (opcode == CMD_OP_REDUCE_MAX);
+  endfunction
+
+  function automatic logic vector_opcode_uses_source1(input command_opcode_e opcode);
+    return (opcode == CMD_OP_VECTOR_ADD) || (opcode == CMD_OP_VECTOR_MULTIPLY) ||
+        (opcode == CMD_OP_VECTOR_CLAMP);
   endfunction
 
   function automatic executor_target_e executor_for_opcode(input command_opcode_e opcode);

@@ -62,6 +62,13 @@ baseline processor permits one command in flight and holds completion until firm
 accepts it. Detailed behavior is specified in
 [command_scheduler.md](command_scheduler.md).
 
+The vector accelerator reads packed elements from scratchpad through a backpressured
+memory initiator. Add, multiply, and clamp consume two source vectors; scale loads one
+scalar before traversing the first source; ReLU consumes one source. Lanes execute in
+parallel and the final write uses byte enables for a partial word. Signedness and
+saturation are descriptor flags. Detailed arithmetic and address behavior is specified
+in [vector_accelerator.md](vector_accelerator.md).
+
 ## Data Flow
 
 DMA moves exact byte counts among legal external-memory and scratchpad regions. It uses

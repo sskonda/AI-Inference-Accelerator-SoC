@@ -54,7 +54,8 @@ module protocol_compile_top (
         soc_pkg::DEFAULT_COMMAND_QUEUE_DEPTH ^ soc_pkg::DEFAULT_RAM_ADDR_WIDTH ^
         soc_pkg::DEFAULT_DMA_BURST_BEATS;
     definition_checksum = definition_checksum ^ accel_pkg::EXECUTOR_TARGET_WIDTH ^
-        accel_pkg::STARVATION_COUNTER_WIDTH ^ accel_pkg::DEFAULT_STARVATION_THRESHOLD;
+        accel_pkg::STARVATION_COUNTER_WIDTH ^ accel_pkg::DEFAULT_STARVATION_THRESHOLD ^
+        accel_pkg::DEFAULT_MAX_VECTOR_LENGTH;
     definition_checksum = definition_checksum ^ soc_pkg::PERF_COUNTER_WIDTH ^
         soc_pkg::ERROR_STATUS_WIDTH ^ soc_pkg::WORD_ADDRESS_LSB ^ reg_pkg::CMD_STATUS_PENDING_BIT ^
         reg_pkg::QUEUE_OCCUPANCY_LSB ^ reg_pkg::QUEUE_OCCUPANCY_WIDTH ^

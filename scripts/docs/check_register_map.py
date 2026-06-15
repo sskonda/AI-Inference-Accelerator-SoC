@@ -48,6 +48,20 @@ SV_EXECUTOR_TARGET = re.compile(r"EXEC_TARGET_([A-Z0-9_]+)\s*=\s*3'd([0-9]+)")
 CPP_EXECUTOR_TARGET = re.compile(
     r"inline constexpr std::uint32_t EXEC_TARGET_([A-Z0-9_]+) = ([0-9]+)U;"
 )
+SV_VECTOR_CONSTANT = re.compile(
+    r"localparam\s+int\s+unsigned\s+"
+    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH)\s*=\s*([0-9]+);"
+)
+CPP_VECTOR_CONSTANT = re.compile(
+    r"inline constexpr unsigned "
+    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH) = ([0-9]+)U;"
+)
+SV_FLAG_BIT = re.compile(
+    r"localparam\s+int\s+unsigned\s+FLAG_([A-Z0-9_]+)_BIT\s*=\s*([0-9]+);"
+)
+CPP_FLAG_BIT = re.compile(
+    r"inline constexpr unsigned FLAG_([A-Z0-9_]+)_BIT = ([0-9]+)U;"
+)
 
 
 def package_map() -> dict[str, int]:
@@ -103,6 +117,10 @@ def main() -> int:
     cpp_scheduler_policies = enum_map(CPP_HEADER_PATH, CPP_SCHEDULER_POLICY, 10)
     rtl_executor_targets = enum_map(ACCEL_PACKAGE_PATH, SV_EXECUTOR_TARGET, 10)
     cpp_executor_targets = enum_map(CPP_HEADER_PATH, CPP_EXECUTOR_TARGET, 10)
+    rtl_vector_constants = enum_map(ACCEL_PACKAGE_PATH, SV_VECTOR_CONSTANT, 10)
+    cpp_vector_constants = enum_map(CPP_HEADER_PATH, CPP_VECTOR_CONSTANT, 10)
+    rtl_flag_bits = enum_map(ACCEL_PACKAGE_PATH, SV_FLAG_BIT, 10)
+    cpp_flag_bits = enum_map(CPP_HEADER_PATH, CPP_FLAG_BIT, 10)
     failures: list[str] = []
 
     if not rtl_registers:
@@ -136,6 +154,10 @@ def main() -> int:
     failures.extend(
         compare_maps("executor target", rtl_executor_targets, cpp_executor_targets)
     )
+    failures.extend(
+        compare_maps("vector constant", rtl_vector_constants, cpp_vector_constants)
+    )
+    failures.extend(compare_maps("descriptor flag bit", rtl_flag_bits, cpp_flag_bits))
 
     if failures:
         for failure in failures:
@@ -148,7 +170,9 @@ def main() -> int:
         f"{len(rtl_opcodes)} opcodes, {len(rtl_perf_counters)} counters, "
         f"{len(rtl_irq_bits)} interrupt bits, "
         f"{len(rtl_scheduler_policies)} scheduler policies, "
-        f"{len(rtl_executor_targets)} executor targets)"
+        f"{len(rtl_executor_targets)} executor targets, "
+        f"{len(rtl_vector_constants)} vector constants, "
+        f"{len(rtl_flag_bits)} descriptor flag bits)"
     )
     return 0
 
