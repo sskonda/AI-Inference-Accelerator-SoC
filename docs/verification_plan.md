@@ -67,6 +67,12 @@ signed and unsigned modes, truncation, saturation, scalar loading, negative valu
 odd and maximum lengths, partial write strobes, memory latency, request backpressure,
 response backpressure, illegal descriptors, memory errors, and reset during execution.
 
+The non-UVM reduction suite compares sum and maximum against the C++ model. It covers
+length one, odd length, power-of-two length, maximum length, signed negative values,
+unsigned values, truncating and saturating sums, partial result writes, request and
+response stalls, response backpressure, read and write errors, illegal descriptors,
+reset during operation, and seeded random data and lengths.
+
 ## Assertions
 
 Assertions cover stable payload while stalled, no unknown control after reset, legal FSM

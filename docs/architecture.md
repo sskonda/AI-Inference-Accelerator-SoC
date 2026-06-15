@@ -69,6 +69,12 @@ parallel and the final write uses byte enables for a partial word. Signedness an
 saturation are descriptor flags. Detailed arithmetic and address behavior is specified
 in [vector_accelerator.md](vector_accelerator.md).
 
+The reduction accelerator applies a balanced tree to packed lanes, then combines one
+partial result per memory word in a wide accumulator. Sum converts to element width only
+after all inputs are consumed; maximum returns an existing element. One byte-enabled
+result is written to scratchpad. Detailed precision and tree behavior is specified in
+[reduction_accelerator.md](reduction_accelerator.md).
+
 ## Data Flow
 
 DMA moves exact byte counts among legal external-memory and scratchpad regions. It uses

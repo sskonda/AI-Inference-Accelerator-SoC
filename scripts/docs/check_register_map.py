@@ -50,11 +50,13 @@ CPP_EXECUTOR_TARGET = re.compile(
 )
 SV_VECTOR_CONSTANT = re.compile(
     r"localparam\s+int\s+unsigned\s+"
-    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH)\s*=\s*([0-9]+);"
+    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH|DEFAULT_MAX_REDUCTION_LENGTH)"
+    r"\s*=\s*([0-9]+);"
 )
 CPP_VECTOR_CONSTANT = re.compile(
     r"inline constexpr unsigned "
-    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH) = ([0-9]+)U;"
+    r"(ELEMENT_WIDTH|DEFAULT_MAX_VECTOR_LENGTH|DEFAULT_MAX_REDUCTION_LENGTH)"
+    r" = ([0-9]+)U;"
 )
 SV_FLAG_BIT = re.compile(
     r"localparam\s+int\s+unsigned\s+FLAG_([A-Z0-9_]+)_BIT\s*=\s*([0-9]+);"

@@ -129,15 +129,19 @@ are also implemented. The shared-slot command queue adds round-robin and priorit
 selection, programmable starvation protection, occupancy tracking, and a tagged
 single-inflight command processor. The packed-lane vector accelerator supports add,
 multiply, scale, ReLU, and clamp with signed or unsigned truncating and saturating
-arithmetic. The register block supports independent write-address and write-data
-handshakes, partial writes, held responses, sticky status, coherent counter reads, and
-atomic command submission. Primitive timing is specified in
+arithmetic. The reduction accelerator uses a balanced lane tree and wide cross-word
+accumulator for signed or unsigned sum and maximum operations. The register block
+supports independent write-address and write-data handshakes, partial writes, held
+responses, sticky status, coherent counter reads, and atomic command submission.
+Primitive timing is specified in
 [docs/primitives.md](docs/primitives.md), DMA behavior in [docs/dma.md](docs/dma.md), and
 system services in [docs/services.md](docs/services.md). Queue and scheduler behavior is
 specified in [docs/command_scheduler.md](docs/command_scheduler.md), and vector arithmetic
-in [docs/vector_accelerator.md](docs/vector_accelerator.md). Additional RTL and verification
-are introduced in gated milestones listed in [docs/project_plan.md](docs/project_plan.md).
-Passing claims are made only for checks that have been executed with available tools.
+in [docs/vector_accelerator.md](docs/vector_accelerator.md). Reduction behavior is
+specified in [docs/reduction_accelerator.md](docs/reduction_accelerator.md). Additional
+RTL and verification are introduced in gated milestones listed in
+[docs/project_plan.md](docs/project_plan.md). Passing claims are made only for checks
+that have been executed with available tools.
 
 ## License
 

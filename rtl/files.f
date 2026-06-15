@@ -18,3 +18,4 @@ rtl/perf/performance_counters.sv
 rtl/command_queue/command_queue.sv
 rtl/command_queue/command_processor.sv
 rtl/accel/vector_alu/vector_accelerator.sv
+rtl/accel/reduction/reduction_accelerator.sv

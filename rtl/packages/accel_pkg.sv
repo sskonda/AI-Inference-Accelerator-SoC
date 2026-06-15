@@ -15,6 +15,7 @@ package accel_pkg;
   localparam int unsigned STARVATION_COUNTER_WIDTH = 8;
   localparam int unsigned DEFAULT_STARVATION_THRESHOLD = 16;
   localparam int unsigned DEFAULT_MAX_VECTOR_LENGTH = 256;
+  localparam int unsigned DEFAULT_MAX_REDUCTION_LENGTH = 256;
 
   localparam int unsigned FLAG_SIGNED_BIT = 0;
   localparam int unsigned FLAG_SATURATE_BIT = 1;
