@@ -74,21 +74,24 @@ module command_processor (
   logic                                     completion_fire;
 
   always_comb begin
-    queued_target = executor_for_opcode(queue_command.opcode);
+    queued_target = queue_valid ? executor_for_opcode(queue_command.opcode) : EXEC_TARGET_INVALID;
+  end
 
-    dma_cmd_valid = 1'b0;
-    vector_cmd_valid = 1'b0;
-    reduction_cmd_valid = 1'b0;
-    gemm_cmd_valid = 1'b0;
-    dma_cmd = queue_command;
-    vector_cmd = queue_command;
-    reduction_cmd = queue_command;
-    gemm_cmd = queue_command;
-    dma_rsp_ready = 1'b0;
-    vector_rsp_ready = 1'b0;
-    reduction_rsp_ready = 1'b0;
-    gemm_rsp_ready = 1'b0;
+  assign dma_cmd = queue_command;
+  assign vector_cmd = queue_command;
+  assign reduction_cmd = queue_command;
+  assign gemm_cmd = queue_command;
 
+  assign dma_cmd_valid = (state == PROCESSOR_IDLE) && execution_enable && queue_valid &&
+      (queued_target == EXEC_TARGET_DMA);
+  assign vector_cmd_valid = (state == PROCESSOR_IDLE) && execution_enable && queue_valid &&
+      (queued_target == EXEC_TARGET_VECTOR);
+  assign reduction_cmd_valid = (state == PROCESSOR_IDLE) && execution_enable && queue_valid &&
+      (queued_target == EXEC_TARGET_REDUCTION);
+  assign gemm_cmd_valid = (state == PROCESSOR_IDLE) && execution_enable && queue_valid &&
+      (queued_target == EXEC_TARGET_GEMM);
+
+  always_comb begin
     selected_backend_ready = 1'b0;
     case (queued_target)
       EXEC_TARGET_DMA: selected_backend_ready = dma_cmd_ready;
@@ -97,26 +100,19 @@ module command_processor (
       EXEC_TARGET_GEMM: selected_backend_ready = gemm_cmd_ready;
       default: selected_backend_ready = 1'b0;
     endcase
+  end
 
-    queue_ready = 1'b0;
-    if ((state == PROCESSOR_IDLE) && execution_enable) begin
-      if (queued_target == EXEC_TARGET_INVALID) begin
-        queue_ready = 1'b1;
-      end else begin
-        if (queue_valid) begin
-          case (queued_target)
-            EXEC_TARGET_DMA: dma_cmd_valid = 1'b1;
-            EXEC_TARGET_VECTOR: vector_cmd_valid = 1'b1;
-            EXEC_TARGET_REDUCTION: reduction_cmd_valid = 1'b1;
-            EXEC_TARGET_GEMM: gemm_cmd_valid = 1'b1;
-            default: begin
-            end
-          endcase
-        end
-        queue_ready = selected_backend_ready;
-      end
-    end
+  assign queue_ready = (state == PROCESSOR_IDLE) && execution_enable &&
+      ((queued_target == EXEC_TARGET_INVALID) || selected_backend_ready);
+  assign dispatch_fire = queue_valid && queue_ready;
 
+  assign dma_rsp_ready = (state == PROCESSOR_WAIT) && (active_target == EXEC_TARGET_DMA);
+  assign vector_rsp_ready = (state == PROCESSOR_WAIT) && (active_target == EXEC_TARGET_VECTOR);
+  assign
+      reduction_rsp_ready = (state == PROCESSOR_WAIT) && (active_target == EXEC_TARGET_REDUCTION);
+  assign gemm_rsp_ready = (state == PROCESSOR_WAIT) && (active_target == EXEC_TARGET_GEMM);
+
+  always_comb begin
     selected_response_valid = 1'b0;
     selected_response_error = ERR_NONE;
     selected_response_result = '0;
@@ -125,7 +121,6 @@ module command_processor (
     if (state == PROCESSOR_WAIT) begin
       case (active_target)
         EXEC_TARGET_DMA: begin
-          dma_rsp_ready = 1'b1;
           selected_response_valid = dma_rsp_valid;
           selected_response_error = dma_rsp.error;
           selected_response_result = dma_rsp.result;
@@ -134,7 +129,6 @@ module command_processor (
               (dma_rsp.opcode == active_opcode);
         end
         EXEC_TARGET_VECTOR: begin
-          vector_rsp_ready = 1'b1;
           selected_response_valid = vector_rsp_valid;
           selected_response_error = vector_rsp.error;
           selected_response_result = vector_rsp.result;
@@ -143,7 +137,6 @@ module command_processor (
               (vector_rsp.opcode == active_opcode);
         end
         EXEC_TARGET_REDUCTION: begin
-          reduction_rsp_ready = 1'b1;
           selected_response_valid = reduction_rsp_valid;
           selected_response_error = reduction_rsp.error;
           selected_response_result = reduction_rsp.result;
@@ -152,7 +145,6 @@ module command_processor (
               (reduction_rsp.opcode == active_opcode);
         end
         EXEC_TARGET_GEMM: begin
-          gemm_rsp_ready = 1'b1;
           selected_response_valid = gemm_rsp_valid;
           selected_response_error = gemm_rsp.error;
           selected_response_result = gemm_rsp.result;
@@ -164,16 +156,15 @@ module command_processor (
         end
       endcase
     end
-
-    dispatch_fire = queue_valid && queue_ready;
-    completion_fire = selected_response_valid;
-    response_valid = state == PROCESSOR_RESPONSE;
-    response = response_reg;
-    busy = state != PROCESSOR_IDLE;
-    scheduler_stalled = queue_valid &&
-        ((state != PROCESSOR_IDLE) || !execution_enable ||
-         ((queued_target != EXEC_TARGET_INVALID) && !selected_backend_ready));
   end
+
+  assign completion_fire = selected_response_valid;
+  assign response_valid = state == PROCESSOR_RESPONSE;
+  assign response = response_reg;
+  assign busy = state != PROCESSOR_IDLE;
+  assign scheduler_stalled = queue_valid &&
+      ((state != PROCESSOR_IDLE) || !execution_enable ||
+       ((queued_target != EXEC_TARGET_INVALID) && !selected_backend_ready));
 
   always_ff @(posedge clk) begin
     if (!rst_n) begin

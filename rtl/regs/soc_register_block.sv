@@ -252,6 +252,9 @@ module soc_register_block (
       error_clear_mask = write_active_data;
     end
 
+  end
+
+  always_comb begin
     global_enable = ctrl_reg[CTRL_ENABLE_BIT];
     scheduler_priority_mode = scheduler_ctrl_reg[SCHED_POLICY_BIT];
     scheduler_starvation_threshold =

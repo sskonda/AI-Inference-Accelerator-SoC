@@ -3,8 +3,9 @@
 - The implemented RTL currently covers shared definitions, interfaces, flow-control
   primitives, RAM, scratchpad storage, the AXI-Lite register block, DMA, timer,
   interrupts, performance counters, the command queue, and the command processor. The
-  vector, reduction, and tiled matrix accelerators are also implemented. Full SoC
-  integration follows the milestone order recorded in `project_plan.md`.
+  vector, reduction, and tiled matrix accelerators are integrated with a shared
+  scratchpad and external-memory fabric. Firmware and the full class-based environment
+  follow the milestone order recorded in `project_plan.md`.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
@@ -14,12 +15,16 @@
 - The AXI-Lite interface is a documented single-beat subset and does not support bursts.
 - The current AXI-Lite agent is a reusable component skeleton. Full sequences, scoreboards,
   coverage, and simulator compilation are added with the complete UVM environment.
-- The baseline external memory model permits one request in flight and is not a detailed
-  DRAM timing model.
+- The integrated memory fabric and baseline external-memory model permit one request in
+  flight. The model injects latency and backpressure but is not a detailed DRAM timing
+  model.
 - DMA uses one buffered word and ordered responses. Its logical bursts do not create
   multiple outstanding memory requests, and overlapping copies are not guaranteed.
 - The baseline command processor permits one accelerator command in flight. This gives
   deterministic completion ordering but does not yet overlap independent accelerators.
+- Direct MMIO DMA may overlap one queued accelerator, but both share the single-request
+  memory fabric. A queued DMA command and a direct DMA operation cannot execute
+  concurrently because they share one DMA engine.
 - The vector accelerator uses one memory port and serializes source reads and destination
   writes. Packed lanes provide word-level parallelism, but source and destination memory
   operations do not overlap in the baseline.

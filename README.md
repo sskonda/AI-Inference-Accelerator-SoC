@@ -135,6 +135,9 @@ accelerator reuses loaded row and column elements across a 2-by-2 output tile an
 supports signed or unsigned truncating and saturating products. The register block
 supports independent write-address and write-data handshakes, partial writes, held
 responses, sticky status, coherent counter reads, and atomic command submission.
+The integrated SoC adds rotating single-outstanding arbitration across DMA and all
+accelerators, internal scratchpad routing, external-memory routing, queued DMA command
+adaptation, interrupt aggregation, and performance-event aggregation.
 Primitive timing is specified in
 [docs/primitives.md](docs/primitives.md), DMA behavior in [docs/dma.md](docs/dma.md), and
 system services in [docs/services.md](docs/services.md). Queue and scheduler behavior is
@@ -142,7 +145,8 @@ specified in [docs/command_scheduler.md](docs/command_scheduler.md), and vector 
 in [docs/vector_accelerator.md](docs/vector_accelerator.md). Reduction behavior is
 specified in [docs/reduction_accelerator.md](docs/reduction_accelerator.md), and matrix
 behavior in [docs/gemm_accelerator.md](docs/gemm_accelerator.md). Additional RTL and
-verification are introduced in gated milestones listed in
+integration behavior in [docs/soc_integration.md](docs/soc_integration.md). Additional
+firmware and verification are introduced in gated milestones listed in
 [docs/project_plan.md](docs/project_plan.md). Passing claims are made only for checks
 that have been executed with available tools.
 

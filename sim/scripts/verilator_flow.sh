@@ -11,184 +11,143 @@ cd "${root}"
 require_command verilator "install Verilator and place verilator on PATH"
 require_file "rtl/files.f" "complete the RTL source-list milestone"
 
+lint_top() {
+  local top="$1"
+  shift
+  verilator --lint-only --timing --assert -Wall \
+    --top-module "${top}" \
+    -f rtl/files.f \
+    "$@"
+}
+
+build_top() {
+  local top="$1"
+  local main_source="$2"
+  local compiler_flags="$3"
+  shift 3
+
+  require_file "${main_source}" "complete the ${top} C++ test program before building"
+  verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+    --top-module "${top}" \
+    -Mdir build/verilator \
+    -CFLAGS "${compiler_flags}" \
+    -f rtl/files.f \
+    "$@" \
+    "${root}/${main_source}"
+}
+
 action="${1:-}"
 case "${action}" in
   lint)
     if [[ -f "rtl/soc/soc_top.sv" ]]; then
-      verilator --lint-only --timing --assert -Wall --top-module soc_top -f rtl/files.f
-    else
-      verilator --lint-only --timing --assert -Wall \
-        --top-module primitive_test_top \
-        -f rtl/files.f \
+      lint_top soc_top
+    fi
+
+    lint_top primitive_test_top \
+      sim/common/protocol_compile_top.sv \
+      sim/verilator/primitive_test_top.sv
+
+    if [[ -f "sim/verilator/register_test_top.sv" ]]; then
+      lint_top register_test_top \
         sim/common/protocol_compile_top.sv \
-        sim/verilator/primitive_test_top.sv
-      if [[ -f "sim/verilator/register_test_top.sv" ]]; then
-        verilator --lint-only --timing --assert -Wall \
-          --top-module register_test_top \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/register_test_top.sv
-      fi
-      if [[ -f "sim/verilator/dma_test_top.sv" ]]; then
-        verilator --lint-only --timing --assert -Wall \
-          --top-module dma_test_top \
-          -GDATA_WIDTH=64 \
-          -GMAX_BURST_BEATS=3 \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/dma_test_top.sv
-      fi
-      if [[ -f "sim/verilator/services_test_top.sv" ]]; then
-        verilator --lint-only --timing --assert -Wall \
-          --top-module services_test_top \
-          -GTIMER_WIDTH=24 \
-          -GTEST_COUNTER_WIDTH=64 \
-          -GIRQ_LATENCY_WIDTH=32 \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/services_test_top.sv
-      fi
-      if [[ -f "sim/verilator/command_test_top.sv" ]]; then
-        verilator --lint-only --timing --assert -Wall \
-          --top-module command_test_top \
-          -GQUEUE_DEPTH=5 \
-          -GAGE_WIDTH=6 \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/command_test_top.sv
-      fi
-      if [[ -f "sim/verilator/vector_test_top.sv" ]]; then
-        verilator --lint-only --timing --assert -Wall \
-          --top-module vector_test_top \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/vector_test_top.sv
-      fi
-      if [[ -f "sim/verilator/reduction_test_top.sv" ]]; then
-        verilator --lint-only --timing --assert -Wall \
-          --top-module reduction_test_top \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/reduction_test_top.sv
-      fi
-      if [[ -f "sim/verilator/gemm_test_top.sv" ]]; then
-        verilator --lint-only --timing --assert -Wall \
-          --top-module gemm_test_top \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/gemm_test_top.sv
-      fi
+        sim/verilator/register_test_top.sv
+    fi
+    if [[ -f "sim/verilator/dma_test_top.sv" ]]; then
+      lint_top dma_test_top \
+        -GDATA_WIDTH=64 \
+        -GMAX_BURST_BEATS=3 \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/dma_test_top.sv
+    fi
+    if [[ -f "sim/verilator/services_test_top.sv" ]]; then
+      lint_top services_test_top \
+        -GTIMER_WIDTH=24 \
+        -GTEST_COUNTER_WIDTH=64 \
+        -GIRQ_LATENCY_WIDTH=32 \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/services_test_top.sv
+    fi
+    if [[ -f "sim/verilator/command_test_top.sv" ]]; then
+      lint_top command_test_top \
+        -GQUEUE_DEPTH=5 \
+        -GAGE_WIDTH=6 \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/command_test_top.sv
+    fi
+    if [[ -f "sim/verilator/vector_test_top.sv" ]]; then
+      lint_top vector_test_top \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/vector_test_top.sv
+    fi
+    if [[ -f "sim/verilator/reduction_test_top.sv" ]]; then
+      lint_top reduction_test_top \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/reduction_test_top.sv
+    fi
+    if [[ -f "sim/verilator/gemm_test_top.sv" ]]; then
+      lint_top gemm_test_top \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/gemm_test_top.sv
     fi
     ;;
+
   build)
     mkdir -p build/verilator
+
     if [[ -f "rtl/soc/soc_top.sv" ]]; then
-      require_file "sim/verilator/sim_main.cpp" \
-        "complete the SoC Verilator harness before building"
-      verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-        --top-module soc_top \
-        -Mdir build/verilator \
-        -f rtl/files.f \
-        "${root}/sim/verilator/sim_main.cpp"
-    else
-      require_file "sim/verilator/primitive_test_top.sv" \
-        "complete the primitive simulation top before building"
-      require_file "sim/verilator/primitive_main.cpp" \
-        "complete the primitive C++ test program before building"
-      verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-        --top-module primitive_test_top \
-        -Mdir build/verilator \
-        -CFLAGS "-std=c++17" \
-        -f rtl/files.f \
+      build_top soc_top sim/verilator/sim_main.cpp \
+        "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp"
+    fi
+
+    build_top primitive_test_top sim/verilator/primitive_main.cpp \
+      "-std=c++17" \
+      sim/common/protocol_compile_top.sv \
+      sim/verilator/primitive_test_top.sv
+
+    if [[ -f "sim/verilator/register_test_top.sv" ]]; then
+      build_top register_test_top sim/verilator/register_main.cpp \
+        "-std=c++17 -I${root}/firmware/include" \
         sim/common/protocol_compile_top.sv \
-        sim/verilator/primitive_test_top.sv \
-        "${root}/sim/verilator/primitive_main.cpp"
-      if [[ -f "sim/verilator/register_test_top.sv" ]]; then
-        require_file "sim/verilator/register_main.cpp" \
-          "complete the register-block C++ test program before building"
-        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-          --top-module register_test_top \
-          -Mdir build/verilator \
-          -CFLAGS "-std=c++17 -I${root}/firmware/include" \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/register_test_top.sv \
-          "${root}/sim/verilator/register_main.cpp"
-      fi
-      if [[ -f "sim/verilator/dma_test_top.sv" ]]; then
-        require_file "sim/verilator/dma_main.cpp" \
-          "complete the DMA C++ test program before building"
-        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-          --top-module dma_test_top \
-          -Mdir build/verilator \
-          -CFLAGS "-std=c++17 -I${root}/firmware/include" \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/dma_test_top.sv \
-          "${root}/sim/verilator/dma_main.cpp"
-      fi
-      if [[ -f "sim/verilator/services_test_top.sv" ]]; then
-        require_file "sim/verilator/services_main.cpp" \
-          "complete the services C++ test program before building"
-        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-          --top-module services_test_top \
-          -Mdir build/verilator \
-          -CFLAGS "-std=c++17 -I${root}/firmware/include" \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/services_test_top.sv \
-          "${root}/sim/verilator/services_main.cpp"
-      fi
-      if [[ -f "sim/verilator/command_test_top.sv" ]]; then
-        require_file "sim/verilator/command_main.cpp" \
-          "complete the command-scheduler C++ test program before building"
-        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-          --top-module command_test_top \
-          -Mdir build/verilator \
-          -CFLAGS "-std=c++17 -I${root}/firmware/include" \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/command_test_top.sv \
-          "${root}/sim/verilator/command_main.cpp"
-      fi
-      if [[ -f "sim/verilator/vector_test_top.sv" ]]; then
-        require_file "sim/verilator/vector_main.cpp" \
-          "complete the vector-accelerator C++ test program before building"
-        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-          --top-module vector_test_top \
-          -Mdir build/verilator \
-          -CFLAGS "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/vector_test_top.sv \
-          "${root}/sim/verilator/vector_main.cpp"
-      fi
-      if [[ -f "sim/verilator/reduction_test_top.sv" ]]; then
-        require_file "sim/verilator/reduction_main.cpp" \
-          "complete the reduction-accelerator C++ test program before building"
-        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-          --top-module reduction_test_top \
-          -Mdir build/verilator \
-          -CFLAGS "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/reduction_test_top.sv \
-          "${root}/sim/verilator/reduction_main.cpp"
-      fi
-      if [[ -f "sim/verilator/gemm_test_top.sv" ]]; then
-        require_file "sim/verilator/gemm_main.cpp" \
-          "complete the GEMM-accelerator C++ test program before building"
-        verilator --cc --exe --build --timing --assert --trace-fst -Wall \
-          --top-module gemm_test_top \
-          -Mdir build/verilator \
-          -CFLAGS "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
-          -f rtl/files.f \
-          sim/common/protocol_compile_top.sv \
-          sim/verilator/gemm_test_top.sv \
-          "${root}/sim/verilator/gemm_main.cpp"
-      fi
+        sim/verilator/register_test_top.sv
+    fi
+    if [[ -f "sim/verilator/dma_test_top.sv" ]]; then
+      build_top dma_test_top sim/verilator/dma_main.cpp \
+        "-std=c++17 -I${root}/firmware/include" \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/dma_test_top.sv
+    fi
+    if [[ -f "sim/verilator/services_test_top.sv" ]]; then
+      build_top services_test_top sim/verilator/services_main.cpp \
+        "-std=c++17 -I${root}/firmware/include" \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/services_test_top.sv
+    fi
+    if [[ -f "sim/verilator/command_test_top.sv" ]]; then
+      build_top command_test_top sim/verilator/command_main.cpp \
+        "-std=c++17 -I${root}/firmware/include" \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/command_test_top.sv
+    fi
+    if [[ -f "sim/verilator/vector_test_top.sv" ]]; then
+      build_top vector_test_top sim/verilator/vector_main.cpp \
+        "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/vector_test_top.sv
+    fi
+    if [[ -f "sim/verilator/reduction_test_top.sv" ]]; then
+      build_top reduction_test_top sim/verilator/reduction_main.cpp \
+        "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/reduction_test_top.sv
+    fi
+    if [[ -f "sim/verilator/gemm_test_top.sv" ]]; then
+      build_top gemm_test_top sim/verilator/gemm_main.cpp \
+        "-std=c++17 -I${root}/firmware/include -I${root}/models/cpp" \
+        sim/common/protocol_compile_top.sv \
+        sim/verilator/gemm_test_top.sv
     fi
     ;;
+
   *)
     printf 'usage: %s {lint|build}\n' "$0" >&2
     exit 2

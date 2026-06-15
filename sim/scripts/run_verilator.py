@@ -25,10 +25,7 @@ SIMULATOR_CANDIDATES = (
 
 
 def simulator_paths() -> tuple[Path, ...]:
-    soc_simulator = SIMULATOR_CANDIDATES[0]
-    if soc_simulator.is_file():
-        return (soc_simulator,)
-    available = tuple(candidate for candidate in SIMULATOR_CANDIDATES[1:] if candidate.is_file())
+    available = tuple(candidate for candidate in SIMULATOR_CANDIDATES if candidate.is_file())
     if available:
         return available
     raise RuntimeError("simulator executable is missing; run make verilator-build")

@@ -81,14 +81,20 @@ tile accumulator in parallel. Edge tiles suppress inactive outputs. Accumulators
 wide until final signed or unsigned truncating or saturating conversion. Detailed layout
 and precision behavior is specified in [gemm_accelerator.md](gemm_accelerator.md).
 
+Queued DMA descriptors pass through an adapter that shares the same engine as direct
+MMIO starts and produces tagged command responses. The integrated command path,
+top-level interfaces, and completion routing are specified in
+[soc_integration.md](soc_integration.md).
+
 ## Data Flow
 
 DMA moves exact byte counts among legal external-memory and scratchpad regions. It uses
 independent source-read and destination-write ports, buffers one word, supports request
 backpressure and response latency, and marks parameterized logical burst boundaries.
 Accelerator commands name scratchpad byte addresses. The scratchpad wrapper arbitrates
-DMA and accelerator accesses, checks bounds, and preserves documented read-first
-collision behavior.
+DMA and accelerator accesses through a rotating, registered-grant fabric. The fabric
+permits one outstanding request, routes scratchpad and external-memory regions, returns
+errors for illegal words, and preserves documented read-first RAM behavior.
 
 Vector commands process packed elements. Reduction commands consume a bounded vector and
 produce one result. Matrix commands use scratchpad-resident signed or unsigned matrices

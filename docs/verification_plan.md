@@ -81,6 +81,14 @@ read and write errors; reset during operation; and seeded random matrices. It al
 checks exact tiled source-read counts, output writes, byte strobes, final-write marking,
 and preservation of rounded-storage padding.
 
+The non-UVM SoC suite drives only AXI-Lite and external-memory top-level signals. It
+checks reset, identity and illegal MMIO, direct and queued DMA, vector, reduction, GEMM,
+DMA and accelerator interrupts, timer interrupt, queue high-water observation, command
+completion counts, DMA byte counts, and total cycles. Every workload moves inputs into
+scratchpad and results back out through DMA. External-memory request stalls and response
+latency vary across the standard four seeds. The regression runner retains every
+block-level suite in addition to the SoC suite.
+
 ## Assertions
 
 Assertions cover stable payload while stalled, no unknown control after reset, legal FSM

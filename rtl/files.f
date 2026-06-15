@@ -10,8 +10,10 @@ rtl/common/skid_buffer.sv
 rtl/fifo/sync_fifo.sv
 rtl/memory/simple_dual_port_ram.sv
 rtl/memory/scratchpad_ram.sv
+rtl/memory/soc_memory_fabric.sv
 rtl/regs/soc_register_block.sv
 rtl/dma/dma_engine.sv
+rtl/dma/dma_command_adapter.sv
 rtl/timer/soc_timer.sv
 rtl/irq/irq_controller.sv
 rtl/perf/performance_counters.sv
@@ -20,3 +22,4 @@ rtl/command_queue/command_processor.sv
 rtl/accel/vector_alu/vector_accelerator.sv
 rtl/accel/reduction/reduction_accelerator.sv
 rtl/accel/gemm/gemm_accelerator.sv
+rtl/soc/soc_top.sv
