@@ -3,8 +3,8 @@
 - The implemented RTL covers shared definitions, interfaces, flow-control primitives,
   RAM, scratchpad storage, the AXI-Lite register block, DMA, timer, interrupts,
   performance counters, command scheduling, three accelerators, and the integrated SoC.
-  The firmware driver and cooperative scheduler layer is implemented. The full
-  class-based environment follows the milestone order recorded in `project_plan.md`.
+  The firmware driver and cooperative scheduler layer and the full class-based
+  verification environment are implemented.
 - The local environment provides user-local Verible and Verilator installations. It does
   not currently provide a UVM-capable simulator or Yosys. Targets report those absences
   and do not claim a pass.
@@ -14,8 +14,10 @@
 - The firmware scheduler uses fixed 4 KiB scratchpad slots and supports at most 16
   resident task records with the default 64 KiB scratchpad.
 - The AXI-Lite interface is a documented single-beat subset and does not support bursts.
-- The current AXI-Lite agent is a reusable component skeleton. Full sequences, scoreboards,
-  coverage, and simulator compilation are added with the complete UVM environment.
+- The AXI-Lite and memory agents, command and interrupt monitors, virtual sequences,
+  scoreboards, coverage collectors, assertion binds, and 17-test regression manifest are
+  present. Static structure checks pass, but simulator compilation and execution have not
+  been performed locally because no compatible UVM simulator is installed.
 - The integrated memory fabric and baseline external-memory model permit one request in
   flight. The model injects latency and backpressure but is not a detailed DRAM timing
   model.

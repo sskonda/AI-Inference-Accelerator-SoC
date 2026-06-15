@@ -27,12 +27,12 @@ passive command and interrupt monitors, a memory mirror, a reference-model adapt
 scoreboard, and coverage collectors. Drivers use clocking blocks. Monitors sample only
 completed handshakes and publish immutable transaction objects.
 
-The scoreboard tracks accepted command IDs, expected completion order under the selected
-policy, expected memory writes, interrupt pending state, and accelerator outputs. It
-reports dropped or duplicated descriptors, unexpected writes, early completion, stale
-interrupts, and arithmetic mismatches.
+The scoreboard tracks accepted command IDs and opcodes, expected external-memory writes,
+expected interrupt assertions, and accelerator outputs. It reports dropped or duplicated
+descriptors, unexpected or duplicate writes, unexpected or missing interrupt assertions,
+completion identity errors, and arithmetic mismatches.
 
-## Planned Tests
+## UVM Tests
 
 | Test | Primary purpose |
 | --- | --- |
@@ -54,12 +54,12 @@ interrupts, and arithmetic mismatches.
 | `error_injection_test` | Illegal addresses, opcodes, dimensions, and accesses |
 | `performance_counter_test` | Event-to-counter correspondence and coherent reads |
 
-The current non-UVM command suite implements the command-queue portion of
-`command_queue_random_test`. It exercises every legal opcode, both policies, every
+The non-UVM command suite exercises every legal opcode, both policies, every
 occupancy level, full and empty transitions, starvation override, executor stalls,
 invalid opcode handling, reset with queued work, response backpressure, and seeded random
-tag/error propagation. The class-based test remains part of the full environment
-milestone.
+tag/error propagation. The UVM command-queue test independently fills the disabled queue,
+checks full and rejected-submission behavior, enables scheduling, and requires every
+accepted command ID to retire exactly once.
 
 The non-UVM vector suite implements the directed and randomized vector test intent. It
 checks all five vector opcodes against the independent C++ arithmetic model, including
@@ -96,6 +96,37 @@ DMA, vector add, ReLU, clamp, sum, maximum, and matrix tasks together. It verifi
 scratch-slot behavior, highest-priority initial dispatch, complete task retirement,
 software scheduling-stall accounting, architectural performance readback, and every
 external-memory result against a golden model.
+
+## UVM Implementation
+
+The class-based environment is compiled from `uvm/files.f` with `tb_top` as its top-level
+module. The active AXI-Lite agent drives the implemented five-channel single-beat subset
+through clocking blocks. The active memory agent owns a byte-addressable model and injects
+configurable request backpressure, response latency, and response errors. Passive
+interrupt and command agents report external IRQ transitions and tagged command
+retirements.
+
+Virtual sequences preload external memory, issue MMIO operations, submit descriptors, and
+declare expected destination bytes through the scoreboard API. The scoreboard compares
+external-memory writes, associates every successful command submission with a completion
+ID and opcode, rejects unexpected or duplicate completions, and requires queue drain when
+requested by a test. Coverage subscribers sample register direction and offset, DMA
+lengths, opcode and priority, queue occupancy and policy, memory delay and error behavior,
+interrupt levels, and architectural errors.
+
+The regression manifest contains all 17 tests shown above. Run:
+
+```sh
+make uvm-check
+make uvm-compile
+make uvm-smoke UVM_TEST=smoke_test UVM_SEED=1
+make uvm-regress UVM_SEEDS="1 7 19 41"
+```
+
+`make uvm-check` is simulator independent. The compile, smoke, and regression targets
+require `vlib`, `vlog`, `vsim`, and a UVM source tree. Set `UVM_HOME` to the directory
+containing `uvm_pkg.sv` and `uvm_macros.svh` when the simulator installation does not
+expose that location through `QUESTA_HOME` or `MTI_HOME`.
 
 ## Assertions
 

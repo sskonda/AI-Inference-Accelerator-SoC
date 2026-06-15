@@ -8,7 +8,8 @@ UVM_TEST ?= smoke_test
 UVM_SEED ?= 1
 UVM_SEEDS ?= 1 7 19 41
 
-.PHONY: help fmt fmt-check lint firmware-test verilator-lint verilator-build verilator-smoke
+.PHONY: help fmt fmt-check lint firmware-test uvm-check verilator-lint verilator-build
+.PHONY: verilator-smoke
 .PHONY: verilator-regress uvm-compile uvm-smoke uvm-regress coverage docs clean ci
 
 help:
@@ -19,6 +20,7 @@ help:
 	  '  make fmt                 Format SystemVerilog sources with Verible' \
 	  '  make lint                Run Verible syntax and lint checks' \
 	  '  make firmware-test       Run host-side firmware unit tests' \
+	  '  make uvm-check           Validate UVM structure and test manifests' \
 	  '  make verilator-lint      Lint synthesizable RTL with Verilator' \
 	  '  make verilator-build     Build the cycle-accurate C++ simulator' \
 	  '  make verilator-smoke     Run the deterministic smoke suite' \
@@ -49,6 +51,9 @@ lint:
 
 firmware-test:
 	@bash firmware/tests/run_tests.sh
+
+uvm-check:
+	@python3 scripts/lint/check_uvm.py
 
 verilator-lint:
 	@bash sim/scripts/verilator_flow.sh lint
@@ -82,4 +87,4 @@ docs:
 clean:
 	@bash scripts/clean.sh
 
-ci: fmt-check lint firmware-test verilator-lint verilator-build verilator-regress docs
+ci: fmt-check lint firmware-test uvm-check verilator-lint verilator-build verilator-regress docs

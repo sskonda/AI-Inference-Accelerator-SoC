@@ -32,15 +32,18 @@ module soc_top (
   input  logic [soc_pkg::DATA_WIDTH-1:0] memory_rsp_rdata,
   input  logic                           memory_rsp_error,
 
-  output logic                                      irq,
-  output logic                                      soc_busy,
-  output logic                                      debug_dma_done,
-  output logic                                      debug_command_completed,
-  output logic                                      debug_accelerator_done,
-  output logic                                      debug_fabric_busy,
+  output logic irq,
+  output logic soc_busy,
+  output logic debug_dma_done,
+  output logic debug_command_completed,
+  output logic [accel_pkg::COMMAND_ID_WIDTH-1:0] debug_completed_command_id,
+  output accel_pkg::command_opcode_e debug_completed_opcode,
+  output logic debug_command_error,
+  output logic debug_accelerator_done,
+  output logic debug_fabric_busy,
   output logic [reg_pkg::QUEUE_OCCUPANCY_WIDTH-1:0] debug_queue_occupancy,
-  output logic [   soc_pkg::ERROR_STATUS_WIDTH-1:0] debug_error_status,
-  output logic [           soc_pkg::DATA_WIDTH-1:0] debug_definition_checksum
+  output logic [soc_pkg::ERROR_STATUS_WIDTH-1:0] debug_error_status,
+  output logic [soc_pkg::DATA_WIDTH-1:0] debug_definition_checksum
 );
 
   import accel_pkg::*;
@@ -302,6 +305,9 @@ module soc_top (
       gemm_busy || fabric_busy;
   assign debug_dma_done = dma_done;
   assign debug_command_completed = command_completed;
+  assign debug_completed_command_id = processor_response.command_id;
+  assign debug_completed_opcode = processor_response.opcode;
+  assign debug_command_error = command_error;
   assign debug_accelerator_done = accelerator_done;
   assign debug_fabric_busy = fabric_busy;
   assign debug_queue_occupancy = queue_occupancy_register;

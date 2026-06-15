@@ -60,11 +60,12 @@ class axil_driver extends uvm_driver #(axil_item);
     vif.manager_cb.wstrb   <= item.write_strobe;
     vif.manager_cb.bready  <= 1'b1;
 
-    while (address_pending || data_pending) begin
+    forever begin
       @(vif.manager_cb);
       if (!vif.rst_n) begin
         drive_idle();
         wait_for_reset_release();
+        item.response = AXIL_RESP_SLVERR;
         return;
       end
       if (address_pending && vif.manager_cb.awready) begin
@@ -75,35 +76,39 @@ class axil_driver extends uvm_driver #(axil_item);
         data_pending = 1'b0;
         vif.manager_cb.wvalid <= 1'b0;
       end
+      if (!address_pending && !data_pending && vif.manager_cb.bvalid) begin
+        item.response = axil_resp_e'(vif.manager_cb.bresp);
+        vif.manager_cb.bready <= 1'b0;
+        return;
+      end
     end
-
-    do begin
-      @(vif.manager_cb);
-    end while (!vif.manager_cb.bvalid);
-    item.response = axil_resp_e'(vif.manager_cb.bresp);
-    vif.manager_cb.bready <= 1'b0;
   endtask
 
   task drive_read(axil_item item);
+    bit address_pending = 1'b1;
+
     vif.manager_cb.arvalid <= 1'b1;
     vif.manager_cb.araddr  <= item.address;
     vif.manager_cb.rready  <= 1'b1;
 
-    do begin
+    forever begin
       @(vif.manager_cb);
       if (!vif.rst_n) begin
         drive_idle();
         wait_for_reset_release();
+        item.response = AXIL_RESP_SLVERR;
         return;
       end
-    end while (!vif.manager_cb.arready);
-    vif.manager_cb.arvalid <= 1'b0;
-
-    do begin
-      @(vif.manager_cb);
-    end while (!vif.manager_cb.rvalid);
-    item.read_data = vif.manager_cb.rdata;
-    item.response  = axil_resp_e'(vif.manager_cb.rresp);
-    vif.manager_cb.rready <= 1'b0;
+      if (address_pending && vif.manager_cb.arready) begin
+        address_pending = 1'b0;
+        vif.manager_cb.arvalid <= 1'b0;
+      end
+      if (!address_pending && vif.manager_cb.rvalid) begin
+        item.read_data = vif.manager_cb.rdata;
+        item.response  = axil_resp_e'(vif.manager_cb.rresp);
+        vif.manager_cb.rready <= 1'b0;
+        return;
+      end
+    end
   endtask
 endclass

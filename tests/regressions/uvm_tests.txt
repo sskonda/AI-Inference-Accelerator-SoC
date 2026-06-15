@@ -1,0 +1,17 @@
+smoke_test
+register_test
+dma_directed_test
+dma_random_test
+vector_directed_test
+vector_random_test
+reduction_directed_test
+reduction_random_test
+gemm_directed_test
+gemm_random_test
+command_queue_random_test
+irq_test
+reset_test
+backpressure_test
+mixed_workload_test
+error_injection_test
+performance_counter_test

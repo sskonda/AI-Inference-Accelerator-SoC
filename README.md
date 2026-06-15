@@ -40,7 +40,7 @@ The implementation is simulation-only. It does not include a physical-board flow
 processor core. The firmware model is deliberately separated from RTL so a control core
 can be attached at the MMIO and interrupt boundaries in a future revision.
 
-## Planned Features
+## Features
 
 - Parameterized SystemVerilog RTL with shared packages and explicit interfaces.
 - Valid/ready flow control with backpressure and protocol assertions.
@@ -68,6 +68,7 @@ Run the open-source checks after Verible and Verilator are installed:
 make fmt
 make lint
 make firmware-test
+make uvm-check
 make verilator-lint
 make verilator-build
 make verilator-smoke
@@ -144,6 +145,13 @@ drivers; private per-task scratchpad slots; six workload-submission APIs; and a
 priority-aware cooperative scheduler. Tasks block on DMA or accelerator completion and
 resume through the interrupt dispatcher. The SoC regression runs a mixed seven-task
 firmware workload and checks every result against the reference models.
+The class-based verification environment provides active AXI-Lite and external-memory
+agents, passive command-completion and interrupt agents, virtual sequences, independent
+arithmetic reference functions, end-to-end scoreboards, assertion binds, and functional
+coverage. Seventeen directed and constrained-random tests are factory registered and
+listed in the regression manifest. `make uvm-check` validates that structure without a
+commercial simulator. UVM compile and execution remain not run in the current environment
+because a compatible simulator is unavailable.
 Primitive timing is specified in
 [docs/primitives.md](docs/primitives.md), DMA behavior in [docs/dma.md](docs/dma.md), and
 system services in [docs/services.md](docs/services.md). Queue and scheduler behavior is
@@ -151,10 +159,10 @@ specified in [docs/command_scheduler.md](docs/command_scheduler.md), and vector 
 in [docs/vector_accelerator.md](docs/vector_accelerator.md). Reduction behavior is
 specified in [docs/reduction_accelerator.md](docs/reduction_accelerator.md), and matrix
 behavior in [docs/gemm_accelerator.md](docs/gemm_accelerator.md). Additional RTL and
-integration behavior in [docs/soc_integration.md](docs/soc_integration.md), and the
-software architecture in [docs/firmware.md](docs/firmware.md). Additional verification
-is introduced in gated milestones listed in [docs/project_plan.md](docs/project_plan.md).
-Passing claims are made only for checks that have been executed with available tools.
+integration behavior is in [docs/soc_integration.md](docs/soc_integration.md), the
+software architecture is in [docs/firmware.md](docs/firmware.md), and the class-based
+environment is in [uvm/README.md](uvm/README.md). Passing claims are made only for checks
+that have been executed with available tools.
 
 ## License
 

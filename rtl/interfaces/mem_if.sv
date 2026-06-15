@@ -61,6 +61,20 @@ interface mem_if #(
   a_write_has_byte_enable :
   assert property (p_write_has_byte_enable);
 
+`ifndef VERILATOR
+  clocking target_cb @(posedge clk);
+    default input #1step output #0;
+    input req_valid, req_write, req_addr, req_wdata, req_wstrb, req_last, rsp_ready;
+    output req_ready, rsp_valid, rsp_rdata, rsp_error;
+  endclocking
+
+  clocking monitor_cb @(posedge clk);
+    default input #1step;
+    input req_valid, req_ready, req_write, req_addr, req_wdata, req_wstrb, req_last, rsp_valid,
+        rsp_ready, rsp_rdata, rsp_error;
+  endclocking
+`endif
+
   modport initiator(
       input req_ready, rsp_valid, rsp_rdata, rsp_error,
       output req_valid, req_write, req_addr, req_wdata, req_wstrb, req_last, rsp_ready
