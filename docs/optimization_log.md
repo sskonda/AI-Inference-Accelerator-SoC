@@ -45,9 +45,10 @@ The 4-by-4 default increases tile accumulator storage, but the configured matrix
 remain small and all available regressions pass. The improvement is concentrated on
 matrix workloads; DMA, vector, and reduction results remain unchanged.
 
-## Candidate List
+## Remaining Candidate List
 
-The optimization phase will evaluate:
+The optimization phase accepted the 4-by-4 matrix tile as the default. Remaining
+candidates for future comparison are:
 
 - FIFO depths and skid-buffer placement.
 - DMA logical burst length and buffering.
@@ -60,6 +61,6 @@ The optimization phase will evaluate:
 - Memory fabric outstanding depth.
 - Verilator runtime improvements that preserve coverage.
 
-Accepted configurations will be summarized in
-[performance_analysis.md](performance_analysis.md). Rejected configurations will remain
-in this log with the measured reason.
+Accepted configurations are summarized in
+[performance_analysis.md](performance_analysis.md). Future rejected configurations should
+remain in this log with the measured reason.

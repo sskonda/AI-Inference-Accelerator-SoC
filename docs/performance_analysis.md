@@ -35,16 +35,18 @@ The source revision column records the checked-out base revision at capture time
 table was generated before the milestone 17 commit was created, so `source_dirty=true`
 records that the performance-mode source edits were present in the worktree.
 
-Measured verification-adjacent data from milestone 15:
+Measured verification-adjacent data from the final local coverage run:
 
 | Metric | Value |
 | --- | ---: |
 | Verilator coverage databases | 44 |
-| Unique coverage points | 31,280 |
-| Covered coverage points | 20,856 |
-| Point coverage | 66.68% |
+| Unique coverage points | 31,096 |
+| Covered coverage points | 20,662 |
+| Point coverage | 66.45% |
 
-These are coverage metrics, not throughput metrics.
+These are coverage metrics, not throughput metrics. Full coverage status is recorded in
+[coverage_plan.md](coverage_plan.md) and
+[final_verification_report.md](final_verification_report.md).
 
 ## Baseline Throughput And Latency
 

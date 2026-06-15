@@ -1,7 +1,7 @@
 # Reference Models
 
-C++ models are linked into the fast simulation harness. Python models support independent
-test-vector checks and performance-result processing.
+C++ models are linked into the fast simulation harness. Performance-result processing is
+handled by Python scripts under `scripts/perf/`.
 
 Models use explicit fixed-width arithmetic and reproduce only documented architectural
 overflow, truncation, clamp, and saturation behavior.

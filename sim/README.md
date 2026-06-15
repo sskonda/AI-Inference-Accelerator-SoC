@@ -7,7 +7,7 @@ public simulator entry points used by the top-level Makefile.
 The class-based testbench is kept under `uvm/` and is not passed to Verilator.
 
 The regression runner writes one log per binary, seed, and initialization mode under
-`logs/verilator/`. The SoC harness supports zero, one, and randomized startup values
+`logs/verilator/`. The SoC harness supports zero, ones, and randomized startup values
 through Verilator's runtime random-reset control. Architectural reset is applied before
 every test.
 

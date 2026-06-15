@@ -152,11 +152,11 @@ compatible simulator and a UVM library.
 | `sim/verilator/` | C++ harness and behavioral memory |
 | `sim/scripts/` | Simulator build and regression entry points |
 | `uvm/` | Agents, environment, sequences, scoreboards, coverage, and tests |
-| `models/` | C++ and Python reference models |
-| `tests/` | Directed cases, random configurations, and regression manifests |
+| `models/` | C++ reference models |
+| `tests/` | Regression manifests |
 | `scripts/` | Formatting, lint, coverage, documentation, and performance tools |
 | `docs/` | Architecture, interfaces, verification, and analysis |
-| `perf/` | Reproducible configurations and result tables as they are captured |
+| `perf/` | Reproducible configurations and result tables |
 
 ## Verified Scope
 
@@ -173,7 +173,7 @@ current environment because a compatible simulator is not installed.
 Performance counters are implemented and read through firmware and SoC tests. Milestone
 16 documents the measurement method in
 [docs/performance_analysis.md](docs/performance_analysis.md). The repeatable baseline
-CSV or JSON result tables are captured in milestone 17, before optimization.
+and optimized CSV or JSON result tables are captured under `perf/results/`.
 
 ## Current Status
 
@@ -188,7 +188,7 @@ single-inflight command processor. The packed-lane vector accelerator supports a
 multiply, scale, ReLU, and clamp with signed or unsigned truncating and saturating
 arithmetic. The reduction accelerator uses a balanced lane tree and wide cross-word
 accumulator for signed or unsigned sum and maximum operations. The tiled matrix
-accelerator reuses loaded row and column elements across a 2-by-2 output tile and
+accelerator reuses loaded row and column elements across a 4-by-4 output tile and
 supports signed or unsigned truncating and saturating products. The register block
 supports independent write-address and write-data handshakes, partial writes, held
 responses, sticky status, coherent counter reads, and atomic command submission.
