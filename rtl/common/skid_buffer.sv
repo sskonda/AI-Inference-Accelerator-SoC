@@ -57,7 +57,11 @@ module skid_buffer #(
   endproperty
 
   property p_reset_clears_valid;
-    @(posedge clk) !rst_n |=> !buffer_valid;
+    @(posedge clk) $rose(
+        rst_n
+    ) |-> !$past(
+        buffer_valid
+    );
   endproperty
 
   a_input_stable_while_stalled :

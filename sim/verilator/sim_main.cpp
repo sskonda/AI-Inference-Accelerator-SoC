@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <optional>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -16,6 +17,7 @@
 #include "soc_registers.hpp"
 #include "vector_model.hpp"
 #include "verilated.h"
+#include "verilated_fst_c.h"
 
 namespace {
 
@@ -210,25 +212,48 @@ struct Command {
 
 class Fixture {
  public:
-  explicit Fixture(std::uint32_t seed)
-      : dut_(&context_), ready_block_residue_(seed % kReadyBlockModulus),
+  explicit Fixture(std::uint32_t seed,
+                   const std::optional<std::string>& trace_path)
+      : ready_block_residue_(seed % kReadyBlockModulus),
         response_latency_(seed % 3U) {
+    if (trace_path.has_value()) {
+      trace_ = std::make_unique<VerilatedFstC>();
+      dut_.trace(trace_.get(), kTraceDepth);
+      trace_->open(trace_path->c_str());
+    }
     clear_inputs();
     reset();
   }
 
-  ~Fixture() { dut_.final(); }
+  ~Fixture() {
+    dut_.final();
+    if (trace_) {
+      trace_->close();
+    }
+  }
 
   Vsoc_top& dut() { return dut_; }
   DramImage& dram() { return dram_; }
+
+  void evaluate() {
+    dut_.eval();
+    if (trace_) {
+      const auto current_time = Verilated::time();
+      if (!trace_has_dumped_ || (current_time != last_trace_time_)) {
+        trace_->dump(current_time);
+        last_trace_time_  = current_time;
+        trace_has_dumped_ = true;
+      }
+    }
+  }
 
   void tick() {
     prepare_memory_response();
     drive_memory_inputs();
 
     dut_.clk = 0;
-    dut_.eval();
-    context_.timeInc(1);
+    evaluate();
+    Verilated::timeInc(1);
 
     const bool request_fire = dut_.memory_req_valid && dut_.memory_req_ready;
     const bool response_fire = dut_.memory_rsp_valid && dut_.memory_rsp_ready;
@@ -238,8 +263,8 @@ class Fixture {
     const std::uint32_t request_strobe = dut_.memory_req_wstrb;
 
     dut_.clk = 1;
-    dut_.eval();
-    context_.timeInc(1);
+    evaluate();
+    Verilated::timeInc(1);
 
     dma_done_count_ += dut_.debug_dma_done;
     command_done_count_ += dut_.debug_command_completed;
@@ -257,8 +282,8 @@ class Fixture {
     }
 
     dut_.clk = 0;
-    dut_.eval();
-    context_.timeInc(1);
+    evaluate();
+    Verilated::timeInc(1);
     ++cycle_;
   }
 
@@ -277,7 +302,7 @@ class Fixture {
     tick();
     tick();
     dut_.rst_n = 1;
-    dut_.eval();
+    evaluate();
   }
 
   std::uint32_t mmio_write(std::uint32_t offset, std::uint32_t value,
@@ -293,7 +318,7 @@ class Fixture {
     bool data_done = false;
     for (unsigned wait_cycle = 0; wait_cycle < kTransactionTimeout;
          ++wait_cycle) {
-      dut_.eval();
+      evaluate();
       const bool address_fire =
           !address_done && dut_.axil_awvalid && dut_.axil_awready;
       const bool data_fire =
@@ -311,7 +336,7 @@ class Fixture {
         const auto response = dut_.axil_bresp;
         tick();
         dut_.axil_bready = 0;
-        dut_.eval();
+        evaluate();
         return response;
       }
     }
@@ -326,7 +351,7 @@ class Fixture {
     bool address_done = false;
     for (unsigned wait_cycle = 0; wait_cycle < kTransactionTimeout;
          ++wait_cycle) {
-      dut_.eval();
+      evaluate();
       const bool address_fire =
           !address_done && dut_.axil_arvalid && dut_.axil_arready;
       tick();
@@ -339,7 +364,7 @@ class Fixture {
         const auto response = dut_.axil_rresp;
         tick();
         dut_.axil_rready = 0;
-        dut_.eval();
+        evaluate();
         if (response_out != nullptr) {
           *response_out = response;
         }
@@ -470,6 +495,7 @@ class Fixture {
 
  private:
   static constexpr unsigned kReadyBlockModulus = 5U;
+  static constexpr int kTraceDepth = 99;
 
   void prepare_memory_response() {
     if (response_valid_ || !pending_response_.has_value()) {
@@ -535,8 +561,10 @@ class Fixture {
     dut_.memory_rsp_error = 0;
   }
 
-  VerilatedContext context_;
   Vsoc_top dut_;
+  std::unique_ptr<VerilatedFstC> trace_;
+  bool trace_has_dumped_ = false;
+  std::uint64_t last_trace_time_ = 0U;
   DramImage dram_;
   std::optional<PendingResponse> pending_response_;
   bool response_valid_ = false;
@@ -932,24 +960,35 @@ void test_timer_and_performance(Fixture& fixture) {
          "expected completion and interrupt events were not observed");
 }
 
-std::uint32_t parse_seed(int argc, char** argv) {
+struct Options {
   std::uint32_t seed = 1U;
-  for (int index = 1; index + 1 < argc; ++index) {
-    if (std::string(argv[index]) == "--seed") {
-      seed = static_cast<std::uint32_t>(std::stoul(argv[index + 1]));
+  std::optional<std::string> trace_path;
+};
+
+Options parse_options(int argc, char** argv) {
+  Options options;
+  for (int index = 1; index < argc; ++index) {
+    const std::string argument = argv[index];
+    if ((argument == "--seed") && (index + 1 < argc)) {
+      options.seed = static_cast<std::uint32_t>(std::stoul(argv[++index]));
+    } else if ((argument == "--trace") && (index + 1 < argc)) {
+      options.trace_path = argv[++index];
     }
   }
-  return seed;
+  return options;
 }
 
 }  // namespace
 
 int main(int argc, char** argv) {
-  const auto seed = parse_seed(argc, argv);
   Verilated::commandArgs(argc, argv);
+  const auto options = parse_options(argc, argv);
+  if (options.trace_path.has_value()) {
+    Verilated::traceEverOn(true);
+  }
 
   try {
-    Fixture fixture(seed);
+    Fixture fixture(options.seed, options.trace_path);
     test_reset_and_mmio(fixture);
     test_mmio_dma(fixture);
     test_queued_dma(fixture);
@@ -958,10 +997,10 @@ int main(int argc, char** argv) {
     test_gemm(fixture);
     test_firmware_scheduler(fixture);
     test_timer_and_performance(fixture);
-    std::cout << "PASS test=soc seed=" << seed << '\n';
+    std::cout << "PASS test=soc seed=" << options.seed << '\n';
     return 0;
   } catch (const std::exception& error) {
-    std::cerr << "FAIL test=soc seed=" << seed
+    std::cerr << "FAIL test=soc seed=" << options.seed
               << " reason=" << error.what() << '\n';
     return 1;
   }

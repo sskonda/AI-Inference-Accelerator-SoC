@@ -106,7 +106,11 @@ module sync_fifo #(
   endproperty
 
   property p_reset_clears_control;
-    @(posedge clk) !rst_n |=> empty && !full && (occupancy == '0);
+    @(posedge clk) $rose(
+        rst_n
+    ) |-> $past(
+        empty && !full && (occupancy == '0)
+    );
   endproperty
 
   a_input_stable_while_stalled :

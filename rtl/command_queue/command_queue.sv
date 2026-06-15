@@ -229,7 +229,11 @@ module command_queue #(
   endproperty
 
   property p_reset_clears_queue;
-    @(posedge clk) !rst_n |=> empty && !full && (occupancy == '0) && (high_water == '0);
+    @(posedge clk) $rose(
+        rst_n
+    ) |-> $past(
+        empty && !full && (occupancy == '0) && (high_water == '0)
+    );
   endproperty
 
   a_output_stable_while_stalled :

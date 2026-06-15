@@ -6,4 +6,5 @@
 - `data/` contains small text fixtures whose provenance and expected results are
   documented.
 
-Runtime logs and waveforms are written outside this tree and are not committed.
+Runtime logs are written under `logs/verilator/`. Optional FST waveforms are written
+under `logs/verilator/traces/`. These runtime artifacts are not committed.

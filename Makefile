@@ -4,6 +4,9 @@ SHELL := /usr/bin/env bash
 
 SEED ?= 1
 SEEDS ?= 1 7 19 41
+INIT_MODE ?= zero
+INIT_MODES ?= zero ones random
+TRACE ?= 0
 UVM_TEST ?= smoke_test
 UVM_SEED ?= 1
 UVM_SEEDS ?= 1 7 19 41
@@ -36,6 +39,9 @@ help:
 	  'Variables:' \
 	  '  SEED=<n>                 Smoke-test seed (default: 1)' \
 	  '  SEEDS="<n> ..."          Regression seeds (default: 1 7 19 41)' \
+	  '  INIT_MODE=<mode>         Smoke initialization: zero, ones, or random' \
+	  '  INIT_MODES="<m> ..."     Regression initialization modes' \
+	  '  TRACE=1                  Emit SoC FST traces under logs/verilator/traces' \
 	  '  UVM_TEST=<name>          UVM smoke test (default: smoke_test)' \
 	  '  UVM_SEED=<n>             UVM smoke seed (default: 1)' \
 	  '  UVM_SEEDS="<n> ..."      UVM regression seeds'
@@ -62,10 +68,12 @@ verilator-build:
 	@bash sim/scripts/verilator_flow.sh build
 
 verilator-smoke:
-	@python3 sim/scripts/run_verilator.py smoke --seed "$(SEED)"
+	@python3 sim/scripts/run_verilator.py smoke --seed "$(SEED)" \
+	  --init-mode "$(INIT_MODE)" $(if $(filter 1 yes true,$(TRACE)),--trace,)
 
 verilator-regress:
-	@python3 sim/scripts/run_verilator.py regress --seeds "$(SEEDS)"
+	@python3 sim/scripts/run_verilator.py regress --seeds "$(SEEDS)" \
+	  --init-modes "$(INIT_MODES)" $(if $(filter 1 yes true,$(TRACE)),--trace,)
 
 uvm-compile:
 	@bash sim/scripts/uvm_flow.sh compile

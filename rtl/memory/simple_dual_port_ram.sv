@@ -95,7 +95,11 @@ module simple_dual_port_ram #(
   endproperty
 
   property p_reset_clears_read_valid;
-    @(posedge clk) !rst_n |=> !rd_valid;
+    @(posedge clk) $rose(
+        rst_n
+    ) |-> !$past(
+        rd_valid
+    );
   endproperty
 
   a_known_control :

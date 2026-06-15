@@ -84,4 +84,8 @@ The SoC Verilator harness accesses only top-level interfaces. It:
 8. Reads total-cycle, byte, completion, and queue high-water counters.
 
 External-memory request stalls and response latency vary with seeds `1`, `7`, `19`, and
-`41`. Accelerator outputs are compared with independent C++ reference models.
+`41`. Regressions repeat the SoC-level scenarios with zero, one, and randomized startup
+values before applying architectural reset. Accelerator outputs are compared with
+independent C++ reference models. Set `TRACE=1` on a smoke or regression command to write
+SoC FST waveforms under `logs/verilator/traces/`; per-binary text logs are written under
+`logs/verilator/`.
