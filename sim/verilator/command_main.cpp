@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Vcommand_test_top.h"
+#include "sim_utils.hpp"
 #include "soc_registers.hpp"
 #include "verilated.h"
 
@@ -451,6 +452,7 @@ int main(int argc, char** argv) {
     test_invalid_opcode(fixture);
     test_all_opcode_routes(fixture);
     test_random_commands(fixture, random);
+    sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=command seed=" << seed << '\n';
     return 0;
   } catch (const std::exception& error) {

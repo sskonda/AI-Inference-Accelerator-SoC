@@ -11,6 +11,7 @@
 
 #include "Vreduction_test_top.h"
 #include "reduction_model.hpp"
+#include "sim_utils.hpp"
 #include "soc_memory_map.hpp"
 #include "soc_registers.hpp"
 #include "verilated.h"
@@ -660,6 +661,7 @@ int main(int argc, char** argv) {
     test_error_paths(fixture);
     test_reset_during_operation(fixture);
     test_random_operations(fixture, random);
+    sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=reduction seed=" << seed << '\n';
     return 0;
   } catch (const std::exception& error) {

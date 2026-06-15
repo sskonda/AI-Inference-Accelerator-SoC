@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Vservices_test_top.h"
+#include "sim_utils.hpp"
 #include "soc_registers.hpp"
 #include "verilated.h"
 
@@ -389,7 +390,9 @@ int main(int argc, char** argv) {
       test_name = argv[++index];
     } else if ((argument == "--seed") && (index + 1 < argc)) {
       seed = static_cast<std::uint32_t>(std::stoul(argv[++index]));
-    } else if (argument != "--coverage") {
+    } else if (argument == sim::kCoverageFileOption && (index + 1 < argc)) {
+      ++index;
+    } else if (!sim::is_coverage_argument(argument)) {
       std::cerr << "error: unknown argument: " << argument << '\n';
       return 2;
     }
@@ -401,6 +404,7 @@ int main(int argc, char** argv) {
     if ((test_name != "smoke") && (test_name != "regress")) {
       throw std::runtime_error("unsupported test name: " + test_name);
     }
+    sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=" << test_name << " seed=" << seed << '\n';
   } catch (const std::exception& error) {
     std::cerr << "FAIL test=" << test_name << " seed=" << seed

@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "Vvector_test_top.h"
+#include "sim_utils.hpp"
 #include "soc_memory_map.hpp"
 #include "soc_registers.hpp"
 #include "vector_model.hpp"
@@ -717,6 +718,7 @@ int main(int argc, char** argv) {
     test_error_paths(fixture);
     test_reset_during_operation(fixture);
     test_random_operations(fixture, random);
+    sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=vector seed=" << seed << '\n';
     return 0;
   } catch (const std::exception& error) {

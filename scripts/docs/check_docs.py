@@ -15,6 +15,7 @@ REQUIRED_FILES = (
     ROOT / "docs" / "architecture.md",
     ROOT / "docs" / "firmware.md",
     ROOT / "docs" / "verification_plan.md",
+    ROOT / "docs" / "coverage_plan.md",
     ROOT / "docs" / "register_map.md",
     ROOT / "docs" / "memory_map.md",
     ROOT / "docs" / "known_limitations.md",

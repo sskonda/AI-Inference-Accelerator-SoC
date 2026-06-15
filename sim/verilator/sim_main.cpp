@@ -13,6 +13,7 @@
 #include "gemm_model.hpp"
 #include "mmio.hpp"
 #include "reduction_model.hpp"
+#include "sim_utils.hpp"
 #include "soc_memory_map.hpp"
 #include "soc_registers.hpp"
 #include "vector_model.hpp"
@@ -973,6 +974,8 @@ Options parse_options(int argc, char** argv) {
       options.seed = static_cast<std::uint32_t>(std::stoul(argv[++index]));
     } else if ((argument == "--trace") && (index + 1 < argc)) {
       options.trace_path = argv[++index];
+    } else if (argument == sim::kCoverageFileOption && (index + 1 < argc)) {
+      ++index;
     }
   }
   return options;
@@ -997,6 +1000,7 @@ int main(int argc, char** argv) {
     test_gemm(fixture);
     test_firmware_scheduler(fixture);
     test_timer_and_performance(fixture);
+    sim::write_coverage_if_requested(argc, argv);
     std::cout << "PASS test=soc seed=" << options.seed << '\n';
     return 0;
   } catch (const std::exception& error) {

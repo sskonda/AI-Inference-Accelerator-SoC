@@ -618,4 +618,14 @@ module soc_top (
   a_internal_events_known :
   assert property (p_internal_events_known);
 
+  cover property (@(posedge clk) disable iff (!rst_n) dma_done);
+  cover property (@(posedge clk) disable iff (!rst_n) command_completed);
+  cover property (@(posedge clk) disable iff (!rst_n) vector_done);
+  cover property (@(posedge clk) disable iff (!rst_n) reduction_done);
+  cover property (@(posedge clk) disable iff (!rst_n) gemm_done);
+  cover property (@(posedge clk) disable iff (!rst_n) timer_tick);
+  cover property (@(posedge clk) disable iff (!rst_n) queue_full);
+  cover property (@(posedge clk) disable iff (!rst_n) queue_empty && $past(!queue_empty));
+  cover property (@(posedge clk) disable iff (!rst_n) fabric_error_event);
+
 endmodule

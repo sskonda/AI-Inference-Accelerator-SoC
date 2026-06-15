@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -11,6 +12,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 COVERAGE_DATABASE = ROOT / "coverage" / "coverage.dat"
+COVERAGE_DIRECTORY = ROOT / "coverage" / "verilator"
+BUILD_DIRECTORY = Path(
+    os.environ.get("VERILATOR_BUILD_DIR", str(ROOT / "build" / "verilator"))
+)
+if not BUILD_DIRECTORY.is_absolute():
+    BUILD_DIRECTORY = ROOT / BUILD_DIRECTORY
 LOG_DIRECTORY = ROOT / "logs" / "verilator"
 TRACE_DIRECTORY = LOG_DIRECTORY / "traces"
 
@@ -32,18 +39,18 @@ class Simulator:
 SIMULATOR_CANDIDATES = (
     Simulator(
         "soc",
-        ROOT / "build" / "verilator" / "Vsoc_top",
+        BUILD_DIRECTORY / "Vsoc_top",
         supports_initialization_modes=True,
         supports_trace=True,
     ),
-    Simulator("gemm", ROOT / "build" / "verilator" / "Vgemm_test_top"),
-    Simulator("reduction", ROOT / "build" / "verilator" / "Vreduction_test_top"),
-    Simulator("vector", ROOT / "build" / "verilator" / "Vvector_test_top"),
-    Simulator("command", ROOT / "build" / "verilator" / "Vcommand_test_top"),
-    Simulator("services", ROOT / "build" / "verilator" / "Vservices_test_top"),
-    Simulator("dma", ROOT / "build" / "verilator" / "Vdma_test_top"),
-    Simulator("register", ROOT / "build" / "verilator" / "Vregister_test_top"),
-    Simulator("primitive", ROOT / "build" / "verilator" / "Vprimitive_test_top"),
+    Simulator("gemm", BUILD_DIRECTORY / "Vgemm_test_top"),
+    Simulator("reduction", BUILD_DIRECTORY / "Vreduction_test_top"),
+    Simulator("vector", BUILD_DIRECTORY / "Vvector_test_top"),
+    Simulator("command", BUILD_DIRECTORY / "Vcommand_test_top"),
+    Simulator("services", BUILD_DIRECTORY / "Vservices_test_top"),
+    Simulator("dma", BUILD_DIRECTORY / "Vdma_test_top"),
+    Simulator("register", BUILD_DIRECTORY / "Vregister_test_top"),
+    Simulator("primitive", BUILD_DIRECTORY / "Vprimitive_test_top"),
 )
 
 
@@ -98,7 +105,11 @@ def run_simulator(
             )
         )
     if coverage:
-        command.append("--coverage")
+        COVERAGE_DIRECTORY.mkdir(parents=True, exist_ok=True)
+        coverage_file = COVERAGE_DIRECTORY / (
+            f"{simulator.name}_{case_name}_seed{seed}_{initialization_mode}.dat"
+        )
+        command.extend(("--coverage", "--coverage-file", str(coverage_file)))
     if trace and simulator.supports_trace:
         TRACE_DIRECTORY.mkdir(parents=True, exist_ok=True)
         trace_file = TRACE_DIRECTORY / (
@@ -157,8 +168,12 @@ def main() -> int:
                 trace=args.trace,
             )
         else:
-            if args.suite == "coverage" and COVERAGE_DATABASE.exists():
-                COVERAGE_DATABASE.unlink()
+            if args.suite == "coverage":
+                if COVERAGE_DATABASE.exists():
+                    COVERAGE_DATABASE.unlink()
+                if COVERAGE_DIRECTORY.exists():
+                    for coverage_file in COVERAGE_DIRECTORY.glob("*.dat"):
+                        coverage_file.unlink()
             initialization_modes = parse_initialization_modes(args.init_modes)
             for seed in parse_seeds(args.seeds):
                 run_case(
@@ -168,12 +183,16 @@ def main() -> int:
                     coverage=args.suite == "coverage",
                     trace=args.trace,
                 )
-            if args.suite == "coverage" and (
-                not COVERAGE_DATABASE.is_file() or COVERAGE_DATABASE.stat().st_size == 0
-            ):
-                raise RuntimeError(
-                    "coverage database was not produced; build an instrumented simulator"
-                )
+            if args.suite == "coverage":
+                coverage_files = tuple(COVERAGE_DIRECTORY.glob("*.dat"))
+                if not coverage_files:
+                    raise RuntimeError(
+                        "coverage databases were not produced; build instrumented simulators"
+                    )
+                empty_files = tuple(path for path in coverage_files if path.stat().st_size == 0)
+                if empty_files:
+                    relative_path = empty_files[0].relative_to(ROOT)
+                    raise RuntimeError(f"empty coverage database: {relative_path}")
     except (RuntimeError, ValueError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1

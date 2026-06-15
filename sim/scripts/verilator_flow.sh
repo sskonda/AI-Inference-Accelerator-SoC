@@ -11,6 +11,12 @@ cd "${root}"
 require_command verilator "install Verilator and place verilator on PATH"
 require_file "rtl/files.f" "complete the RTL source-list milestone"
 
+build_dir="${VERILATOR_BUILD_DIR:-build/verilator}"
+coverage_flags=()
+if [[ "${VERILATOR_COVERAGE:-0}" == "1" ]]; then
+  coverage_flags+=(--coverage)
+fi
+
 lint_top() {
   local top="$1"
   shift
@@ -28,9 +34,10 @@ build_top() {
 
   require_file "${main_source}" "complete the ${top} C++ test program before building"
   verilator --cc --exe --build --timing --assert --trace-fst -Wall \
+    "${coverage_flags[@]}" \
     --top-module "${top}" \
-    -Mdir build/verilator \
-    -CFLAGS "${compiler_flags}" \
+    -Mdir "${build_dir}" \
+    -CFLAGS "${compiler_flags} -I${root}/sim/verilator" \
     -f rtl/files.f \
     "$@" \
     "${root}/${main_source}"
@@ -92,7 +99,7 @@ case "${action}" in
     ;;
 
   build)
-    mkdir -p build/verilator
+    mkdir -p "${build_dir}"
 
     if [[ -f "rtl/soc/soc_top.sv" ]]; then
       build_top soc_top sim/verilator/sim_main.cpp \
