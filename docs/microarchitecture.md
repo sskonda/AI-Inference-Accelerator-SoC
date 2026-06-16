@@ -30,6 +30,8 @@ Side effects are explicit:
 The DMA engine is a correctness-first single-word pipeline. It validates the complete
 source and destination ranges before memory traffic, issues one aligned source read,
 buffers the returned word, issues one destination write, and advances the byte count.
+Different-base overlapping ranges are rejected during validation so the baseline does
+not expose ambiguous copy ordering.
 
 The final write uses byte enables for exact partial-word completion. Logical burst
 boundaries are exposed through `req_last`, but the baseline memory interface permits one

@@ -23,6 +23,7 @@ constexpr unsigned kBitsPerByte = 8U;
 constexpr unsigned kMaximumTransferCycles = 4096U;
 constexpr unsigned kRandomTransferCount = 64U;
 constexpr std::size_t kDirectedTransferBytes = 19U;
+constexpr std::size_t kOverlapTransferBytes = 32U;
 constexpr std::size_t kRandomMaximumTransferBytes = 128U;
 constexpr std::uint8_t kDestinationSentinel = 0xA5U;
 
@@ -780,6 +781,47 @@ void test_back_to_back_and_memory_copy(Fixture& fixture) {
          "back-to-back third transfer mismatch");
 }
 
+void expect_overlap_rejected(Fixture& fixture, std::uint32_t source,
+                             std::uint32_t destination,
+                             std::uint32_t window_base,
+                             std::size_t window_length,
+                             const std::string& context) {
+  const auto before = fixture.memory().read_bytes(window_base, window_length);
+  const auto result = fixture.transfer(
+      source, destination, static_cast<std::uint32_t>(kOverlapTransferBytes));
+  expect(result.error && result.error_code == soc::ERR_ADDRESS,
+         context + ": overlap was not rejected with address error");
+  expect(result.bytes_read == 0U && result.bytes_written == 0U &&
+             result.source_requests == 0U &&
+             result.destination_requests == 0U,
+         context + ": rejected overlap accessed memory");
+  expect(fixture.memory().read_bytes(window_base, window_length) == before,
+         context + ": rejected overlap modified memory");
+}
+
+void test_overlap_semantics(Fixture& fixture) {
+  constexpr std::uint32_t kWindowBase = soc::DRAM_BASE_ADDR + 0x4800U;
+  constexpr std::size_t kWindowBytes =
+      kOverlapTransferBytes + 2U * soc::DATA_BYTES;
+  const auto pattern = make_pattern(kWindowBytes, 0xCBU);
+  fixture.memory().write_bytes(kWindowBase, pattern);
+
+  expect_overlap_rejected(
+      fixture, kWindowBase, kWindowBase + soc::DATA_BYTES, kWindowBase,
+      kWindowBytes, "forward overlapping memory copy");
+  expect_overlap_rejected(
+      fixture, kWindowBase + soc::DATA_BYTES, kWindowBase, kWindowBase,
+      kWindowBytes, "backward overlapping memory copy");
+
+  const auto same_address = fixture.transfer(
+      kWindowBase, kWindowBase,
+      static_cast<std::uint32_t>(kOverlapTransferBytes));
+  expect_success(same_address, kOverlapTransferBytes,
+                 "same-address memory copy");
+  expect(fixture.memory().read_bytes(kWindowBase, kWindowBytes) == pattern,
+         "same-address copy changed memory contents");
+}
+
 void test_random_transfers(Fixture& fixture, std::mt19937& random) {
   constexpr std::uint32_t kSourceWindowOffset = 0x1000U;
   constexpr std::uint32_t kDestinationWindowOffset = 0x4000U;
@@ -916,6 +958,7 @@ void run_directed(Fixture& fixture) {
   test_busy_rejection(fixture);
   test_reset_during_transfer(fixture);
   test_back_to_back_and_memory_copy(fixture);
+  test_overlap_semantics(fixture);
 }
 
 }  // namespace

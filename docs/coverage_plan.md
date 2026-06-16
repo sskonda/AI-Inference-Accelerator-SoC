@@ -37,16 +37,16 @@ The open-source coverage run builds instrumented simulators under
 Verilator flow. The coverage run writes per-binary databases under `coverage/verilator`
 and a text report under `coverage/summary.txt`.
 
-Milestone 15 local results:
+Latest local results:
 
 | Metric | Value |
 | --- | ---: |
 | Coverage databases | 44 |
-| Database bytes | 29,358,762 |
-| Unique coverage points | 31,096 |
-| Covered coverage points | 20,662 |
-| Uncovered coverage points | 10,434 |
-| Point coverage | 66.45% |
+| Database bytes | 29,366,549 |
+| Unique coverage points | 31,108 |
+| Covered coverage points | 20,142 |
+| Uncovered coverage points | 10,966 |
+| Point coverage | 64.75% |
 
 The installed `verilator_coverage` wrapper cannot locate its reporter binary in this
 environment, so `make coverage` records that condition and emits a deterministic local
@@ -81,7 +81,7 @@ The UVM coverage collector defines covergroups for:
 
 - Register access direction and offset.
 - Command opcode, priority, and command ID class.
-- DMA length, alignment, and backpressure class.
+- DMA length, alignment, overlap rejection, and backpressure class.
 - Scheduler policy and queue occupancy class.
 - External-memory latency, backpressure, write enable, byte enable, and error injection.
 - Interrupt assertion, deassertion, and pending/enable/clear combinations.

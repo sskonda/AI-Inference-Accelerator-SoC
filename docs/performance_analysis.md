@@ -40,9 +40,9 @@ Measured verification-adjacent data from the final local coverage run:
 | Metric | Value |
 | --- | ---: |
 | Verilator coverage databases | 44 |
-| Unique coverage points | 31,096 |
-| Covered coverage points | 20,662 |
-| Point coverage | 66.45% |
+| Unique coverage points | 31,108 |
+| Covered coverage points | 20,142 |
+| Point coverage | 64.75% |
 
 These are coverage metrics, not throughput metrics. Full coverage status is recorded in
 [coverage_plan.md](coverage_plan.md) and

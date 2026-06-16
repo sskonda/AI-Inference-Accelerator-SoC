@@ -38,7 +38,7 @@ completion identity errors, and arithmetic mismatches.
 | --- | --- |
 | `smoke_test` | Reset, identity read, one transfer, one command, one interrupt |
 | `register_test` | Legal, illegal, read-only, write-one-to-clear, and self-clear behavior |
-| `dma_directed_test` | Boundary lengths, alignment policy, errors, and back-to-back copies |
+| `dma_directed_test` | Boundary lengths, alignment policy, overlap rejection, errors, and back-to-back copies |
 | `dma_random_test` | Random lengths, addresses, latency, and backpressure |
 | `vector_directed_test` | Every vector opcode and arithmetic boundary |
 | `vector_random_test` | Random data, lengths, and output stalls |
@@ -131,9 +131,9 @@ expose that location through `QUESTA_HOME` or `MTI_HOME`.
 ## Assertions
 
 Assertions cover stable payload while stalled, no unknown control after reset, legal FSM
-states, FIFO and command queue bounds, exact DMA byte limits, scratchpad bounds, no early
-completion, command conservation, sticky interrupts, disabled interrupt masking, legal
-register writes, and coherent performance snapshots.
+states, FIFO and command queue bounds, exact DMA byte limits, DMA start rejection before
+traffic, scratchpad bounds, no early completion, command conservation, sticky interrupts,
+disabled interrupt masking, legal register writes, and coherent performance snapshots.
 
 Complex end-to-end ordering is checked with reference queues in monitors and scoreboards
 instead of opaque temporal properties.

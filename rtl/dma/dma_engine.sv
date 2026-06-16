@@ -54,6 +54,10 @@ module dma_engine #(
   logic                                destination_response_fire;
   logic                                source_terminal_error;
   logic                                destination_terminal;
+  logic                                source_range_legal;
+  logic                                destination_range_legal;
+  logic                                start_ranges_overlap;
+  logic                                start_address_error;
 
   function automatic logic address_is_aligned(input addr_t address);
     return (address % DMA_DATA_BYTES) == '0;
@@ -69,6 +73,17 @@ module dma_engine #(
       end
     end
     return strobe;
+  endfunction
+
+  function automatic logic ranges_overlap(input addr_t first_address, input addr_t second_address,
+                                          input byte_count_t byte_count);
+    logic [ADDR_WIDTH:0] first_end;
+    logic [ADDR_WIDTH:0] second_end;
+
+    first_end  = {1'b0, first_address} + (ADDR_WIDTH + 1)'(byte_count);
+    second_end = {1'b0, second_address} + (ADDR_WIDTH + 1)'(byte_count);
+    return (byte_count != '0) && (first_address != second_address) &&
+        ({1'b0, first_address} < second_end) && ({1'b0, second_address} < first_end);
   endfunction
 
   initial begin : validate_parameters
@@ -93,6 +108,14 @@ module dma_engine #(
   end
 
   always_comb begin
+    source_range_legal = data_range_is_legal(source_address, length_bytes);
+    destination_range_legal = data_range_is_legal(destination_address, length_bytes);
+    start_ranges_overlap = source_range_legal && destination_range_legal &&
+        ranges_overlap(source_address, destination_address, length_bytes);
+    start_address_error = !address_is_aligned(source_address) ||
+        !address_is_aligned(destination_address) || !source_range_legal ||
+        !destination_range_legal || start_ranges_overlap;
+
     if (bytes_remaining > byte_count_t'(DMA_DATA_BYTES)) begin
       current_beat_bytes = byte_count_t'(DMA_DATA_BYTES);
     end else begin
@@ -164,15 +187,7 @@ module dma_engine #(
             start_accepted <= 1'b1;
             if (length_bytes == '0) begin
               done <= 1'b1;
-            end else if (!address_is_aligned(
-                    source_address
-                ) || !address_is_aligned(
-                    destination_address
-                ) || !data_range_is_legal(
-                    source_address, length_bytes
-                ) || !data_range_is_legal(
-                    destination_address, length_bytes
-                )) begin
+            end else if (start_address_error) begin
               done <= 1'b1;
               error <= 1'b1;
               error_code <= ERR_ADDRESS;
@@ -282,6 +297,12 @@ module dma_engine #(
     @(posedge clk) disable iff (!rst_n) start && busy |=> start_rejected;
   endproperty
 
+  property p_start_address_error_rejects_before_traffic;
+    @(posedge clk) disable iff (!rst_n) start && (state == DMA_IDLE) && (length_bytes != '0) &&
+        start_address_error |=> done && error && (error_code == ERR_ADDRESS) && !busy &&
+        !source_port.req_valid && !destination_port.req_valid;
+  endproperty
+
   property p_read_within_remaining_length;
     @(posedge clk) disable iff (!rst_n) source_port.req_valid && source_port.req_ready |->
         (bytes_remaining != '0) && (current_beat_bytes <= bytes_remaining) && data_range_is_legal(
@@ -345,6 +366,8 @@ module dma_engine #(
   assert property (p_done_follows_start_or_activity);
   a_start_while_busy_is_rejected :
   assert property (p_start_while_busy_is_rejected);
+  a_start_address_error_rejects_before_traffic :
+  assert property (p_start_address_error_rejects_before_traffic);
   a_read_within_remaining_length :
   assert property (p_read_within_remaining_length);
   a_write_within_remaining_length :

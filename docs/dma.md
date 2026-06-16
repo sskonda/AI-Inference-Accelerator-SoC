@@ -11,6 +11,9 @@ A zero-length request is accepted and completes as a no-op without issuing memor
 traffic. The complete source and destination ranges are validated before the first
 request. An unaligned address, unsupported region, range overflow, or region-boundary
 crossing completes with `ERR_ADDRESS` and does not access memory.
+Unsafe overlap between different source and destination base addresses is also rejected
+with `ERR_ADDRESS` before memory traffic. An exact same-address copy is allowed and
+behaves as a deterministic self-copy.
 
 The engine provides `start_accepted` and `start_rejected` event outputs. A start while
 busy is rejected with `ERR_DMA_BUSY`; the active transfer continues unchanged. `done`
@@ -50,9 +53,9 @@ contribute to `stalled_cycle`. `active_cycle` follows `busy`.
 ## Copy Semantics
 
 Scratchpad-to-memory, memory-to-scratchpad, scratchpad-to-scratchpad, and
-memory-to-memory copies are legal. The copy proceeds from low to high addresses.
-Overlapping source and destination ranges have ordinary `memcpy` semantics and are not
-guaranteed to preserve the original source bytes.
+memory-to-memory copies are legal. Source and destination ranges must be disjoint unless
+they have the same base address. This avoids ambiguous `memmove`-style behavior in the
+single-word baseline pipeline.
 
 ## Verification
 
@@ -66,6 +69,8 @@ The cycle-accurate test model checks:
 - zero length;
 - unaligned, illegal-region, and boundary-crossing requests;
 - source and destination response errors;
+- forward and backward overlap rejection before memory traffic;
+- same-address self-copy behavior;
 - a second start while busy;
 - reset while a request is stalled;
 - back-to-back transfers;

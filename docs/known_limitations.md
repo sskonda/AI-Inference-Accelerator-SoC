@@ -22,7 +22,8 @@
   flight. The model injects latency and backpressure but is not a detailed DRAM timing
   model.
 - DMA uses one buffered word and ordered responses. Its logical bursts do not create
-  multiple outstanding memory requests, and overlapping copies are not guaranteed.
+  multiple outstanding memory requests. Unsafe overlapping copies are rejected before
+  memory traffic instead of being treated as `memmove` operations.
 - The baseline command processor permits one accelerator command in flight. This gives
   deterministic completion ordering but does not yet overlap independent accelerators.
 - Direct MMIO DMA may overlap one queued accelerator, but both share the single-request

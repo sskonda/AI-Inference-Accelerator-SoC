@@ -1,6 +1,6 @@
 # Final Verification Report
 
-Date: June 15, 2026
+Date: June 16, 2026
 
 ## Scope
 
@@ -43,6 +43,7 @@ because the local machine does not provide `vlog`, `vsim`, and `vlib`.
 | `make coverage` | Pass: Verilator coverage databases and local summary generated |
 | `make docs` | Pass: documentation, register map, and memory map checks passed |
 | `make ci` | Pass: open-source closure suite passed |
+| `make uvm-check` | Pass: UVM structure and regression manifest checks passed |
 | `python3 -m py_compile scripts/coverage/summarize_verilator_coverage.py scripts/perf/run_baseline.py scripts/docs/check_docs.py scripts/docs/check_register_map.py scripts/docs/check_memory_map.py scripts/lint/check_uvm.py` | Pass |
 | `git diff --check` | Pass |
 | Repository restricted-term scan | Pass: no tracked-content hits requiring removal |
@@ -67,11 +68,11 @@ as passing local simulations.
 
 | Metric | Value |
 | --- | ---: |
-| Database bytes | 29,358,762 |
-| Unique points | 31,096 |
-| Covered points | 20,662 |
-| Uncovered points | 10,434 |
-| Point coverage | 66.45% |
+| Database bytes | 29,366,549 |
+| Unique points | 31,108 |
+| Covered points | 20,142 |
+| Uncovered points | 10,966 |
+| Point coverage | 64.75% |
 
 The installed `verilator_coverage` wrapper cannot invoke its reporter binary on this
 machine, so annotated HTML or source reports were not produced locally. The committed
@@ -90,7 +91,7 @@ Assertion categories covered by the available runs include:
 
 - valid/ready stable payload checks;
 - FIFO and command queue overflow and underflow checks;
-- DMA byte-count and completion checks;
+- DMA byte-count, address-error rejection, and completion checks;
 - illegal register access and side-effect checks;
 - interrupt pending, masking, and clear checks;
 - timer tick checks;
