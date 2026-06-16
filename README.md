@@ -81,6 +81,7 @@ make verilator-build
 make verilator-smoke
 make verilator-regress
 make coverage
+make synth-estimate
 make docs
 make ci
 ```
@@ -111,6 +112,8 @@ exit with a specific prerequisite message instead.
 The current environment audit is recorded in [docs/project_plan.md](docs/project_plan.md).
 Architecture, verification scope, register behavior, and address regions are defined in
 the `docs/` directory and evolve with each implementation milestone.
+The latest structural estimate is recorded in
+[docs/synthesis_estimate.md](docs/synthesis_estimate.md).
 
 ## Running The Flows
 
@@ -129,6 +132,7 @@ make verilator-build
 make verilator-smoke SEED=1 INIT_MODE=random
 make verilator-regress SEEDS="1 7 19 41" INIT_MODES="zero ones random"
 make coverage
+make synth-estimate
 ```
 
 UVM:
@@ -174,6 +178,8 @@ Performance counters are implemented and read through firmware and SoC tests. Mi
 16 documents the measurement method in
 [docs/performance_analysis.md](docs/performance_analysis.md). The repeatable baseline
 and optimized CSV or JSON result tables are captured under `perf/results/`.
+The current Yosys structural estimate records 3,026 generic cells and 528,024 memory
+bits for `soc_top`; see [docs/synthesis_estimate.md](docs/synthesis_estimate.md).
 
 ## Current Status
 

@@ -48,6 +48,31 @@ These are coverage metrics, not throughput metrics. Full coverage status is reco
 [coverage_plan.md](coverage_plan.md) and
 [final_verification_report.md](final_verification_report.md).
 
+## Structural Estimate
+
+The current generic structural estimate is captured with:
+
+```sh
+make synth-estimate
+```
+
+The flow reads the synthesizable SystemVerilog hierarchy through the Yosys slang
+frontend, ignores assertions and initial validation blocks, and reports unmapped generic
+RTL structure. It does not perform technology mapping or timing analysis.
+
+| Metric | Value |
+| --- | ---: |
+| Wires | 3,238 |
+| Wire bits | 44,718 |
+| Ports | 42 |
+| Port bits | 314 |
+| Memories | 10 |
+| Memory bits | 528,024 |
+| Generic cells | 3,026 |
+
+The full cell-count table is recorded in
+[synthesis_estimate.md](synthesis_estimate.md).
+
 ## Baseline Throughput And Latency
 
 The baseline results use deterministic seed 1.

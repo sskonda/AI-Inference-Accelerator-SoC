@@ -24,7 +24,7 @@ because the local machine does not provide `vlog`, `vsim`, and `vlib`.
 | Verible formatter | `Version v0.0-4071-g8d9f2c97` |
 | Verible linter | `Version v0.0-4071-g8d9f2c97` |
 | UVM simulator frontend | Not found: `vlog`, `vsim`, and `vlib` are absent |
-| Optional synthesis estimator | Not found: `yosys` is absent |
+| Optional synthesis estimator | `Yosys 0.66+94 (git sha1 f33cc39a0, Release, Clang /usr/bin/clang++ 18.1.8)` |
 | Verilator coverage annotator | Installed wrapper is unusable because its reporter binary is missing |
 
 ## Command Results
@@ -41,10 +41,11 @@ because the local machine does not provide `vlog`, `vsim`, and `vlib`.
 | `make uvm-smoke` | Not run: exited 2 because `vlog` is not on `PATH` |
 | `make uvm-regress` | Not run: exited 2 because `vlog` is not on `PATH` |
 | `make coverage` | Pass: Verilator coverage databases and local summary generated |
+| `make synth-estimate` | Pass: Yosys structural estimate completed for `soc_top` |
 | `make docs` | Pass: documentation, register map, and memory map checks passed |
 | `make ci` | Pass: open-source closure suite passed |
 | `make uvm-check` | Pass: UVM structure and regression manifest checks passed |
-| `python3 -m py_compile scripts/coverage/summarize_verilator_coverage.py scripts/perf/run_baseline.py scripts/docs/check_docs.py scripts/docs/check_register_map.py scripts/docs/check_memory_map.py scripts/lint/check_uvm.py` | Pass |
+| `python3 -m py_compile scripts/coverage/summarize_verilator_coverage.py scripts/perf/run_baseline.py scripts/docs/check_docs.py scripts/docs/check_register_map.py scripts/docs/check_memory_map.py scripts/lint/check_uvm.py scripts/synth/summarize_yosys_stat.py` | Pass |
 | `git diff --check` | Pass |
 | Repository restricted-term scan | Pass: no tracked-content hits requiring removal |
 | Repository stale-marker scan | Pass: no tracked-content placeholder markers |
@@ -109,7 +110,8 @@ frontend is absent.
   implementation scripts, or timing closure.
 - The local machine does not provide `vlog`, `vsim`, or `vlib`, so UVM compile and run
   targets were invoked but not executed.
-- The optional synthesis estimator `yosys` is not installed locally.
+- Yosys structural estimates are available locally, but they are generic RTL estimates
+  without technology mapping or physical timing.
 - The installed Verilator coverage wrapper cannot locate its reporter binary; the local
   deterministic coverage summarizer was used instead.
 - The external memory model is functional and deterministic, not a detailed DRAM timing

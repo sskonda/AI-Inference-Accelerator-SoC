@@ -89,6 +89,7 @@ interface axil_if #(
   assert property (p_known_control);
 
 `ifndef VERILATOR
+`ifndef SYNTHESIS
   clocking manager_cb @(posedge clk);
     default input #1step output #0;
     input awready, wready, bvalid, bresp, arready, rvalid, rdata, rresp;
@@ -100,6 +101,7 @@ interface axil_if #(
     input awvalid, awready, awaddr, wvalid, wready, wdata, wstrb, bvalid, bready, bresp, arvalid,
         arready, araddr, rvalid, rready, rdata, rresp;
   endclocking
+`endif
 `endif
 
   modport manager(

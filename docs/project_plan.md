@@ -22,7 +22,7 @@ single tracked README. The worktree was clean before this plan was added.
 | Verilator | 5.020, user-local installation |
 | Verible formatter and linter | v0.0-4071-g8d9f2c97, user-local installation |
 | UVM-capable simulator | Not installed |
-| Yosys | Not installed |
+| Yosys | 0.66+94, user-local installation |
 
 The configured author identity is a human identity and will be used unchanged.
 Every milestone is performed directly on `main`. A failed push is a hard stop:
@@ -158,8 +158,8 @@ commercial-simulator result is labeled not run rather than passed.
 - GNU C++ builds firmware, golden models, memory models, and unit tests.
 - Python scripts coordinate deterministic regressions, documentation checks,
   coverage summaries, and performance result processing.
-- Yosys is optional and is used only for comparative synthesis estimates when
-  installed. No physical-board flow is part of the project.
+- Yosys is optional and is used only for comparative structural synthesis estimates.
+  No physical-board flow is part of the project.
 - Continuous integration installs the required open-source tools and executes
   the same public Make targets used locally.
 
@@ -184,8 +184,8 @@ explicit environmental limitation.
   overflow, truncation, and saturation behavior.
 - UVM compile, simulation, and coverage cannot be claimed locally until a
   compatible simulator is installed.
-- Synthesis estimates are comparative only and are unavailable locally until
-  Yosys is installed.
+- Synthesis estimates are comparative only and do not include physical timing,
+  technology mapping, or fabrication-ready area.
 - A future control-core port may attach a RISC-V core at the MMIO and interrupt
   boundaries without changing accelerator command semantics.
 
@@ -206,6 +206,7 @@ make uvm-compile
 make uvm-smoke
 make uvm-regress
 make coverage
+make synth-estimate
 make docs
 make clean
 make ci
@@ -219,6 +220,7 @@ make verilator-regress SEEDS="1 7 19 41"
 make uvm-smoke UVM_TEST=smoke_test UVM_SEED=1
 make uvm-regress UVM_SEEDS="1 7 19 41"
 make coverage
+make synth-estimate
 make docs
 ```
 
@@ -235,6 +237,7 @@ make uvm-compile
 make uvm-smoke
 make uvm-regress
 make coverage
+make synth-estimate
 make docs
 make ci
 ```

@@ -14,7 +14,7 @@ UVM_SEEDS ?= 1 7 19 41
 .PHONY: help fmt fmt-check lint firmware-test uvm-check verilator-lint verilator-build
 .PHONY: verilator-smoke
 .PHONY: verilator-regress uvm-compile uvm-smoke uvm-regress coverage docs clean ci
-.PHONY: perf-baseline
+.PHONY: perf-baseline synth-estimate
 
 help:
 	@printf '%s\n' \
@@ -30,6 +30,7 @@ help:
 	  '  make verilator-smoke     Run the deterministic smoke suite' \
 	  '  make verilator-regress   Run the non-UVM regression' \
 	  '  make perf-baseline       Capture baseline performance CSV and JSON' \
+	  '  make synth-estimate      Run Yosys structural synthesis estimates' \
 	  '  make uvm-compile         Compile the class-based testbench' \
 	  '  make uvm-smoke           Run one UVM smoke test' \
 	  '  make uvm-regress         Run the UVM regression list' \
@@ -79,6 +80,9 @@ verilator-regress:
 
 perf-baseline: verilator-build
 	@python3 scripts/perf/run_baseline.py --seed "$(SEED)"
+
+synth-estimate:
+	@bash scripts/synth/run_yosys_estimate.sh
 
 uvm-compile:
 	@bash sim/scripts/uvm_flow.sh compile

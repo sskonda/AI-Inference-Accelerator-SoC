@@ -5,9 +5,9 @@
   performance counters, command scheduling, three accelerators, and the integrated SoC.
   The firmware driver and cooperative scheduler layer and the full class-based
   verification environment are implemented.
-- The local environment provides user-local Verible and Verilator installations. It does
-  not currently provide a UVM-capable simulator or Yosys. Targets report those absences
-  and do not claim a pass.
+- The local environment provides user-local Verible, Verilator, and Yosys installations.
+  It does not currently provide a UVM-capable simulator. Targets report that absence and
+  do not claim a pass.
 - The platform is simulation-only and does not include board support, implementation
   constraints, timing closure, or physical area results.
 - Firmware is a C++ control-core model. No instruction-set processor is present.
@@ -43,5 +43,5 @@
   behaviors that must be selected explicitly and verified.
 - Commercial-simulator UVM results remain not run until a compatible licensed simulator
   is available.
-- Optional synthesis estimates are comparative and do not establish a fabrication-ready
-  implementation.
+- Yosys structural estimates are comparative and do not include physical timing,
+  technology mapping, or fabrication-ready area.

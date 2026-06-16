@@ -1,6 +1,7 @@
 /build/
 /logs/
 /coverage/
+/reports/
 /work/
 __pycache__/
 *.pyc
