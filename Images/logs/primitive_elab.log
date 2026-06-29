@@ -1,0 +1,31 @@
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe -debug typical --timescale 1ns/1ps -top artifact_primitive_tb -snapshot artifact_primitive_tb -log C:\Users\sanat\AI_Accelerator_Project\Github\AI-Inference-Accelerator-SoC\Images\logs\primitive_elab.log 
+Multi-threading is on. Using 14 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package work.soc_pkg
+Compiling package work.accel_pkg
+Compiling package work.reg_pkg
+Compiling module work.axil_if_default
+Compiling module work.mem_if_default
+Compiling module work.stream_if_default
+Compiling module work.irq_if_default
+Compiling module work.cmd_if_default
+Compiling module work.protocol_compile_top
+Compiling module work.sync_fifo(DATA_WIDTH=32'b01000,D...
+Compiling module work.sync_fifo(DATA_WIDTH=32'b01000,D...
+Compiling module work.sync_fifo(DATA_WIDTH=32'b01000,D...
+Compiling module work.skid_buffer(DATA_WIDTH=32'b01000...
+Compiling module work.simple_dual_port_ram(DATA_WIDTH=...
+Compiling module work.simple_dual_port_ram(DATA_WIDTH=...
+Compiling module work.simple_dual_port_ram(DATA_WIDTH=...
+Compiling module work.scratchpad_ram(DATA_WIDTH=32'b01...
+Compiling module work.primitive_test_top_default
+Compiling module work.artifact_primitive_tb
+Built simulation snapshot artifact_primitive_tb

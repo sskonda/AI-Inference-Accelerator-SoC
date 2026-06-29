@@ -1,0 +1,41 @@
+#-----------------------------------------------------------
+# xsim v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Mon Jun 29 18:40:26 2026
+# Process ID         : 52916
+# Current directory  : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC
+# Command line       : xsim.exe -log C:\Users\sanat\AI_Accelerator_Project\Github\AI-Inference-Accelerator-SoC\Images\logs\vector_run.log -mode tcl -source {xsim.dir/artifact_vector_tb/xsim_script.tcl}
+# Log file           : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/logs/vector_run.log
+# Journal file       : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC\xsim.jou
+# Running On         : KONDA-LT-122
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : AMD Ryzen 9 6900HS Creator Edition
+# CPU Frequency      : 3294 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 16
+# Host memory        : 29734 MB
+# Swap memory        : 76592 MB
+# Total Virtual      : 106327 MB
+# Available Virtual  : 71900 MB
+#-----------------------------------------------------------
+source xsim.dir/artifact_vector_tb/xsim_script.tcl
+# xsim {artifact_vector_tb} -wdb {Images/waves/vector.wdb} -autoloadwcfg -tclbatch {Images/scripts/xsim_vector.tcl}
+Time resolution is 1 ps
+source Images/scripts/xsim_vector.tcl
+## source Images/scripts/run_xsim_artifacts.tcl
+### proc run_artifact {top vcd_path} {
+###   log_wave -recursive *
+###   open_vcd $vcd_path
+###   log_vcd [get_objects -r /*]
+###   run all
+###   close_vcd
+###   quit
+### }
+## run_artifact artifact_vector_tb Images/vcd/vector.vcd
+INFO: HDL object /artifact_vector_tb/spm is an unpacked array. VCD does not support unpacked array type according to IEEE LRM 1800-2009, section21.7.5.
+PASS artifact_vector_tb add scale backpressure invalid memory_error
+$finish called at time : 876 ns : File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_vector_tb.sv" Line 407
+INFO: [Common 17-206] Exiting xsim at Mon Jun 29 18:40:29 2026...

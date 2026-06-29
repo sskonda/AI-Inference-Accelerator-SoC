@@ -1,0 +1,21 @@
+AI-Inference-Accelerator-SoC artifact simulation summary
+Date: 2026-06-29 18:41:00 -04:00
+
+Environment note:
+  Vivado Simulator v2024.2.0 was run locally through xvlog/xelab/xsim.
+  The PNG screenshots render real XSim logs and per-cycle traces using Ubuntu 24.04/Vivado-style visuals.
+  The repository's native Verilator TRACE flow could not be used because Verilator/GTKWave were not available on PATH.
+
+Passing runs:
+  primitive: PASS artifact_primitive_tb fifo_depths skid_buffer ram scratchpad | xsim warnings/info notes: 6
+  dma: PASS artifact_dma_tb normal partial backpressure zero illegal busy errors reset | xsim warnings/info notes: 0
+  services: PASS artifact_services_tb timer irq perf_counters clear | xsim warnings/info notes: 1
+  command: PASS artifact_command_tb dispatch invalid backpressure priority full | xsim warnings/info notes: 2
+  vector: PASS artifact_vector_tb add scale backpressure invalid memory_error | xsim warnings/info notes: 1
+  reduction: PASS artifact_reduction_tb sum max backpressure invalid read_error write_error | xsim warnings/info notes: 3
+  gemm: PASS artifact_gemm_tb multiply backpressure invalid read_error write_error | xsim warnings/info notes: 4
+
+Vivado WDB waveforms: Images/waves/*.wdb
+Raw VCD waveforms: Images/vcd/*.vcd
+Rendered waveforms: Images/waveforms/*.png
+Terminal screenshots: Images/terminal/*.png

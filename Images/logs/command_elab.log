@@ -1,0 +1,45 @@
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe -debug typical --timescale 1ns/1ps -top artifact_command_tb -snapshot artifact_command_tb -log C:\Users\sanat\AI_Accelerator_Project\Github\AI-Inference-Accelerator-SoC\Images\logs\command_elab.log 
+Multi-threading is on. Using 14 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 261 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 266 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 268 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 271 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 273 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" Line 275 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_processor.sv" Line 314 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_processor.sv" Line 317 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_processor.sv" Line 320 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_processor.sv" Line 323 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_processor.sv" Line 326 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_processor.sv" Line 329 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package work.soc_pkg
+Compiling package work.accel_pkg
+Compiling package work.reg_pkg
+Compiling module work.axil_if_default
+Compiling module work.mem_if_default
+Compiling module work.stream_if_default
+Compiling module work.irq_if_default
+Compiling module work.cmd_if_default
+Compiling module work.protocol_compile_top
+Compiling module work.command_queue(DEPTH=32'b01000,AG...
+Compiling module work.command_processor_default
+Compiling module work.command_test_top_default
+Compiling module work.artifact_command_tb
+Built simulation snapshot artifact_command_tb

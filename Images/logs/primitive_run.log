@@ -1,0 +1,46 @@
+#-----------------------------------------------------------
+# xsim v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Mon Jun 29 18:39:51 2026
+# Process ID         : 27548
+# Current directory  : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC
+# Command line       : xsim.exe -log C:\Users\sanat\AI_Accelerator_Project\Github\AI-Inference-Accelerator-SoC\Images\logs\primitive_run.log -mode tcl -source {xsim.dir/artifact_primitive_tb/xsim_script.tcl}
+# Log file           : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/logs/primitive_run.log
+# Journal file       : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC\xsim.jou
+# Running On         : KONDA-LT-122
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : AMD Ryzen 9 6900HS Creator Edition
+# CPU Frequency      : 3294 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 16
+# Host memory        : 29734 MB
+# Swap memory        : 76592 MB
+# Total Virtual      : 106327 MB
+# Available Virtual  : 71810 MB
+#-----------------------------------------------------------
+source xsim.dir/artifact_primitive_tb/xsim_script.tcl
+# xsim {artifact_primitive_tb} -wdb {Images/waves/primitive.wdb} -autoloadwcfg -tclbatch {Images/scripts/xsim_primitive.tcl}
+Time resolution is 1 ps
+source Images/scripts/xsim_primitive.tcl
+## source Images/scripts/run_xsim_artifacts.tcl
+### proc run_artifact {top vcd_path} {
+###   log_wave -recursive *
+###   open_vcd $vcd_path
+###   log_vcd [get_objects -r /*]
+###   run all
+###   close_vcd
+###   quit
+### }
+## run_artifact artifact_primitive_tb Images/vcd/primitive.vcd
+INFO: HDL object /artifact_primitive_tb/dut/u_fifo/storage is an unpacked array. VCD does not support unpacked array type according to IEEE LRM 1800-2009, section21.7.5.
+INFO: HDL object /artifact_primitive_tb/dut/u_fifo_one/storage is an unpacked array. VCD does not support unpacked array type according to IEEE LRM 1800-2009, section21.7.5.
+INFO: HDL object /artifact_primitive_tb/dut/u_fifo_three/storage is an unpacked array. VCD does not support unpacked array type according to IEEE LRM 1800-2009, section21.7.5.
+INFO: HDL object /artifact_primitive_tb/dut/u_ram/memory is an unpacked array. VCD does not support unpacked array type according to IEEE LRM 1800-2009, section21.7.5.
+INFO: HDL object /artifact_primitive_tb/dut/u_registered_ram/memory is an unpacked array. VCD does not support unpacked array type according to IEEE LRM 1800-2009, section21.7.5.
+INFO: HDL object /artifact_primitive_tb/dut/u_scratchpad/u_ram/memory is an unpacked array. VCD does not support unpacked array type according to IEEE LRM 1800-2009, section21.7.5.
+PASS artifact_primitive_tb fifo_depths skid_buffer ram scratchpad
+$finish called at time : 646 ns : File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_primitive_tb.sv" Line 430
+INFO: [Common 17-206] Exiting xsim at Mon Jun 29 18:39:54 2026...

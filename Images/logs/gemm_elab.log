@@ -1,0 +1,30 @@
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe -debug typical --timescale 1ns/1ps -top artifact_gemm_tb -snapshot artifact_gemm_tb -log C:\Users\sanat\AI_Accelerator_Project\Github\AI-Inference-Accelerator-SoC\Images\logs\gemm_elab.log 
+Multi-threading is on. Using 14 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/gemm/gemm_accelerator.sv" Line 697 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/gemm/gemm_accelerator.sv" Line 700 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/gemm/gemm_accelerator.sv" Line 703 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/gemm/gemm_accelerator.sv" Line 706 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/gemm/gemm_accelerator.sv" Line 709 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+WARNING: [XSIM 43-4127] File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/gemm/gemm_accelerator.sv" Line 712 : The "System Verilog Cover" is not supported yet for simulation. The statement will be ignored.
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package work.soc_pkg
+Compiling package work.accel_pkg
+Compiling package work.reg_pkg
+Compiling module work.mem_if_default
+Compiling module work.axil_if_default
+Compiling module work.stream_if_default
+Compiling module work.irq_if_default
+Compiling module work.cmd_if_default
+Compiling module work.protocol_compile_top
+Compiling module work.gemm_accelerator(DATA_WIDTH=32'b...
+Compiling module work.gemm_test_top_default
+Compiling module work.artifact_gemm_tb
+Built simulation snapshot artifact_gemm_tb

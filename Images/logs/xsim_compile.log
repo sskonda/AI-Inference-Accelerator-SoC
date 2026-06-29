@@ -1,0 +1,72 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/packages/soc_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/packages/reg_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/packages/accel_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/interfaces/axil_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/interfaces/mem_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/interfaces/stream_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/interfaces/irq_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/interfaces/cmd_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/common/skid_buffer.sv" into library work
+INFO: [VRFC 10-311] analyzing module skid_buffer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/fifo/sync_fifo.sv" into library work
+INFO: [VRFC 10-311] analyzing module sync_fifo
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/memory/simple_dual_port_ram.sv" into library work
+INFO: [VRFC 10-311] analyzing module simple_dual_port_ram
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/memory/scratchpad_ram.sv" into library work
+INFO: [VRFC 10-311] analyzing module scratchpad_ram
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/memory/soc_memory_fabric.sv" into library work
+INFO: [VRFC 10-311] analyzing module soc_memory_fabric
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/regs/soc_register_block.sv" into library work
+INFO: [VRFC 10-311] analyzing module soc_register_block
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/dma/dma_engine.sv" into library work
+INFO: [VRFC 10-311] analyzing module dma_engine
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/dma/dma_command_adapter.sv" into library work
+INFO: [VRFC 10-311] analyzing module dma_command_adapter
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/timer/soc_timer.sv" into library work
+INFO: [VRFC 10-311] analyzing module soc_timer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/irq/irq_controller.sv" into library work
+INFO: [VRFC 10-311] analyzing module irq_controller
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/perf/performance_counters.sv" into library work
+INFO: [VRFC 10-311] analyzing module performance_counters
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_queue.sv" into library work
+INFO: [VRFC 10-311] analyzing module command_queue
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/command_queue/command_processor.sv" into library work
+INFO: [VRFC 10-311] analyzing module command_processor
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/vector_alu/vector_accelerator.sv" into library work
+INFO: [VRFC 10-311] analyzing module vector_accelerator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/reduction/reduction_accelerator.sv" into library work
+INFO: [VRFC 10-311] analyzing module reduction_accelerator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/accel/gemm/gemm_accelerator.sv" into library work
+INFO: [VRFC 10-311] analyzing module gemm_accelerator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/rtl/soc/soc_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module soc_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/common/protocol_compile_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module protocol_compile_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/verilator/primitive_test_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module primitive_test_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/verilator/dma_test_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module dma_test_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/verilator/services_test_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module services_test_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/verilator/command_test_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module command_test_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/verilator/vector_test_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module vector_test_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/verilator/reduction_test_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module reduction_test_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/sim/verilator/gemm_test_top.sv" into library work
+INFO: [VRFC 10-311] analyzing module gemm_test_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_primitive_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module artifact_primitive_tb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_dma_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module artifact_dma_tb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_services_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module artifact_services_tb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_command_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module artifact_command_tb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_vector_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module artifact_vector_tb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_reduction_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module artifact_reduction_tb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_gemm_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module artifact_gemm_tb

@@ -1,0 +1,1145 @@
+$date
+   Mon Jun 29 18:40:10 2026
+$end
+
+$version
+  2024.2.0
+$end
+
+$timescale
+  1ps
+$end
+
+$scope module artifact_services_tb $end
+$var reg 1 ! clk $end
+$var reg 1 " rst_n $end
+$var reg 1 # timer_enable $end
+$var reg 1 $ timer_periodic $end
+$var reg 8 % timer_interval [7:0] $end
+$var reg 8 & timer_value [7:0] $end
+$var reg 1 ' timer_tick $end
+$var reg 1 ( timer_active $end
+$var reg 5 ) irq_sources [4:0] $end
+$var reg 5 * irq_enable [4:0] $end
+$var reg 5 + irq_clear [4:0] $end
+$var reg 5 , irq_pending [4:0] $end
+$var reg 1 - irq $end
+$var reg 1 . irq_latency_valid $end
+$var reg 8 / irq_latency_cycles [7:0] $end
+$var reg 1 0 perf_clear $end
+$var reg 1 1 dma_active $end
+$var reg 1 2 dma_stalled $end
+$var reg 1 3 accel_active $end
+$var reg 1 4 accel_stalled $end
+$var reg 8 5 queue_occupancy [7:0] $end
+$var reg 1 6 command_completed $end
+$var reg 24 7 bytes_read [23:0] $end
+$var reg 24 8 bytes_written [23:0] $end
+$var reg 1 9 perf_irq_latency_valid $end
+$var reg 8 : perf_irq_latency_cycles [7:0] $end
+$var reg 1 ; scheduler_stalled $end
+$var reg 4 < perf_select [3:0] $end
+$var reg 8 = perf_value [7:0] $end
+$var reg 32 > definition_checksum [31:0] $end
+$var reg 8 ? phase [7:0] $end
+$var integer 32 @ trace_fd [31:0] $end
+$var integer 32 A tick_count [31:0] $end
+$scope module dut $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var wire 1 D timer_enable $end
+$var wire 1 E timer_periodic $end
+$var wire 8 F timer_interval [7:0] $end
+$var reg 8 & timer_value [7:0] $end
+$var reg 1 ' timer_tick $end
+$var reg 1 ( timer_active $end
+$var wire 5 G irq_sources [4:0] $end
+$var wire 5 H irq_enable [4:0] $end
+$var wire 5 I irq_clear [4:0] $end
+$var reg 5 , irq_pending [4:0] $end
+$var reg 1 - irq $end
+$var reg 1 . irq_latency_valid $end
+$var reg 8 / irq_latency_cycles [7:0] $end
+$var wire 1 J perf_clear $end
+$var wire 1 K dma_active $end
+$var wire 1 L dma_stalled $end
+$var wire 1 M accel_active $end
+$var wire 1 N accel_stalled $end
+$var wire 8 O queue_occupancy [7:0] $end
+$var wire 1 P command_completed $end
+$var wire 24 Q bytes_read [23:0] $end
+$var wire 24 R bytes_written [23:0] $end
+$var wire 1 S perf_irq_latency_valid $end
+$var wire 8 T perf_irq_latency_cycles [7:0] $end
+$var wire 1 U scheduler_stalled $end
+$var wire 4 V perf_select [3:0] $end
+$var reg 8 = perf_value [7:0] $end
+$var reg 32 > definition_checksum [31:0] $end
+$var reg 5 W combined_sources [4:0] $end
+$var reg 5 X xilinx_isim_temp_25_ln42_blkAssignCaching [4:0] $end
+$var parameter 0 Y TIMER_WIDTH [31:0] $end
+$var parameter 0 Z TEST_COUNTER_WIDTH [31:0] $end
+$var parameter 0 [ IRQ_LATENCY_WIDTH [31:0] $end
+$scope module u_protocol_compile $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 32 > definition_checksum [31:0] $end
+$scope module axil_bus $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 \ awvalid $end
+$var reg 1 ] awready $end
+$var reg 12 ^ awaddr [11:0] $end
+$var reg 1 _ wvalid $end
+$var reg 1 ` wready $end
+$var reg 32 a wdata [31:0] $end
+$var reg 4 b wstrb [3:0] $end
+$var reg 1 c bvalid $end
+$var reg 1 d bready $end
+$var reg 2 e bresp [1:0] $end
+$var reg 1 f arvalid $end
+$var reg 1 g arready $end
+$var reg 12 h araddr [11:0] $end
+$var reg 1 i rvalid $end
+$var reg 1 j rready $end
+$var reg 32 k rdata [31:0] $end
+$var reg 2 l rresp [1:0] $end
+$var parameter 0 m ADDR_WIDTH [31:0] $end
+$var parameter 0 n DATA_WIDTH [31:0] $end
+$var parameter 0 o STRB_WIDTH [31:0] $end
+$scope module manager $end
+$var reg 1 ] awready $end
+$var reg 1 ` wready $end
+$var reg 1 c bvalid $end
+$var reg 2 e bresp [1:0] $end
+$var reg 1 g arready $end
+$var reg 1 i rvalid $end
+$var reg 32 k rdata [31:0] $end
+$var reg 2 l rresp [1:0] $end
+$var reg 1 \ awvalid $end
+$var reg 12 ^ awaddr [11:0] $end
+$var reg 1 _ wvalid $end
+$var reg 32 a wdata [31:0] $end
+$var reg 4 b wstrb [3:0] $end
+$var reg 1 d bready $end
+$var reg 1 f arvalid $end
+$var reg 12 h araddr [11:0] $end
+$var reg 1 j rready $end
+$upscope $end
+$scope module subordinate $end
+$var reg 1 \ awvalid $end
+$var reg 12 ^ awaddr [11:0] $end
+$var reg 1 _ wvalid $end
+$var reg 32 a wdata [31:0] $end
+$var reg 4 b wstrb [3:0] $end
+$var reg 1 d bready $end
+$var reg 1 f arvalid $end
+$var reg 12 h araddr [11:0] $end
+$var reg 1 j rready $end
+$var reg 1 ] awready $end
+$var reg 1 ` wready $end
+$var reg 1 c bvalid $end
+$var reg 2 e bresp [1:0] $end
+$var reg 1 g arready $end
+$var reg 1 i rvalid $end
+$var reg 32 k rdata [31:0] $end
+$var reg 2 l rresp [1:0] $end
+$upscope $end
+$scope module monitor $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 \ awvalid $end
+$var reg 1 ] awready $end
+$var reg 12 ^ awaddr [11:0] $end
+$var reg 1 _ wvalid $end
+$var reg 1 ` wready $end
+$var reg 32 a wdata [31:0] $end
+$var reg 4 b wstrb [3:0] $end
+$var reg 1 c bvalid $end
+$var reg 1 d bready $end
+$var reg 2 e bresp [1:0] $end
+$var reg 1 f arvalid $end
+$var reg 1 g arready $end
+$var reg 12 h araddr [11:0] $end
+$var reg 1 i rvalid $end
+$var reg 1 j rready $end
+$var reg 32 k rdata [31:0] $end
+$var reg 2 l rresp [1:0] $end
+$upscope $end
+$upscope $end
+$scope module memory_bus $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 p req_valid $end
+$var reg 1 q req_ready $end
+$var reg 1 r req_write $end
+$var reg 32 s req_addr [31:0] $end
+$var reg 32 t req_wdata [31:0] $end
+$var reg 4 u req_wstrb [3:0] $end
+$var reg 1 v req_last $end
+$var reg 1 w rsp_valid $end
+$var reg 1 x rsp_ready $end
+$var reg 32 y rsp_rdata [31:0] $end
+$var reg 1 z rsp_error $end
+$var parameter 0 { ADDR_WIDTH [31:0] $end
+$var parameter 0 | DATA_WIDTH [31:0] $end
+$var parameter 0 } STRB_WIDTH [31:0] $end
+$scope module initiator $end
+$var reg 1 q req_ready $end
+$var reg 1 w rsp_valid $end
+$var reg 32 y rsp_rdata [31:0] $end
+$var reg 1 z rsp_error $end
+$var reg 1 p req_valid $end
+$var reg 1 r req_write $end
+$var reg 32 s req_addr [31:0] $end
+$var reg 32 t req_wdata [31:0] $end
+$var reg 4 u req_wstrb [3:0] $end
+$var reg 1 v req_last $end
+$var reg 1 x rsp_ready $end
+$upscope $end
+$scope module target $end
+$var reg 1 p req_valid $end
+$var reg 1 r req_write $end
+$var reg 32 s req_addr [31:0] $end
+$var reg 32 t req_wdata [31:0] $end
+$var reg 4 u req_wstrb [3:0] $end
+$var reg 1 v req_last $end
+$var reg 1 x rsp_ready $end
+$var reg 1 q req_ready $end
+$var reg 1 w rsp_valid $end
+$var reg 32 y rsp_rdata [31:0] $end
+$var reg 1 z rsp_error $end
+$upscope $end
+$scope module monitor $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 p req_valid $end
+$var reg 1 q req_ready $end
+$var reg 1 r req_write $end
+$var reg 32 s req_addr [31:0] $end
+$var reg 32 t req_wdata [31:0] $end
+$var reg 4 u req_wstrb [3:0] $end
+$var reg 1 v req_last $end
+$var reg 1 w rsp_valid $end
+$var reg 1 x rsp_ready $end
+$var reg 32 y rsp_rdata [31:0] $end
+$var reg 1 z rsp_error $end
+$upscope $end
+$upscope $end
+$scope module stream_bus $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 ~ valid $end
+$var reg 1 !! ready $end
+$var reg 32 "! data [31:0] $end
+$var reg 1 #! last $end
+$var reg 1 $! user [0:0] $end
+$var parameter 0 %! DATA_WIDTH [31:0] $end
+$var parameter 0 &! USER_WIDTH [31:0] $end
+$scope module source $end
+$var reg 1 !! ready $end
+$var reg 1 ~ valid $end
+$var reg 32 "! data [31:0] $end
+$var reg 1 #! last $end
+$var reg 1 $! user [0:0] $end
+$upscope $end
+$scope module sink $end
+$var reg 1 ~ valid $end
+$var reg 32 "! data [31:0] $end
+$var reg 1 #! last $end
+$var reg 1 $! user [0:0] $end
+$var reg 1 !! ready $end
+$upscope $end
+$scope module monitor $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 ~ valid $end
+$var reg 1 !! ready $end
+$var reg 32 "! data [31:0] $end
+$var reg 1 #! last $end
+$var reg 1 $! user [0:0] $end
+$upscope $end
+$upscope $end
+$scope module interrupt_bus $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 5 '! sources [4:0] $end
+$var reg 5 (! pending [4:0] $end
+$var reg 5 )! enable [4:0] $end
+$var reg 5 *! clear [4:0] $end
+$var reg 1 +! irq $end
+$var parameter 0 ,! SOURCE_COUNT [31:0] $end
+$scope module source $end
+$var reg 5 '! sources [4:0] $end
+$upscope $end
+$scope module controller $end
+$var reg 5 '! sources [4:0] $end
+$var reg 5 *! clear [4:0] $end
+$var reg 5 (! pending [4:0] $end
+$var reg 5 )! enable [4:0] $end
+$var reg 1 +! irq $end
+$upscope $end
+$scope module monitor $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 5 '! sources [4:0] $end
+$var reg 5 (! pending [4:0] $end
+$var reg 5 )! enable [4:0] $end
+$var reg 5 *! clear [4:0] $end
+$var reg 1 +! irq $end
+$upscope $end
+$upscope $end
+$scope module command_bus $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 -! cmd_valid $end
+$var reg 1 .! cmd_ready $end
+$var reg 167 /! cmd $end
+$var reg 1 0! cmd_full $end
+$var reg 1 1! rsp_valid $end
+$var reg 1 2! rsp_ready $end
+$var reg 88 3! rsp $end
+$var reg 1 4! rsp_empty $end
+$scope module producer $end
+$var reg 1 .! cmd_ready $end
+$var reg 1 0! cmd_full $end
+$var reg 1 1! rsp_valid $end
+$var reg 88 3! rsp $end
+$var reg 1 4! rsp_empty $end
+$var reg 1 -! cmd_valid $end
+$var reg 167 /! cmd $end
+$var reg 1 2! rsp_ready $end
+$upscope $end
+$scope module consumer $end
+$var reg 1 -! cmd_valid $end
+$var reg 167 /! cmd $end
+$var reg 1 2! rsp_ready $end
+$var reg 1 .! cmd_ready $end
+$var reg 1 0! cmd_full $end
+$var reg 1 1! rsp_valid $end
+$var reg 88 3! rsp $end
+$var reg 1 4! rsp_empty $end
+$upscope $end
+$scope module monitor $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var reg 1 -! cmd_valid $end
+$var reg 1 .! cmd_ready $end
+$var reg 167 /! cmd $end
+$var reg 1 0! cmd_full $end
+$var reg 1 1! rsp_valid $end
+$var reg 1 2! rsp_ready $end
+$var reg 88 3! rsp $end
+$var reg 1 4! rsp_empty $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module u_timer $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var wire 1 D enable $end
+$var wire 1 E periodic $end
+$var wire 8 F interval [7:0] $end
+$var reg 8 & value [7:0] $end
+$var reg 1 ' tick $end
+$var reg 1 ( active $end
+$var reg 1 5! previous_enable $end
+$var reg 1 6! previous_periodic $end
+$var reg 8 7! previous_interval [7:0] $end
+$var reg 1 8! armed $end
+$var reg 1 9! configuration_changed $end
+$var parameter 0 :! TIMER_WIDTH [31:0] $end
+$upscope $end
+$scope module u_irq_controller $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var wire 5 ;! sources [4:0] $end
+$var wire 5 H enable [4:0] $end
+$var wire 5 I clear [4:0] $end
+$var reg 5 , pending [4:0] $end
+$var reg 1 - irq $end
+$var reg 1 . service_latency_valid $end
+$var reg 8 / service_latency_cycles [7:0] $end
+$var reg 5 <! next_pending [4:0] $end
+$var reg 1 =! service_event $end
+$var reg 1 >! next_irq $end
+$var reg 1 ?! latency_tracking $end
+$var reg 8 @! latency_counter [7:0] $end
+$var parameter 0 A! SOURCE_COUNT [31:0] $end
+$var parameter 0 B! LATENCY_WIDTH [31:0] $end
+$var parameter 8 C! MAX_LATENCY [7:0] $end
+$upscope $end
+$scope module u_performance_counters $end
+$var wire 1 B clk $end
+$var wire 1 C rst_n $end
+$var wire 1 J clear $end
+$var wire 1 K dma_active $end
+$var wire 1 L dma_stalled $end
+$var wire 1 M accel_active $end
+$var wire 1 N accel_stalled $end
+$var wire 8 O queue_occupancy [7:0] $end
+$var wire 1 P command_completed $end
+$var wire 24 Q bytes_read $end
+$var wire 24 R bytes_written $end
+$var wire 1 S irq_latency_valid $end
+$var wire 8 T irq_latency_cycles [7:0] $end
+$var wire 1 U scheduler_stalled $end
+$var wire 4 D! select $end
+$var reg 8 = selected_value [7:0] $end
+$var parameter 0 E! COUNTER_WIDTH [31:0] $end
+$var parameter 0 F! QUEUE_WIDTH [31:0] $end
+$var parameter 0 G! LATENCY_WIDTH [31:0] $end
+$var parameter 0 H! COUNTER_COUNT [31:0] $end
+$var parameter 8 I! COUNTER_MAX [7:0] $end
+$scope begin Block54_38 $end
+$var reg 32 J! counter_index [31:0] $end
+$upscope $end
+$scope begin Block58_39 $end
+$var reg 32 K! counter_index [31:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+
+#0
+$dumpvars
+0!
+0!!
+0"
+b0 "!
+0#
+0#!
+0$
+0$!
+b0 %
+b100000 %!
+bx &
+b1 &!
+x'
+b0 '!
+0(
+b0 (!
+b0 )
+b0 )!
+b0 *
+b0 *!
+b0 +
+0+!
+bx ,
+b101 ,!
+0-
+0-!
+x.
+0.!
+bx /
+b0 /!
+00
+00!
+01
+01!
+02
+02!
+03
+b0 3!
+04
+14!
+b0 5
+x5!
+06
+x6!
+b0 7
+bx 7!
+b0 8
+x8!
+09
+x9!
+b0 :
+b1000 :!
+0;
+bx0000 ;!
+b0 <
+bx <!
+bx =
+0=!
+b1010011010011100100001101011111 >
+0>!
+b1 ?
+x?!
+b11111111111111111011000111100000 @
+bx @!
+b0 A
+b101 A!
+0B
+b1000 B!
+0C
+b11111111 C!
+0D
+b0 D!
+0E
+b1000 E!
+b0 F
+b1000 F!
+b0 G
+b1000 G!
+b0 H
+b10000 H!
+b0 I
+b11111111 I!
+0J
+b0 J!
+0K
+b0 K!
+0L
+0M
+0N
+b0 O
+0P
+b0 Q
+b0 R
+0S
+b0 T
+0U
+b0 V
+bx0000 W
+bx0000 X
+b1000 Y
+b1000 Z
+b1000 [
+0\
+0]
+b0 ^
+0_
+0`
+b0 a
+b0 b
+0c
+0d
+b0 e
+0f
+0g
+b0 h
+0i
+0j
+b0 k
+b0 l
+b1100 m
+b100000 n
+b100 o
+0p
+0q
+0r
+b0 s
+b0 t
+b0 u
+1v
+0w
+0x
+b0 y
+0z
+b100000 {
+b100000 |
+b100 }
+0~
+$end
+
+#5000
+1!
+b0 &
+0'
+b0 ,
+0.
+b0 /
+05!
+06!
+b0 7!
+08!
+09!
+b0 ;!
+b0 <!
+b0 =
+0?!
+b0 @!
+1B
+b0 W
+b0 X
+
+#10000
+0!
+0B
+
+#15000
+1!
+1B
+
+#20000
+0!
+0B
+
+#25000
+1!
+1B
+
+#26000
+1"
+1C
+
+#30000
+0!
+0B
+
+#35000
+1!
+b1 =
+1B
+
+#36000
+1#
+b11 %
+19!
+b10000 ?
+1D
+b11 F
+
+#40000
+0!
+0B
+
+#45000
+1!
+1(
+15!
+b11 7!
+18!
+09!
+b10 =
+1B
+
+#50000
+0!
+0B
+
+#55000
+1!
+b1 &
+b11 =
+1B
+
+#60000
+0!
+0B
+
+#65000
+1!
+b10 &
+b100 =
+1B
+
+#70000
+0!
+0B
+
+#75000
+1!
+1'
+0(
+08!
+b10000 ;!
+b10000 <!
+b101 =
+1B
+b10000 W
+b10000 X
+
+#80000
+0!
+0B
+
+#85000
+1!
+0'
+b10000 ,
+b0 ;!
+b110 =
+b1 A
+1B
+b0 W
+b0 X
+
+#90000
+0!
+0B
+
+#95000
+1!
+b111 =
+1B
+
+#96000
+1$
+b10 %
+19!
+b100000 ?
+b0 A
+1E
+b10 F
+
+#100000
+0!
+0B
+
+#105000
+1!
+b0 &
+1(
+16!
+b10 7!
+18!
+09!
+b1000 =
+1B
+
+#110000
+0!
+0B
+
+#115000
+1!
+b1 &
+b1001 =
+1B
+
+#120000
+0!
+0B
+
+#125000
+1!
+b0 &
+1'
+b10000 ;!
+b1010 =
+1B
+b10000 W
+b10000 X
+
+#130000
+0!
+0B
+
+#135000
+1!
+b1 &
+0'
+b0 ;!
+b1011 =
+b1 A
+1B
+b0 W
+b0 X
+
+#140000
+0!
+0B
+
+#145000
+1!
+b0 &
+1'
+b10000 ;!
+b1100 =
+1B
+b10000 W
+b10000 X
+
+#150000
+0!
+0B
+
+#155000
+1!
+b1 &
+0'
+b0 ;!
+b1101 =
+b10 A
+1B
+b0 W
+b0 X
+
+#160000
+0!
+0B
+
+#165000
+1!
+b0 &
+1'
+b10000 ;!
+b1110 =
+1B
+b10000 W
+b10000 X
+
+#166000
+b1 )
+b1 *
+b10001 ;!
+b10001 <!
+1>!
+b110000 ?
+b1 G
+b1 H
+b10001 W
+b10001 X
+
+#170000
+0!
+0B
+
+#175000
+1!
+b1 &
+0'
+b10001 ,
+1-
+b1 ;!
+b1111 =
+b11 A
+1B
+b1 W
+b1 X
+
+#176000
+b0 )
+b0 ;!
+b0 G
+b0 W
+b0 X
+
+#180000
+0!
+0B
+
+#185000
+1!
+b0 &
+1'
+b10000 ;!
+b10000 =
+1?!
+1B
+b10000 W
+b10000 X
+
+#190000
+0!
+0B
+
+#195000
+1!
+b1 &
+0'
+b0 ;!
+b10001 =
+b1 @!
+b100 A
+1B
+b0 W
+b0 X
+
+#200000
+0!
+0B
+
+#205000
+1!
+b0 &
+1'
+b10000 ;!
+b10010 =
+b10 @!
+1B
+b10000 W
+b10000 X
+
+#210000
+0!
+0B
+
+#215000
+1!
+b1 &
+0'
+b0 ;!
+b10011 =
+b11 @!
+b101 A
+1B
+b0 W
+b0 X
+
+#216000
+b1 +
+b10000 <!
+1=!
+0>!
+b1 I
+
+#220000
+0!
+0B
+
+#225000
+1!
+b0 &
+1'
+b10000 ,
+0-
+1.
+b11 /
+b10000 ;!
+b10100 =
+0=!
+0?!
+b0 @!
+1B
+b10000 W
+b10000 X
+
+#226000
+b0 +
+b0 I
+
+#230000
+0!
+0B
+
+#235000
+1!
+b1 &
+0'
+0.
+b0 ;!
+b10101 =
+b110 A
+1B
+b0 W
+b0 X
+
+#236000
+10
+b1000000 ?
+1J
+
+#240000
+0!
+0B
+
+#245000
+1!
+b0 &
+1'
+b10000 ;!
+b0 =
+1B
+b10000 W
+b10000 X
+
+#246000
+00
+11
+12
+13
+b101 5
+16
+b1100 7
+b1000 8
+1;
+0J
+1K
+1L
+1M
+b101 O
+1P
+b1100 Q
+b1000 R
+1U
+
+#250000
+0!
+0B
+
+#255000
+1!
+b1 &
+0'
+b0 ;!
+b1 =
+b111 A
+1B
+b0 W
+b0 X
+
+#260000
+0!
+0B
+
+#265000
+1!
+b0 &
+1'
+b10000 ;!
+b10 =
+1B
+b10000 W
+b10000 X
+
+#270000
+0!
+0B
+
+#275000
+1!
+b1 &
+0'
+b0 ;!
+b11 =
+b1000 A
+1B
+b0 W
+b0 X
+
+#276000
+01
+02
+03
+06
+b0 7
+b0 8
+0;
+b1 <
+b1 D!
+0K
+0L
+0M
+0P
+b0 Q
+b0 R
+0U
+b1 V
+
+#277000
+b10 <
+b10 D!
+b10 V
+
+#278000
+b101 <
+b101 =
+b101 D!
+b101 V
+
+#279000
+b110 <
+b11 =
+b110 D!
+b110 V
+
+#280000
+0!
+b111 <
+b100100 =
+0B
+b111 D!
+b111 V
+
+#281000
+b1000 <
+b11000 =
+b1000 D!
+b1000 V
+
+#282000
+b1010 <
+b11 =
+b1010 D!
+b1010 V
+
+#283000
+10
+1J
+
+#285000
+1!
+b0 &
+1'
+b10000 ;!
+b0 =
+1B
+b10000 W
+b10000 X
+
+#286000
+00
+b1 <
+b1 D!
+0J
+b1 V
+
+#287000
+b11111111 ?
+
+#290000
+0!
+0B
+
+#295000
+1!
+b1 &
+0'
+b0 ;!
+b1001 A
+1B
+b0 W
+b0 X
+
+#300000
+0!
+0B
+
+#305000
+1!
+b0 &
+1'
+b10000 ;!
+1B
+b10000 W
+b10000 X
+
+#310000
+0!
+0B
+
+#315000
+1!
+b1 &
+0'
+b0 ;!
+b1010 A
+1B
+b0 W
+b0 X
+
+#320000
+0!
+0B
+
+#325000
+1!
+b0 &
+1'
+b10000 ;!
+1B
+b10000 W
+b10000 X

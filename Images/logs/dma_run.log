@@ -1,0 +1,40 @@
+#-----------------------------------------------------------
+# xsim v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Mon Jun 29 18:39:59 2026
+# Process ID         : 58108
+# Current directory  : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC
+# Command line       : xsim.exe -log C:\Users\sanat\AI_Accelerator_Project\Github\AI-Inference-Accelerator-SoC\Images\logs\dma_run.log -mode tcl -source {xsim.dir/artifact_dma_tb/xsim_script.tcl}
+# Log file           : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/logs/dma_run.log
+# Journal file       : C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC\xsim.jou
+# Running On         : KONDA-LT-122
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : AMD Ryzen 9 6900HS Creator Edition
+# CPU Frequency      : 3294 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 16
+# Host memory        : 29734 MB
+# Swap memory        : 76592 MB
+# Total Virtual      : 106327 MB
+# Available Virtual  : 71830 MB
+#-----------------------------------------------------------
+source xsim.dir/artifact_dma_tb/xsim_script.tcl
+# xsim {artifact_dma_tb} -wdb {Images/waves/dma.wdb} -autoloadwcfg -tclbatch {Images/scripts/xsim_dma.tcl}
+Time resolution is 1 ps
+source Images/scripts/xsim_dma.tcl
+## source Images/scripts/run_xsim_artifacts.tcl
+### proc run_artifact {top vcd_path} {
+###   log_wave -recursive *
+###   open_vcd $vcd_path
+###   log_vcd [get_objects -r /*]
+###   run all
+###   close_vcd
+###   quit
+### }
+## run_artifact artifact_dma_tb Images/vcd/dma.vcd
+PASS artifact_dma_tb normal partial backpressure zero illegal busy errors reset
+$finish called at time : 1186 ns : File "C:/Users/sanat/AI_Accelerator_Project/Github/AI-Inference-Accelerator-SoC/Images/generated_tb/artifact_dma_tb.sv" Line 425
+INFO: [Common 17-206] Exiting xsim at Mon Jun 29 18:40:02 2026...
